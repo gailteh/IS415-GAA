@@ -1,8 +1,11 @@
 ---
 title: "Hands-on Exercise 1: Geospatial Data Wrangling with R"
+date: "`r Sys.Date()`"
+format: html
 execute: 
+  message: false
   warning: false
-data: "`r. Sys.Date"
+  editor: visual
 ---
 
 # Getting Started
