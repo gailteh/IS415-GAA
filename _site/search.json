@@ -18,7 +18,7 @@
     "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html",
     "title": "In-Class Exercise 2: Geospatial Data Wrangling",
     "section": "",
-    "text": "Installing and loading sf, tidyverse, funModeling packages\n\npacman::p_load(sf, tidyverse,funModeling)\n\nImporting geoBoundaries data set\n\ngeoNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"geoBoundaries-NGA-ADM2\") %>%\n  st_transform(crs = 26392)\n\nReading layer `geoBoundaries-NGA-ADM2' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84\n\n\nImporting NGA data set\n\nNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"nga_admbnda_adm2_osgof_20190417\")\n\nReading layer `nga_admbnda_adm2_osgof_20190417' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84"
+    "text": "pacman::p_load(sf, tidyverse,funModeling)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
@@ -117,5 +117,19 @@
     "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R",
     "section": "7.2 Point-in-polygon count",
     "text": "7.2 Point-in-polygon count\nScenario 1: Find out the number of pre-schools in each planning subzone\nSteps:\n\nIdentify pre-schools located inside each planning subzone using st_intersects() and use length() to calculate the number of pre-schools within each subzone.\n\n\nmpsz3414$`PreSch Count`<- lengths(st_intersects(mpsz3414, preschool3414))\n\n\nsummary(mpsz3414$`PreSch Count`)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n   0.00    0.00    3.00    5.96    9.00   58.00 \n\n\n\nList the planning subzone with the most number of schools using top_n()\n\n\ntop_n(mpsz3414, 1, `PreSch Count`)\n\nSimple feature collection with 1 feature and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 39655.33 ymin: 35966 xmax: 42940.57 ymax: 38622.37\nProjected CRS: SVY21 / Singapore TM\n  OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C\n1      189          2 TAMPINES EAST    TMSZ02      N   TAMPINES         TM\n     REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng\n1 EAST REGION       ER 21658EAAF84F4D8D 2014-12-05 41122.55 37392.39   10180.62\n  SHAPE_Area                       geometry PreSch Count\n1    4339824 MULTIPOLYGON (((42196.76 38...           58\n\n\nScenario 2: Calculate Density of pre-school planning subzone\n\nUse st_area() to get area of each planning subzone\nUse mutate() to compute density\n\n\nmpsz3414$Area <- mpsz3414 %>%\n  st_area()\n\n\nmpsz3414 <- mpsz3414 %>%\n  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)"
+  },
+  {
+    "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-geoboundaries-data-set",
+    "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-geoboundaries-data-set",
+    "title": "In-Class Exercise 2: Geospatial Data Wrangling",
+    "section": "Importing geoBoundaries data set",
+    "text": "Importing geoBoundaries data set\n\ngeoNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"geoBoundaries-NGA-ADM2\") %>%\n  st_transform(crs = 26392)\n\nReading layer `geoBoundaries-NGA-ADM2' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84"
+  },
+  {
+    "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-nga-data-set",
+    "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-nga-data-set",
+    "title": "In-Class Exercise 2: Geospatial Data Wrangling",
+    "section": "Importing NGA data set",
+    "text": "Importing NGA data set\n\nNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"nga_admbnda_adm2_osgof_20190417\") %>%\n  st_transform(crs = 26392)\n\nReading layer `nga_admbnda_adm2_osgof_20190417' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84"
   }
 ]

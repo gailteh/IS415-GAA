@@ -7,21 +7,38 @@ execute:
   warning: false
   editor: visual
 ---
-Installing and loading sf, tidyverse, funModeling packages
+
+# Installing and loading sf, tidyverse, funModeling packages
+
 ```{r}
 pacman::p_load(sf, tidyverse,funModeling)
 ```
 
-Importing geoBoundaries data set
+# Importing Geospatial Data
+
+## Importing geoBoundaries data set
+
 ```{r}
 geoNGA <- st_read("data/geospatial/",
                   layer = 
                   "geoBoundaries-NGA-ADM2") %>%
   st_transform(crs = 26392)
 ```
-Importing NGA data set
+
+## Importing NGA data set
+
 ```{r}
 NGA <- st_read("data/geospatial/",
                   layer = 
-                  "nga_admbnda_adm2_osgof_20190417")
+                  "nga_admbnda_adm2_osgof_20190417") %>%
+  st_transform(crs = 26392)
 ```
+# Importing Aspatial Data Set
+
+Importing `WPdx.csv` into R
+
+```{r}
+wp_nga <- read.csv("data/aspatial/WPdx.csv")
+```
+
+Converting `wp_nga` into sf data frame
