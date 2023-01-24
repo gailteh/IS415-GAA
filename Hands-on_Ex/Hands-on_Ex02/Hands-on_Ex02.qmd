@@ -1,0 +1,180 @@
+---
+title: "Hands-on Exercise 2: Chroropleth Mapping With R"
+date: "`r Sys.Date()`"
+format: html
+execute: 
+  message: false
+  warning: false
+  editor: visual
+---
+
+# 1 Getting Started
+
+Loading and installing **sf, tmap** and **tidyverse** packages.
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+# 2 Importing Data
+
+## 2.1 Importing Geospatial Data
+
+Importing `MP14_SUBZONE_WEB_PL` shapefile into R as a sf dataframe called `mpsz` using **st_read()** from **sf** package.
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial",
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+mpsz
+```
+
+Note: Only first 10 records are displayed because mpsz is a tibble (which by default only shows first 10 rows)
+
+## 2.2 Importing Attribute Data
+
+Importing *respopagsex2000to2018.csv* file and saving it into a dataframe called `popdata` using **read_csv()** function from **readr** package.
+
+```{r}
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+```
+
+## 2.3 Data Preparation
+
+Preparing a data table with 2020 values in order to create a thematic map. Variables included are: PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY.
+
+### 2.3.1 Data Wrangling
+
+Using **pivot_wider()** of **tidyr** package and **mutate(), filter(), groupby(), select()** of **dplyr** package
+
+```{r}
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup()%>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
+rowSums(.[13:15]))%>%
+mutate(`AGED`=rowSums(.[16:21])) %>%
+mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
+```
+
+### 2.3.2 Joining attribute data and geospatial data
+
+Converting the values in PA and SZ fields to uppercase (PA and SZ fields are made up of both upper and lower case while SUBZONE_N and PLN_AREA_N are uppercase).
+
+```{r}
+popdata2020 <- popdata2020 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = funs(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+Using **left_join()** of **dplyr** package to join geographical data and attribute table using planning subzone name as common identifier.
+
+```{r}
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+```{r}
+write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+```
+
+# 3 Choropleth Mapping Geospatial Data using *tmap*
+
+## 3.1 Plotting a choropleth map quickly using ***qtm()***
+
+```{r}
+tmap_mode("plot")
+qtm(mpsz_pop2020,
+    fill = "DEPENDENCY")
+```
+
+Note:
+
+-   *tmap_mode()* using "plot" will produce a static map. For an interactive map, use "view" option
+
+-   *fill* argument is the attribute being mapped
+
+## 3.2 Creating a choropleth map using tmap elements
+
+Use **tmap** drawing elements for a more high quality cartographic map (Difficult to control aesthetics of individual layers using qtm).
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Dependency ratio") +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+The following sub-sections are the different tmap functions used to plot the elements.
+
+### 3.2.1 Drawing a base map
+
+**tm_shape()** is used to define the input data, **tm_polygons()** is used to draw the planning subzone polygons.
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons()
+```
+
+### 3.2.2 tm_polygons()
+
+Assign a target variable to **tm_ploygons()** (e.g. Dependency) to show the geographical distribution of that selected variable by planning subzone.
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons("DEPENDENCY")
+```
+
+### 3.2.3 tm_fill() & tm_border()
+
+**tm_fill()** shades polygons using the default colour scheme.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY")
+```
+
+**tm_borders()** adds the borders to the map
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY") +
+  tm_borders(lwd = 0.1,  alpha = 1)
+```
+
+## 3.3 Data Classification methods of tmap
+
+## 3.4 Colour Scheme
+
+## 3.5 Map Layouts
+
+## 3.6 Small Multiple Choropleth Maps
+
+## 3.7 Mapping spatial Object meeting a selection criterion
