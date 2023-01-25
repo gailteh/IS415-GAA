@@ -1,0 +1,14 @@
+{
+  "hash": "af3c5d69bfbd3db8548140f51388021f",
+  "result": {
+    "markdown": "---\ntitle: \"In-Class Exercise 2: Geospatial Data Wrangling\"\ndate: \"2023-01-24\"\nformat: html\nexecute: \n  message: false\n  warning: false\n  editor: visual\n---\n\n\n# Installing and loading sf, tidyverse, funModeling packages\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(sf, tidyverse,funModeling)\n```\n:::\n\n\n# Importing Geospatial Data\n\n## Importing geoBoundaries data set\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngeoNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"geoBoundaries-NGA-ADM2\") %>%\n  st_transform(crs = 26392)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nReading layer `geoBoundaries-NGA-ADM2' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84\n```\n:::\n:::\n\n\n## Importing NGA data set\n\n\n::: {.cell}\n\n```{.r .cell-code}\nNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"nga_admbnda_adm2_osgof_20190417\") %>%\n  st_transform(crs = 26392)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nReading layer `nga_admbnda_adm2_osgof_20190417' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84\n```\n:::\n:::\n\n# Importing Aspatial Data Set\n\nImporting `WPdx.csv` into R\n\n\n::: {.cell}\n\n```{.r .cell-code}\nwp_nga <- read.csv(\"data/aspatial/WPdx.csv\")\n```\n:::\n\n\nConverting `wp_nga` into sf data frame\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
