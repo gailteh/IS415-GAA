@@ -121,7 +121,4 @@ percentmap <- function(vnam, df, legtitle=NA, mtitle ="Percentile Map"){
 }
 ```
 
-```{r}
-percentmap("wp_functional", NGA_wp)
-```
 
