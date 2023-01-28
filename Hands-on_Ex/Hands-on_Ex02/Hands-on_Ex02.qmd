@@ -1,6 +1,8 @@
 ---
 title: "Hands-on Exercise 2: Chroropleth Mapping With R"
-date: "`r Sys.Date()`"
+date: "21 January 2023"
+date-modified: "`r Sys.Date()`"
+number-sections: true
 format: html
 execute: 
   message: false
@@ -8,7 +10,7 @@ execute:
   editor: visual
 ---
 
-# 1 Getting Started
+# Getting Started
 
 Loading and installing **sf, tmap** and **tidyverse** packages.
 
@@ -16,9 +18,9 @@ Loading and installing **sf, tmap** and **tidyverse** packages.
 pacman::p_load(sf, tmap, tidyverse)
 ```
 
-# 2 Importing Data
+# Importing Data
 
-## 2.1 Importing Geospatial Data
+## Importing Geospatial Data
 
 Importing `MP14_SUBZONE_WEB_PL` shapefile into R as a sf dataframe called `mpsz` using **st_read()** from **sf** package.
 
@@ -33,7 +35,7 @@ mpsz
 
 Note: Only first 10 records are displayed because mpsz is a tibble (which by default only shows first 10 rows)
 
-## 2.2 Importing Attribute Data
+## Importing Attribute Data
 
 Importing *respopagsex2000to2018.csv* file and saving it into a dataframe called `popdata` using **read_csv()** function from **readr** package.
 
@@ -41,7 +43,7 @@ Importing *respopagsex2000to2018.csv* file and saving it into a dataframe called
 popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
 ```
 
-## 2.3 Data Preparation
+## Data Preparation
 
 In this section, preparing a data table with 2020 values in order to create a thematic map.
 

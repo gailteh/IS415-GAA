@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-01-25">
+<meta name="dcterms.date" content="2023-01-21">
 
 <title>IS415-GAA - Hands-on Exercise 2: Chroropleth Mapping With R</title>
 <style>
@@ -167,6 +167,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex02/In-Class_Ex02.html">
  <span class="dropdown-text">In-class Exercise 2</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex03/In-Class_Ex03.html">
+ <span class="dropdown-text">In-Class Exercise 3</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -194,48 +198,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">1 Getting Started</a></li>
-  <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data">2 Importing Data</a>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started"><span class="toc-section-number">1</span>  Getting Started</a></li>
+  <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data"><span class="toc-section-number">2</span>  Importing Data</a>
   <ul class="collapse">
-  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">2.1 Importing Geospatial Data</a></li>
-  <li><a href="#importing-attribute-data" id="toc-importing-attribute-data" class="nav-link" data-scroll-target="#importing-attribute-data">2.2 Importing Attribute Data</a></li>
-  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">2.3 Data Preparation</a>
+  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data"><span class="toc-section-number">2.1</span>  Importing Geospatial Data</a></li>
+  <li><a href="#importing-attribute-data" id="toc-importing-attribute-data" class="nav-link" data-scroll-target="#importing-attribute-data"><span class="toc-section-number">2.2</span>  Importing Attribute Data</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation"><span class="toc-section-number">2.3</span>  Data Preparation</a>
   <ul class="collapse">
-  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
-  <li><a href="#joining-attribute-data-and-geospatial-data" id="toc-joining-attribute-data-and-geospatial-data" class="nav-link" data-scroll-target="#joining-attribute-data-and-geospatial-data">Joining attribute data and geospatial data</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling"><span class="toc-section-number">2.3.1</span>  Data Wrangling</a></li>
+  <li><a href="#joining-attribute-data-and-geospatial-data" id="toc-joining-attribute-data-and-geospatial-data" class="nav-link" data-scroll-target="#joining-attribute-data-and-geospatial-data"><span class="toc-section-number">2.3.2</span>  Joining attribute data and geospatial data</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#choropleth-mapping-geospatial-data-using-tmap" id="toc-choropleth-mapping-geospatial-data-using-tmap" class="nav-link" data-scroll-target="#choropleth-mapping-geospatial-data-using-tmap">3 Choropleth Mapping Geospatial Data using <em>tmap</em></a>
+  <li><a href="#choropleth-mapping-geospatial-data-using-tmap" id="toc-choropleth-mapping-geospatial-data-using-tmap" class="nav-link" data-scroll-target="#choropleth-mapping-geospatial-data-using-tmap"><span class="toc-section-number">3</span>  3 Choropleth Mapping Geospatial Data using <em>tmap</em></a>
   <ul class="collapse">
-  <li><a href="#plotting-a-choropleth-map-quickly-using-qtm" id="toc-plotting-a-choropleth-map-quickly-using-qtm" class="nav-link" data-scroll-target="#plotting-a-choropleth-map-quickly-using-qtm">3.1 Plotting a choropleth map quickly using <strong><em>qtm()</em></strong></a></li>
-  <li><a href="#creating-a-choropleth-map-using-tmap-elements" id="toc-creating-a-choropleth-map-using-tmap-elements" class="nav-link" data-scroll-target="#creating-a-choropleth-map-using-tmap-elements">3.2 Creating a choropleth map using tmap elements</a>
+  <li><a href="#plotting-a-choropleth-map-quickly-using-qtm" id="toc-plotting-a-choropleth-map-quickly-using-qtm" class="nav-link" data-scroll-target="#plotting-a-choropleth-map-quickly-using-qtm"><span class="toc-section-number">3.1</span>  3.1 Plotting a choropleth map quickly using <strong><em>qtm()</em></strong></a></li>
+  <li><a href="#creating-a-choropleth-map-using-tmap-elements" id="toc-creating-a-choropleth-map-using-tmap-elements" class="nav-link" data-scroll-target="#creating-a-choropleth-map-using-tmap-elements"><span class="toc-section-number">3.2</span>  3.2 Creating a choropleth map using tmap elements</a>
   <ul class="collapse">
-  <li><a href="#drawing-a-base-map" id="toc-drawing-a-base-map" class="nav-link" data-scroll-target="#drawing-a-base-map">Drawing a base map</a></li>
-  <li><a href="#tm_polygons" id="toc-tm_polygons" class="nav-link" data-scroll-target="#tm_polygons"><strong>tm_polygons()</strong></a></li>
-  <li><a href="#tm_fill-tm_border" id="toc-tm_fill-tm_border" class="nav-link" data-scroll-target="#tm_fill-tm_border">tm_fill() &amp; <strong>tm_border()</strong></a></li>
+  <li><a href="#drawing-a-base-map" id="toc-drawing-a-base-map" class="nav-link" data-scroll-target="#drawing-a-base-map"><span class="toc-section-number">3.2.1</span>  Drawing a base map</a></li>
+  <li><a href="#tm_polygons" id="toc-tm_polygons" class="nav-link" data-scroll-target="#tm_polygons"><span class="toc-section-number">3.2.2</span>  <strong>tm_polygons()</strong></a></li>
+  <li><a href="#tm_fill-tm_border" id="toc-tm_fill-tm_border" class="nav-link" data-scroll-target="#tm_fill-tm_border"><span class="toc-section-number">3.2.3</span>  tm_fill() &amp; <strong>tm_border()</strong></a></li>
   </ul></li>
-  <li><a href="#data-classification-methods-of-tmap" id="toc-data-classification-methods-of-tmap" class="nav-link" data-scroll-target="#data-classification-methods-of-tmap">3.3 Data Classification methods of tmap</a>
+  <li><a href="#data-classification-methods-of-tmap" id="toc-data-classification-methods-of-tmap" class="nav-link" data-scroll-target="#data-classification-methods-of-tmap"><span class="toc-section-number">3.3</span>  3.3 Data Classification methods of tmap</a>
   <ul class="collapse">
-  <li><a href="#built-in-classification-methods" id="toc-built-in-classification-methods" class="nav-link" data-scroll-target="#built-in-classification-methods">Built In Classification Methods</a></li>
-  <li><a href="#custom-break" id="toc-custom-break" class="nav-link" data-scroll-target="#custom-break">Custom Break</a></li>
+  <li><a href="#built-in-classification-methods" id="toc-built-in-classification-methods" class="nav-link" data-scroll-target="#built-in-classification-methods"><span class="toc-section-number">3.3.1</span>  Built In Classification Methods</a></li>
+  <li><a href="#custom-break" id="toc-custom-break" class="nav-link" data-scroll-target="#custom-break"><span class="toc-section-number">3.3.2</span>  Custom Break</a></li>
   </ul></li>
-  <li><a href="#colour-scheme" id="toc-colour-scheme" class="nav-link" data-scroll-target="#colour-scheme">3.4 Colour Scheme</a>
+  <li><a href="#colour-scheme" id="toc-colour-scheme" class="nav-link" data-scroll-target="#colour-scheme"><span class="toc-section-number">3.4</span>  3.4 Colour Scheme</a>
   <ul class="collapse">
-  <li><a href="#colourbrewer-palette" id="toc-colourbrewer-palette" class="nav-link" data-scroll-target="#colourbrewer-palette">ColourBrewer palette</a></li>
+  <li><a href="#colourbrewer-palette" id="toc-colourbrewer-palette" class="nav-link" data-scroll-target="#colourbrewer-palette"><span class="toc-section-number">3.4.1</span>  ColourBrewer palette</a></li>
   </ul></li>
-  <li><a href="#map-layouts" id="toc-map-layouts" class="nav-link" data-scroll-target="#map-layouts">3.5 Map Layouts</a>
+  <li><a href="#map-layouts" id="toc-map-layouts" class="nav-link" data-scroll-target="#map-layouts"><span class="toc-section-number">3.5</span>  3.5 Map Layouts</a>
   <ul class="collapse">
-  <li><a href="#map-legend" id="toc-map-legend" class="nav-link" data-scroll-target="#map-legend">Map Legend</a></li>
-  <li><a href="#map-style" id="toc-map-style" class="nav-link" data-scroll-target="#map-style">Map Style</a></li>
-  <li><a href="#cartographic-furniture" id="toc-cartographic-furniture" class="nav-link" data-scroll-target="#cartographic-furniture">Cartographic Furniture</a></li>
+  <li><a href="#map-legend" id="toc-map-legend" class="nav-link" data-scroll-target="#map-legend"><span class="toc-section-number">3.5.1</span>  Map Legend</a></li>
+  <li><a href="#map-style" id="toc-map-style" class="nav-link" data-scroll-target="#map-style"><span class="toc-section-number">3.5.2</span>  Map Style</a></li>
+  <li><a href="#cartographic-furniture" id="toc-cartographic-furniture" class="nav-link" data-scroll-target="#cartographic-furniture"><span class="toc-section-number">3.5.3</span>  Cartographic Furniture</a></li>
   </ul></li>
-  <li><a href="#drawing-small-multiple-choropleth-maps-facet-maps" id="toc-drawing-small-multiple-choropleth-maps-facet-maps" class="nav-link" data-scroll-target="#drawing-small-multiple-choropleth-maps-facet-maps">3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)</a>
+  <li><a href="#drawing-small-multiple-choropleth-maps-facet-maps" id="toc-drawing-small-multiple-choropleth-maps-facet-maps" class="nav-link" data-scroll-target="#drawing-small-multiple-choropleth-maps-facet-maps"><span class="toc-section-number">3.6</span>  3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)</a>
   <ul class="collapse">
-  <li><a href="#assigning-multiple-values-to-at-least-one-aesthetic-argument" id="toc-assigning-multiple-values-to-at-least-one-aesthetic-argument" class="nav-link" data-scroll-target="#assigning-multiple-values-to-at-least-one-aesthetic-argument">Assigning multiple Values to at least one aesthetic argument</a></li>
-  <li><a href="#tm_facets" id="toc-tm_facets" class="nav-link" data-scroll-target="#tm_facets"><strong>tm_facets()</strong></a></li>
-  <li><a href="#tmap_arrange" id="toc-tmap_arrange" class="nav-link" data-scroll-target="#tmap_arrange"><strong>tmap_arrange()</strong></a></li>
+  <li><a href="#assigning-multiple-values-to-at-least-one-aesthetic-argument" id="toc-assigning-multiple-values-to-at-least-one-aesthetic-argument" class="nav-link" data-scroll-target="#assigning-multiple-values-to-at-least-one-aesthetic-argument"><span class="toc-section-number">3.6.1</span>  Assigning multiple Values to at least one aesthetic argument</a></li>
+  <li><a href="#tm_facets" id="toc-tm_facets" class="nav-link" data-scroll-target="#tm_facets"><span class="toc-section-number">3.6.2</span>  <strong>tm_facets()</strong></a></li>
+  <li><a href="#tmap_arrange" id="toc-tmap_arrange" class="nav-link" data-scroll-target="#tmap_arrange"><span class="toc-section-number">3.6.3</span>  <strong>tmap_arrange()</strong></a></li>
   </ul></li>
-  <li><a href="#mapping-spatial-object-meeting-a-selection-criterion" id="toc-mapping-spatial-object-meeting-a-selection-criterion" class="nav-link" data-scroll-target="#mapping-spatial-object-meeting-a-selection-criterion">3.7 Mapping spatial Object meeting a selection criterion</a></li>
+  <li><a href="#mapping-spatial-object-meeting-a-selection-criterion" id="toc-mapping-spatial-object-meeting-a-selection-criterion" class="nav-link" data-scroll-target="#mapping-spatial-object-meeting-a-selection-criterion"><span class="toc-section-number">3.7</span>  3.7 Mapping spatial Object meeting a selection criterion</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -256,27 +260,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 25, 2023</p>
+      <p class="date">January 21, 2023</p>
     </div>
   </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 28, 2023</p>
+    </div>
+  </div>
     
   </div>
   
 
 </header>
 
-<section id="getting-started" class="level1">
-<h1>1 Getting Started</h1>
+<section id="getting-started" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Getting Started</h1>
 <p>Loading and installing <strong>sf, tmap</strong> and <strong>tidyverse</strong> packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="importing-data" class="level1">
-<h1>2 Importing Data</h1>
-<section id="importing-geospatial-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-geospatial-data">2.1 Importing Geospatial Data</h2>
+<section id="importing-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Importing Data</h1>
+<section id="importing-geospatial-data" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="importing-geospatial-data"><span class="header-section-number">2.1</span> Importing Geospatial Data</h2>
 <p>Importing <code>MP14_SUBZONE_WEB_PL</code> shapefile into R as a sf dataframe called <code>mpsz</code> using <strong>st_read()</strong> from <strong>sf</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,</span>
@@ -338,18 +348,18 @@ First 10 features:
 </div>
 <p>Note: Only first 10 records are displayed because mpsz is a tibble (which by default only shows first 10 rows)</p>
 </section>
-<section id="importing-attribute-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-attribute-data">2.2 Importing Attribute Data</h2>
+<section id="importing-attribute-data" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="importing-attribute-data"><span class="header-section-number">2.2</span> Importing Attribute Data</h2>
 <p>Importing <em>respopagsex2000to2018.csv</em> file and saving it into a dataframe called <code>popdata</code> using <strong>read_csv()</strong> function from <strong>readr</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>popdata <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/respopagesextod2011to2020.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="data-preparation" class="level2">
-<h2 class="anchored" data-anchor-id="data-preparation">2.3 Data Preparation</h2>
+<section id="data-preparation" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="data-preparation"><span class="header-section-number">2.3</span> Data Preparation</h2>
 <p>In this section, preparing a data table with 2020 values in order to create a thematic map.</p>
-<section id="data-wrangling" class="level3">
-<h3 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h3>
+<section id="data-wrangling" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="data-wrangling"><span class="header-section-number">2.3.1</span> Data Wrangling</h3>
 <p>Using <strong>pivot_wider()</strong> of <strong>tidyr</strong> package and <strong>mutate(), filter(), groupby(), select()</strong> of <strong>dplyr</strong> package</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>popdata2020 <span class="ot">&lt;-</span> popdata <span class="sc">%&gt;%</span></span>
@@ -372,8 +382,8 @@ First 10 features:
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>       <span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span>, <span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="joining-attribute-data-and-geospatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="joining-attribute-data-and-geospatial-data">Joining attribute data and geospatial data</h3>
+<section id="joining-attribute-data-and-geospatial-data" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="joining-attribute-data-and-geospatial-data"><span class="header-section-number">2.3.2</span> Joining attribute data and geospatial data</h3>
 <p>Converting the values in PA and SZ fields to uppercase (PA and SZ fields are made up of both upper and lower case while SUBZONE_N and PLN_AREA_N are uppercase).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>popdata2020 <span class="ot">&lt;-</span> popdata2020 <span class="sc">%&gt;%</span></span>
@@ -392,10 +402,10 @@ First 10 features:
 </section>
 </section>
 </section>
-<section id="choropleth-mapping-geospatial-data-using-tmap" class="level1">
-<h1>3 Choropleth Mapping Geospatial Data using <em>tmap</em></h1>
-<section id="plotting-a-choropleth-map-quickly-using-qtm" class="level2">
-<h2 class="anchored" data-anchor-id="plotting-a-choropleth-map-quickly-using-qtm">3.1 Plotting a choropleth map quickly using <strong><em>qtm()</em></strong></h2>
+<section id="choropleth-mapping-geospatial-data-using-tmap" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 3 Choropleth Mapping Geospatial Data using <em>tmap</em></h1>
+<section id="plotting-a-choropleth-map-quickly-using-qtm" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="plotting-a-choropleth-map-quickly-using-qtm"><span class="header-section-number">3.1</span> 3.1 Plotting a choropleth map quickly using <strong><em>qtm()</em></strong></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qtm</span>(mpsz_pop2020,</span>
@@ -410,8 +420,8 @@ First 10 features:
 <li><p><em>fill</em> argument is the attribute being mapped</p></li>
 </ul>
 </section>
-<section id="creating-a-choropleth-map-using-tmap-elements" class="level2">
-<h2 class="anchored" data-anchor-id="creating-a-choropleth-map-using-tmap-elements">3.2 Creating a choropleth map using tmap elements</h2>
+<section id="creating-a-choropleth-map-using-tmap-elements" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="creating-a-choropleth-map-using-tmap-elements"><span class="header-section-number">3.2</span> 3.2 Creating a choropleth map using tmap elements</h2>
 <p>Use <strong>tmap</strong> drawing elements for a more high quality cartographic map (Difficult to control aesthetics of individual layers using qtm).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -436,8 +446,8 @@ First 10 features:
 </div>
 </div>
 <p>The following sub-sections are the different tmap functions used to plot the elements.</p>
-<section id="drawing-a-base-map" class="level3">
-<h3 class="anchored" data-anchor-id="drawing-a-base-map">Drawing a base map</h3>
+<section id="drawing-a-base-map" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="drawing-a-base-map"><span class="header-section-number">3.2.1</span> Drawing a base map</h3>
 <p><strong>tm_shape()</strong> is used to define the input data, <strong>tm_polygons()</strong> is used to draw the planning subzone polygons.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020) <span class="sc">+</span></span>
@@ -447,8 +457,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="tm_polygons" class="level3">
-<h3 class="anchored" data-anchor-id="tm_polygons"><strong>tm_polygons()</strong></h3>
+<section id="tm_polygons" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="tm_polygons"><span class="header-section-number">3.2.2</span> <strong>tm_polygons()</strong></h3>
 <p>Assign a target variable to <strong>tm_ploygons()</strong> (e.g.&nbsp;Dependency) to show the geographical distribution of that selected variable by planning subzone.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020) <span class="sc">+</span></span>
@@ -458,8 +468,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="tm_fill-tm_border" class="level3">
-<h3 class="anchored" data-anchor-id="tm_fill-tm_border">tm_fill() &amp; <strong>tm_border()</strong></h3>
+<section id="tm_fill-tm_border" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="tm_fill-tm_border"><span class="header-section-number">3.2.3</span> tm_fill() &amp; <strong>tm_border()</strong></h3>
 <p><strong>tm_fill()</strong> shades polygons using the default colour scheme.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -479,11 +489,11 @@ First 10 features:
 </div>
 </section>
 </section>
-<section id="data-classification-methods-of-tmap" class="level2">
-<h2 class="anchored" data-anchor-id="data-classification-methods-of-tmap">3.3 Data Classification methods of tmap</h2>
+<section id="data-classification-methods-of-tmap" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="data-classification-methods-of-tmap"><span class="header-section-number">3.3</span> 3.3 Data Classification methods of tmap</h2>
 <p>Using the <em>style</em> argument of <strong>tm_fill()</strong> or <strong>tm_polygon()</strong> to define a data classification method.</p>
-<section id="built-in-classification-methods" class="level3">
-<h3 class="anchored" data-anchor-id="built-in-classification-methods">Built In Classification Methods</h3>
+<section id="built-in-classification-methods" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="built-in-classification-methods"><span class="header-section-number">3.3.1</span> Built In Classification Methods</h3>
 <p><strong>jenks</strong> method</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -529,8 +539,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="custom-break" class="level3">
-<h3 class="anchored" data-anchor-id="custom-break">Custom Break</h3>
+<section id="custom-break" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="custom-break"><span class="header-section-number">3.3.2</span> Custom Break</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mpsz_pop2020<span class="sc">$</span>DEPENDENCY)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -550,10 +560,10 @@ First 10 features:
 </div>
 </section>
 </section>
-<section id="colour-scheme" class="level2">
-<h2 class="anchored" data-anchor-id="colour-scheme">3.4 Colour Scheme</h2>
-<section id="colourbrewer-palette" class="level3">
-<h3 class="anchored" data-anchor-id="colourbrewer-palette">ColourBrewer palette</h3>
+<section id="colour-scheme" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="colour-scheme"><span class="header-section-number">3.4</span> 3.4 Colour Scheme</h2>
+<section id="colourbrewer-palette" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="colourbrewer-palette"><span class="header-section-number">3.4.1</span> ColourBrewer palette</h3>
 <p>Assigning a preferred colour to the <em>palette</em> argument in <strong>tm_fill().</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -580,10 +590,10 @@ First 10 features:
 </div>
 </section>
 </section>
-<section id="map-layouts" class="level2">
-<h2 class="anchored" data-anchor-id="map-layouts">3.5 Map Layouts</h2>
-<section id="map-legend" class="level3">
-<h3 class="anchored" data-anchor-id="map-legend">Map Legend</h3>
+<section id="map-layouts" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="map-layouts"><span class="header-section-number">3.5</span> 3.5 Map Layouts</h2>
+<section id="map-legend" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="map-legend"><span class="header-section-number">3.5.1</span> Map Legend</h3>
 <p>Changing the placement, format and appearance of the legend using different legend options.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -607,8 +617,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="map-style" class="level3">
-<h3 class="anchored" data-anchor-id="map-style">Map Style</h3>
+<section id="map-style" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="map-style"><span class="header-section-number">3.5.2</span> Map Style</h3>
 <p>Using <strong>tmap_style()</strong> to change the layout settings</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -622,8 +632,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="cartographic-furniture" class="level3">
-<h3 class="anchored" data-anchor-id="cartographic-furniture">Cartographic Furniture</h3>
+<section id="cartographic-furniture" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="cartographic-furniture"><span class="header-section-number">3.5.3</span> Cartographic Furniture</h3>
 <p>Using <strong>tm_compass(), tm_scale_bar()</strong> and <strong>tm_grid()</strong> to add compass, scale bar and grid lines respectively</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
@@ -653,10 +663,10 @@ First 10 features:
 </div>
 </section>
 </section>
-<section id="drawing-small-multiple-choropleth-maps-facet-maps" class="level2">
-<h2 class="anchored" data-anchor-id="drawing-small-multiple-choropleth-maps-facet-maps">3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)</h2>
-<section id="assigning-multiple-values-to-at-least-one-aesthetic-argument" class="level3">
-<h3 class="anchored" data-anchor-id="assigning-multiple-values-to-at-least-one-aesthetic-argument">Assigning multiple Values to at least one aesthetic argument</h3>
+<section id="drawing-small-multiple-choropleth-maps-facet-maps" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="drawing-small-multiple-choropleth-maps-facet-maps"><span class="header-section-number">3.6</span> 3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)</h2>
+<section id="assigning-multiple-values-to-at-least-one-aesthetic-argument" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="assigning-multiple-values-to-at-least-one-aesthetic-argument"><span class="header-section-number">3.6.1</span> Assigning multiple Values to at least one aesthetic argument</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="fu">c</span>(<span class="st">"YOUNG"</span>, <span class="st">"AGED"</span>),</span>
@@ -680,8 +690,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="tm_facets" class="level3">
-<h3 class="anchored" data-anchor-id="tm_facets"><strong>tm_facets()</strong></h3>
+<section id="tm_facets" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="tm_facets"><span class="header-section-number">3.6.2</span> <strong>tm_facets()</strong></h3>
 <p>Using <strong>tm_facets</strong> to define a group-by variable to create multiple small choropleth maps</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020) <span class="sc">+</span></span>
@@ -701,8 +711,8 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="tmap_arrange" class="level3">
-<h3 class="anchored" data-anchor-id="tmap_arrange"><strong>tmap_arrange()</strong></h3>
+<section id="tmap_arrange" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="tmap_arrange"><span class="header-section-number">3.6.3</span> <strong>tmap_arrange()</strong></h3>
 <p>Using <strong>tmap_arrange()</strong> to create multiple stand alone maps</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>youngmap <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mpsz_pop2020)<span class="sc">+</span> </span>
@@ -722,8 +732,8 @@ First 10 features:
 </div>
 </section>
 </section>
-<section id="mapping-spatial-object-meeting-a-selection-criterion" class="level2">
-<h2 class="anchored" data-anchor-id="mapping-spatial-object-meeting-a-selection-criterion">3.7 Mapping spatial Object meeting a selection criterion</h2>
+<section id="mapping-spatial-object-meeting-a-selection-criterion" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="mapping-spatial-object-meeting-a-selection-criterion"><span class="header-section-number">3.7</span> 3.7 Mapping spatial Object meeting a selection criterion</h2>
 <p>Using selection function to map spatial objects meeting the selection criterion</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_pop2020[mpsz_pop2020<span class="sc">$</span>REGION_N<span class="sc">==</span><span class="st">"CENTRAL REGION"</span>, ])<span class="sc">+</span></span>

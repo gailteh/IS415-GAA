@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-01-24">
+<meta name="dcterms.date" content="2023-01-14">
 
 <title>IS415-GAA - Hands-on Exercise 1: Geospatial Data Wrangling with R</title>
 <style>
@@ -167,6 +167,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex02/In-Class_Ex02.html">
  <span class="dropdown-text">In-class Exercise 2</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex03/In-Class_Ex03.html">
+ <span class="dropdown-text">In-Class Exercise 3</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -194,39 +198,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">1 Getting Started</a>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started"><span class="toc-section-number">1</span>  Getting Started</a>
   <ul class="collapse">
-  <li><a href="#installing-and-loading-r-packages" id="toc-installing-and-loading-r-packages" class="nav-link" data-scroll-target="#installing-and-loading-r-packages">Installing and loading R packages</a></li>
+  <li><a href="#installing-and-loading-r-packages" id="toc-installing-and-loading-r-packages" class="nav-link" data-scroll-target="#installing-and-loading-r-packages"><span class="toc-section-number">1.1</span>  Installing and loading R packages</a></li>
   </ul></li>
-  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">2 Importing Geospatial Data</a>
+  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data"><span class="toc-section-number">2</span>  Importing Geospatial Data</a>
   <ul class="collapse">
-  <li><a href="#importing-polygon-feature-data" id="toc-importing-polygon-feature-data" class="nav-link" data-scroll-target="#importing-polygon-feature-data">2.1 Importing polygon feature data</a></li>
-  <li><a href="#importing-polyline-feature-data" id="toc-importing-polyline-feature-data" class="nav-link" data-scroll-target="#importing-polyline-feature-data">2.2 Importing polyline feature data</a></li>
-  <li><a href="#importing-point-feature-data" id="toc-importing-point-feature-data" class="nav-link" data-scroll-target="#importing-point-feature-data">2.3 Importing point feature data</a></li>
+  <li><a href="#importing-polygon-feature-data" id="toc-importing-polygon-feature-data" class="nav-link" data-scroll-target="#importing-polygon-feature-data"><span class="toc-section-number">2.1</span>  Importing polygon feature data</a></li>
+  <li><a href="#importing-polyline-feature-data" id="toc-importing-polyline-feature-data" class="nav-link" data-scroll-target="#importing-polyline-feature-data"><span class="toc-section-number">2.2</span>  Importing polyline feature data</a></li>
+  <li><a href="#importing-point-feature-data" id="toc-importing-point-feature-data" class="nav-link" data-scroll-target="#importing-point-feature-data"><span class="toc-section-number">2.3</span>  Importing point feature data</a></li>
   </ul></li>
-  <li><a href="#checking-the-content-of-a-simple-feature-data-frame" id="toc-checking-the-content-of-a-simple-feature-data-frame" class="nav-link" data-scroll-target="#checking-the-content-of-a-simple-feature-data-frame">3 Checking the content of a simple feature data frame</a>
+  <li><a href="#checking-the-content-of-a-simple-feature-data-frame" id="toc-checking-the-content-of-a-simple-feature-data-frame" class="nav-link" data-scroll-target="#checking-the-content-of-a-simple-feature-data-frame"><span class="toc-section-number">3</span>  Checking the content of a simple feature data frame</a>
   <ul class="collapse">
-  <li><a href="#st_geometry" id="toc-st_geometry" class="nav-link" data-scroll-target="#st_geometry">3.1 st_geometry()</a></li>
-  <li><a href="#glimpse" id="toc-glimpse" class="nav-link" data-scroll-target="#glimpse">3.2 glimpse()</a></li>
-  <li><a href="#head" id="toc-head" class="nav-link" data-scroll-target="#head">3.3 head()</a></li>
+  <li><a href="#st_geometry" id="toc-st_geometry" class="nav-link" data-scroll-target="#st_geometry"><span class="toc-section-number">3.1</span>  st_geometry()</a></li>
+  <li><a href="#glimpse" id="toc-glimpse" class="nav-link" data-scroll-target="#glimpse"><span class="toc-section-number">3.2</span>  glimpse()</a></li>
+  <li><a href="#head" id="toc-head" class="nav-link" data-scroll-target="#head"><span class="toc-section-number">3.3</span>  head()</a></li>
   </ul></li>
-  <li><a href="#plotting-geospatial-data" id="toc-plotting-geospatial-data" class="nav-link" data-scroll-target="#plotting-geospatial-data">4 Plotting Geospatial Data</a></li>
-  <li><a href="#projection-transformation" id="toc-projection-transformation" class="nav-link" data-scroll-target="#projection-transformation">5 Projection Transformation</a>
+  <li><a href="#plotting-geospatial-data" id="toc-plotting-geospatial-data" class="nav-link" data-scroll-target="#plotting-geospatial-data"><span class="toc-section-number">4</span>  Plotting Geospatial Data</a></li>
+  <li><a href="#projection-transformation" id="toc-projection-transformation" class="nav-link" data-scroll-target="#projection-transformation"><span class="toc-section-number">5</span>  Projection Transformation</a>
   <ul class="collapse">
-  <li><a href="#assigning-epsg-code-to-a-simple-feature-data-frame" id="toc-assigning-epsg-code-to-a-simple-feature-data-frame" class="nav-link" data-scroll-target="#assigning-epsg-code-to-a-simple-feature-data-frame">5.1 Assigning EPSG code to a simple feature data frame</a></li>
-  <li><a href="#transforming-from-wgs84-to-svy21" id="toc-transforming-from-wgs84-to-svy21" class="nav-link" data-scroll-target="#transforming-from-wgs84-to-svy21">5.2 Transforming from wgs84 to svy21</a></li>
+  <li><a href="#assigning-epsg-code-to-a-simple-feature-data-frame" id="toc-assigning-epsg-code-to-a-simple-feature-data-frame" class="nav-link" data-scroll-target="#assigning-epsg-code-to-a-simple-feature-data-frame"><span class="toc-section-number">5.1</span>  Assigning EPSG code to a simple feature data frame</a></li>
+  <li><a href="#transforming-from-wgs84-to-svy21" id="toc-transforming-from-wgs84-to-svy21" class="nav-link" data-scroll-target="#transforming-from-wgs84-to-svy21"><span class="toc-section-number">5.2</span>  Transforming from wgs84 to svy21</a></li>
   </ul></li>
-  <li><a href="#importing-and-converting-aspatial-data" id="toc-importing-and-converting-aspatial-data" class="nav-link" data-scroll-target="#importing-and-converting-aspatial-data">6 Importing and Converting Aspatial Data</a>
+  <li><a href="#importing-and-converting-aspatial-data" id="toc-importing-and-converting-aspatial-data" class="nav-link" data-scroll-target="#importing-and-converting-aspatial-data"><span class="toc-section-number">6</span>  Importing and Converting Aspatial Data</a>
   <ul class="collapse">
-  <li><a href="#importing-aspatial-data" id="toc-importing-aspatial-data" class="nav-link" data-scroll-target="#importing-aspatial-data">6.1 Importing aspatial data</a></li>
-  <li><a href="#creating-simple-feature-data-frame-from-aspatial-data-frame" id="toc-creating-simple-feature-data-frame-from-aspatial-data-frame" class="nav-link" data-scroll-target="#creating-simple-feature-data-frame-from-aspatial-data-frame">6.2 Creating simple feature data frame from aspatial data frame</a></li>
+  <li><a href="#importing-aspatial-data" id="toc-importing-aspatial-data" class="nav-link" data-scroll-target="#importing-aspatial-data"><span class="toc-section-number">6.1</span>  Importing aspatial data</a></li>
+  <li><a href="#creating-simple-feature-data-frame-from-aspatial-data-frame" id="toc-creating-simple-feature-data-frame-from-aspatial-data-frame" class="nav-link" data-scroll-target="#creating-simple-feature-data-frame-from-aspatial-data-frame"><span class="toc-section-number">6.2</span>  Creating simple feature data frame from aspatial data frame</a></li>
   </ul></li>
-  <li><a href="#geoprocessing" id="toc-geoprocessing" class="nav-link" data-scroll-target="#geoprocessing">7 Geoprocessing</a>
+  <li><a href="#geoprocessing" id="toc-geoprocessing" class="nav-link" data-scroll-target="#geoprocessing"><span class="toc-section-number">7</span>  Geoprocessing</a>
   <ul class="collapse">
-  <li><a href="#buffering" id="toc-buffering" class="nav-link" data-scroll-target="#buffering">7.1 Buffering</a></li>
-  <li><a href="#point-in-polygon-count" id="toc-point-in-polygon-count" class="nav-link" data-scroll-target="#point-in-polygon-count">7.2 Point-in-polygon count</a></li>
+  <li><a href="#buffering" id="toc-buffering" class="nav-link" data-scroll-target="#buffering"><span class="toc-section-number">7.1</span>  Buffering</a></li>
+  <li><a href="#point-in-polygon-count" id="toc-point-in-polygon-count" class="nav-link" data-scroll-target="#point-in-polygon-count"><span class="toc-section-number">7.2</span>  Point-in-polygon count</a></li>
   </ul></li>
-  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda">8 EDA</a></li>
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="toc-section-number">8</span>  EDA</a></li>
   </ul>
 </nav>
     </div>
@@ -246,31 +250,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 24, 2023</p>
+      <p class="date">January 14, 2023</p>
     </div>
   </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 28, 2023</p>
+    </div>
+  </div>
     
   </div>
   
 
 </header>
 
-<section id="getting-started" class="level1">
-<h1>1 Getting Started</h1>
-<section id="installing-and-loading-r-packages" class="level2">
-<h2 class="anchored" data-anchor-id="installing-and-loading-r-packages">Installing and loading R packages</h2>
+<section id="getting-started" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Getting Started</h1>
+<section id="installing-and-loading-r-packages" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="installing-and-loading-r-packages"><span class="header-section-number">1.1</span> Installing and loading R packages</h2>
 <p>In this section, I will use <code>p_load()</code> to install and load tidyverse and sf packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="importing-geospatial-data" class="level1">
-<h1>2 Importing Geospatial Data</h1>
+<section id="importing-geospatial-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Importing Geospatial Data</h1>
 <p>In this section, I will use <code>st_read()</code> import the different types of geospatial data into R.</p>
-<section id="importing-polygon-feature-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-polygon-feature-data">2.1 Importing polygon feature data</h2>
+<section id="importing-polygon-feature-data" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="importing-polygon-feature-data"><span class="header-section-number">2.1</span> Importing polygon feature data</h2>
 <p>Importing polygon feature layer shapefile <code>MP14_SUBZONE_WEB_PL</code> into a polygon feature dataframe.</p>
 <p>st_read() takes in 2 arguments:</p>
 <ol type="1">
@@ -299,8 +309,8 @@ Projected CRS: SVY21</code></pre>
 <li>Bounding box -&gt; smallest rectangle that completely encloses the feature</li>
 </ul>
 </section>
-<section id="importing-polyline-feature-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-polyline-feature-data">2.2 Importing polyline feature data</h2>
+<section id="importing-polyline-feature-data" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="importing-polyline-feature-data"><span class="header-section-number">2.2</span> Importing polyline feature data</h2>
 <p>Importing polyline feature layer shapefile <code>CyclingPath</code> into a line feature dataframe.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cyclingpath <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,</span>
@@ -318,8 +328,8 @@ Projected CRS: SVY21</code></pre>
 </div>
 <p>There are 2248 features and 2 fields in the <code>cyclingpath</code> dataframe and it is in sv21 projected coordinates system.</p>
 </section>
-<section id="importing-point-feature-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-point-feature-data">2.3 Importing point feature data</h2>
+<section id="importing-point-feature-data" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="importing-point-feature-data"><span class="header-section-number">2.3</span> Importing point feature data</h2>
 <p>Importing point feature data kml file <code>preschools-location</code> into a line feature data frame. In this case, the full path and kml file extension needs to be written.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>preschool <span class="ot">=</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/preschools-location.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -338,11 +348,11 @@ Geodetic CRS:  WGS 84</code></pre>
 <p><code>preschool</code> is a point feature data frame with a total of 1925 features and 2 fields. It is in the wgs48 coordinates system unlike the previous 2.</p>
 </section>
 </section>
-<section id="checking-the-content-of-a-simple-feature-data-frame" class="level1">
-<h1>3 Checking the content of a simple feature data frame</h1>
+<section id="checking-the-content-of-a-simple-feature-data-frame" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Checking the content of a simple feature data frame</h1>
 <p>In this section, I will use different methods to retrieve information related to the simple feature dataframe.</p>
-<section id="st_geometry" class="level2">
-<h2 class="anchored" data-anchor-id="st_geometry">3.1 st_geometry()</h2>
+<section id="st_geometry" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="st_geometry"><span class="header-section-number">3.1</span> st_geometry()</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_geometry</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -356,8 +366,8 @@ First 5 geometries:</code></pre>
 </div>
 <p>This only provides the basic information of the feature class.</p>
 </section>
-<section id="glimpse" class="level2">
-<h2 class="anchored" data-anchor-id="glimpse">3.2 glimpse()</h2>
+<section id="glimpse" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="glimpse"><span class="header-section-number">3.2</span> glimpse()</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -383,8 +393,8 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((31495.56 30..., MULTIPOLYG
 </div>
 <p>Provides information about the attributes in the data frame. It displays the data type of each attribute and the values of the attributes.</p>
 </section>
-<section id="head" class="level2">
-<h2 class="anchored" data-anchor-id="head">3.3 head()</h2>
+<section id="head" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="head"><span class="header-section-number">3.3</span> head()</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mpsz, <span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -416,8 +426,8 @@ Projected CRS: SVY21
 <p>Provides the complete information of the feature object. The argument n refers to the number of records to display.</p>
 </section>
 </section>
-<section id="plotting-geospatial-data" class="level1">
-<h1>4 Plotting Geospatial Data</h1>
+<section id="plotting-geospatial-data" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Plotting Geospatial Data</h1>
 <p>In this section, I will use <code>plot()</code> to visualise the geospatial features. plot() is intended for a quick look of the geopspatial object. For a more high cartographic quality plot, <code>tmamp</code> should be used.</p>
 <p>By default, it is a multi-plot of all the attributes up to a reasonable maximum.</p>
 <div class="cell">
@@ -441,12 +451,12 @@ Projected CRS: SVY21
 </div>
 </div>
 </section>
-<section id="projection-transformation" class="level1">
-<h1>5 Projection Transformation</h1>
+<section id="projection-transformation" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Projection Transformation</h1>
 <p>2 different geospatial data have to be projected using similar coordinate systems in order to perform geoprocessing.</p>
 <p>In this section, I will project a simple feature data frame from one coordinate system to another.</p>
-<section id="assigning-epsg-code-to-a-simple-feature-data-frame" class="level2">
-<h2 class="anchored" data-anchor-id="assigning-epsg-code-to-a-simple-feature-data-frame">5.1 Assigning EPSG code to a simple feature data frame</h2>
+<section id="assigning-epsg-code-to-a-simple-feature-data-frame" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="assigning-epsg-code-to-a-simple-feature-data-frame"><span class="header-section-number">5.1</span> Assigning EPSG code to a simple feature data frame</h2>
 <p>Using <code>st_crs()</code> to display the coordinate reference system:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -544,8 +554,8 @@ PROJCRS["SVY21 / Singapore TM",
 </div>
 </div>
 </section>
-<section id="transforming-from-wgs84-to-svy21" class="level2">
-<h2 class="anchored" data-anchor-id="transforming-from-wgs84-to-svy21">5.2 Transforming from wgs84 to svy21</h2>
+<section id="transforming-from-wgs84-to-svy21" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="transforming-from-wgs84-to-svy21"><span class="header-section-number">5.2</span> Transforming from wgs84 to svy21</h2>
 <p>Need to transform from geographic coordinate system to projected coordinate system because GCS is not appropriate for analysis using distance/area measurement.</p>
 <p>From earlier, <code>preschool</code> dataframe is in wgs48 coordinate system. In this case, <code>st_set_crs()</code> cannot be used becauase preschool needs to be reprojected into another coordinate system mathematically. Instead, <code>st_transform()</code> is used.</p>
 <div class="cell">
@@ -567,11 +577,11 @@ First 5 geometries:</code></pre>
 </div>
 </section>
 </section>
-<section id="importing-and-converting-aspatial-data" class="level1">
-<h1>6 Importing and Converting Aspatial Data</h1>
+<section id="importing-and-converting-aspatial-data" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Importing and Converting Aspatial Data</h1>
 <p>In this section, I will import aspatial data into R and then save it into a tibble data frame, after which it is then converted into a simple feature data frame.</p>
-<section id="importing-aspatial-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-aspatial-data">6.1 Importing aspatial data</h2>
+<section id="importing-aspatial-data" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="importing-aspatial-data"><span class="header-section-number">6.1</span> Importing aspatial data</h2>
 <p>Using <code>read_csv()</code> to import <code>listings.csv</code> into a tibble data frame. After that, use <code>list()</code> to check if it was imported correctly.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/listings.csv"</span>)</span>
@@ -602,8 +612,8 @@ First 5 geometries:</code></pre>
 </div>
 <p>Assume that the data is in wsg48 GCS.</p>
 </section>
-<section id="creating-simple-feature-data-frame-from-aspatial-data-frame" class="level2">
-<h2 class="anchored" data-anchor-id="creating-simple-feature-data-frame-from-aspatial-data-frame">6.2 Creating simple feature data frame from aspatial data frame</h2>
+<section id="creating-simple-feature-data-frame-from-aspatial-data-frame" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="creating-simple-feature-data-frame-from-aspatial-data-frame"><span class="header-section-number">6.2</span> Creating simple feature data frame from aspatial data frame</h2>
 <p>Using <code>st_as_af()</code> to convert <code>listings</code> into a simple feature data frame</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>listings_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(listings,</span>
@@ -643,11 +653,11 @@ $ geometry                       &lt;POINT [m]&gt; POINT (22646.02 35167.9), POI
 </ul>
 </section>
 </section>
-<section id="geoprocessing" class="level1">
-<h1>7 Geoprocessing</h1>
+<section id="geoprocessing" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Geoprocessing</h1>
 <p>In this section, I will use sf package to perform 2 geoprocessing functions, buffering and point in polygon count.</p>
-<section id="buffering" class="level2">
-<h2 class="anchored" data-anchor-id="buffering">7.1 Buffering</h2>
+<section id="buffering" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="buffering"><span class="header-section-number">7.1</span> Buffering</h2>
 <p><strong>Scenario:</strong> Authority plans to upgrade the cycling path. To do so, they need to acquire 5m of reserved land on both sides of the path. Determine the extent of land needed to be acquired and their total area.</p>
 <p><strong>Steps:</strong></p>
 <ol type="1">
@@ -673,8 +683,8 @@ $ geometry                       &lt;POINT [m]&gt; POINT (22646.02 35167.9), POI
 </div>
 </div>
 </section>
-<section id="point-in-polygon-count" class="level2">
-<h2 class="anchored" data-anchor-id="point-in-polygon-count">7.2 Point-in-polygon count</h2>
+<section id="point-in-polygon-count" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="point-in-polygon-count"><span class="header-section-number">7.2</span> Point-in-polygon count</h2>
 <p><strong>Scenario 1:</strong> Find out the number of pre-schools in each planning subzone</p>
 <p><strong>Steps:</strong></p>
 <ol type="1">
@@ -724,8 +734,8 @@ Projected CRS: SVY21 / Singapore TM
 </div>
 </section>
 </section>
-<section id="eda" class="level1">
-<h1>8 EDA</h1>
+<section id="eda" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> EDA</h1>
 <p>In this section, I will use ggplot2 functions to create graphs for EDA.</p>
 <p>First, plot a histogram to show distribution of <code>Presch Density</code>.</p>
 <div class="cell">

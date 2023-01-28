@@ -1,14 +1,16 @@
 ---
 title: "Hands-on Exercise 1: Geospatial Data Wrangling with R"
-date: "`r Sys.Date()`"
+date: "14 January 2023"
+date-modified: "`r Sys.Date()`"
 format: html
+number-sections: true
 execute: 
   message: false
   warning: false
   editor: visual
 ---
 
-# 1 Getting Started
+# Getting Started
 
 ## Installing and loading R packages
 
@@ -18,11 +20,11 @@ In this section, I will use `p_load()` to install and load tidyverse and sf pack
 pacman::p_load(tidyverse, sf)
 ```
 
-# 2 Importing Geospatial Data
+# Importing Geospatial Data
 
 In this section, I will use `st_read()` import the different types of geospatial data into R.
 
-## 2.1 Importing polygon feature data
+## Importing polygon feature data
 
 Importing polygon feature layer shapefile `MP14_SUBZONE_WEB_PL` into a polygon feature dataframe.
 
@@ -43,7 +45,7 @@ mpsz <- st_read(dsn = "data/geospatial",
 -   Uses the svy21 projected coordinates systems
 -   Bounding box -\> smallest rectangle that completely encloses the feature
 
-## 2.2 Importing polyline feature data
+## Importing polyline feature data
 
 Importing polyline feature layer shapefile `CyclingPath` into a line feature dataframe.
 
@@ -54,7 +56,7 @@ cyclingpath <- st_read(dsn = "data/geospatial",
 
 There are 2248 features and 2 fields in the `cyclingpath` dataframe and it is in sv21 projected coordinates system.
 
-## 2.3 Importing point feature data
+## Importing point feature data
 
 Importing point feature data kml file `preschools-location` into a line feature data frame. In this case, the full path and kml file extension needs to be written.
 
@@ -64,11 +66,11 @@ preschool = st_read("data/geospatial/preschools-location.kml")
 
 `preschool` is a point feature data frame with a total of 1925 features and 2 fields. It is in the wgs48 coordinates system unlike the previous 2.
 
-# 3 Checking the content of a simple feature data frame
+# Checking the content of a simple feature data frame
 
 In this section, I will use different methods to retrieve information related to the simple feature dataframe.
 
-## 3.1 st_geometry()
+## st_geometry()
 
 ```{r}
 st_geometry(mpsz)
@@ -76,7 +78,7 @@ st_geometry(mpsz)
 
 This only provides the basic information of the feature class.
 
-## 3.2 glimpse()
+## glimpse()
 
 ```{r}
 glimpse(mpsz)
@@ -84,7 +86,7 @@ glimpse(mpsz)
 
 Provides information about the attributes in the data frame. It displays the data type of each attribute and the values of the attributes.
 
-## 3.3 head()
+## head()
 
 ```{r}
 head(mpsz, n = 5)
@@ -92,7 +94,7 @@ head(mpsz, n = 5)
 
 Provides the complete information of the feature object. The argument n refers to the number of records to display.
 
-# 4 Plotting Geospatial Data
+# Plotting Geospatial Data
 
 In this section, I will use `plot()` to visualise the geospatial features. plot() is intended for a quick look of the geopspatial object. For a more high cartographic quality plot, `tmamp` should be used.
 
@@ -114,13 +116,13 @@ To plot using a specific attribute:
 plot(mpsz["PLN_AREA_N"])
 ```
 
-# 5 Projection Transformation
+# Projection Transformation
 
 2 different geospatial data have to be projected using similar coordinate systems in order to perform geoprocessing.
 
 In this section, I will project a simple feature data frame from one coordinate system to another.
 
-## 5.1 Assigning EPSG code to a simple feature data frame
+## Assigning EPSG code to a simple feature data frame
 
 Using `st_crs()` to display the coordinate reference system:
 
@@ -142,7 +144,7 @@ Checking the CRS again, the EPSG is now 3414:
 st_crs(mpsz3414)
 ```
 
-## 5.2 Transforming from wgs84 to svy21
+## Transforming from wgs84 to svy21
 
 Need to transform from geographic coordinate system to projected coordinate system because GCS is not appropriate for analysis using distance/area measurement.
 
@@ -160,11 +162,11 @@ Displaying content of `preschool3414` dataframe, now it is in svy21 PCS:
 st_geometry(preschool3414)
 ```
 
-# 6 Importing and Converting Aspatial Data
+# Importing and Converting Aspatial Data
 
 In this section, I will import aspatial data into R and then save it into a tibble data frame, after which it is then converted into a simple feature data frame.
 
-## 6.1 Importing aspatial data
+## Importing aspatial data
 
 Using `read_csv()` to import `listings.csv` into a tibble data frame. After that, use `list()` to check if it was imported correctly.
 
@@ -176,7 +178,7 @@ list(listings)
 
 Assume that the data is in wsg48 GCS.
 
-## 6.2 Creating simple feature data frame from aspatial data frame
+## Creating simple feature data frame from aspatial data frame
 
 Using `st_as_af()` to convert `listings` into a simple feature data frame
 
@@ -199,11 +201,11 @@ glimpse(listings_sf)
 
 -   in `listings_sf` a new column `geometry` was added while `latitude` and `longitude` was dropped
 
-# 7 Geoprocessing
+# Geoprocessing
 
 In this section, I will use sf package to perform 2 geoprocessing functions, buffering and point in polygon count.
 
-## 7.1 Buffering
+## Buffering
 
 **Scenario:** Authority plans to upgrade the cycling path. To do so, they need to acquire 5m of reserved land on both sides of the path. Determine the extent of land needed to be acquired and their total area.
 
@@ -228,7 +230,7 @@ buffer_cycling$AREA <- st_area(buffer_cycling)
 sum(buffer_cycling$AREA)
 ```
 
-## 7.2 Point-in-polygon count
+## Point-in-polygon count
 
 **Scenario 1:** Find out the number of pre-schools in each planning subzone
 
@@ -265,7 +267,7 @@ mpsz3414 <- mpsz3414 %>%
   mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
 ```
 
-# 8 EDA
+# EDA
 
 In this section, I will use ggplot2 functions to create graphs for EDA.
 

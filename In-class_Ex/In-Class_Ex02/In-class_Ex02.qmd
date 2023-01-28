@@ -38,19 +38,21 @@ NGA <- st_read("data/geospatial/",
 
 ## Importing Aspatial Data Set
 
+Importing the water point data set and selecting only the water points within Nigeria
+
 ```{r}
 wp_nga <- read_csv("data/aspatial/WPdx.csv") %>%
   filter(`#clean_country_name` == "Nigeria")
 ```
 
-Converting water point data into sf point feature data
+Converting wkt data into sfc
 
 ```{r}
 wp_nga$Geometry = st_as_sfc(wp_nga$`New Georeferenced Column`)
 wp_nga
 ```
 
-Converting wp_nga data frame into sf data frame, then transforming into Nigeria PCS
+Converting wp_nga tibble data frame into sf data frame, then transforming into Nigeria PCS
 
 ```{r}
 wp_sf <- st_sf(wp_nga, crs=4326) %>%
@@ -61,6 +63,8 @@ wp_sf
 # Geospatial Data Cleaning
 
 ## Excluding Redundant Fields
+
+Retaining column 3,4,8 and 9
 
 ```{r}
 NGA <- NGA %>%
@@ -98,6 +102,16 @@ Checking that there are no more duplicate
 NGA$ADM2_EN[duplicated(NGA$ADM2_EN)== TRUE]
 ```
 
+# Data Wrangling for Water Point Data
+
+Using freq() from funModeling package to show the distribution of water point status visually
+
+```{r}
+freq(data = wp_sf,
+     input = '#status_clean')
+```
+rename() renames the column from #status_clean to status_clean, using select() to include status_clean in the output dataframe, mutate() and replace_na() are used to recode NA values into "unknown"
+
 ```{r}
 wp_sf_nga <- wp_sf %>%
   rename(status_clean = '#status_clean') %>%
@@ -108,6 +122,8 @@ wp_sf_nga <- wp_sf %>%
 
 ## Extracting Water Point Data
 
+Extracting functional water points
+
 ```{r}
 wp_functional <- wp_sf_nga %>%
   filter(status_clean %in%
@@ -115,6 +131,8 @@ wp_functional <- wp_sf_nga %>%
              "Functional but not in use",
              "Functional but needs repair"))
 ```
+
+Extracting non-functional water points
 
 ```{r}
 wp_nonfunctional <- wp_sf_nga %>%
@@ -126,12 +144,33 @@ wp_nonfunctional <- wp_sf_nga %>%
              "Non functional due to dry season"))
 ```
 
+Extracting water points with unknown status
+
 ```{r}
 wp_unknown <- wp_sf_nga %>%
   filter(status_clean == "unknown")
 ```
 
-Point-in-polygon count
+Peforming EDA on the derived dataframes
+
+```{r}
+freq(data = wp_functional,
+     input = "status_clean")
+```
+```{r}
+freq(data = wp_nonfunctional,
+     input = "status_clean")
+```
+```{r}
+freq(data = wp_unknown,
+     input = 'status_clean')
+```
+
+## Point-in-polygon count
+
+To find the number of total, functional, nonfunctional, and unknown water points in each LGA.
+
+st_intersects() identifies all the water points for each type, then length() is used to calculate the number of water points for each type
 
 ```{r}
 NGA_wp <- NGA %>%
@@ -145,7 +184,7 @@ NGA_wp <- NGA %>%
     st_intersects(NGA, wp_unknown)))
 ```
 
-Plotting distribution of total waterpoints in a histogram
+## Plotting distribution of total waterpoints in a histogram
 
 ```{r}
 ggplot(data = NGA_wp,
@@ -164,7 +203,9 @@ ggplot(data = NGA_wp,
   theme(axis.title.y= element_text(angle = 0))
 ```
 
-Exporting NGA_wp data frame into rds format
+## Exporting NGA_wp data frame into rds format
+
+Retaining the sf object structure for subsequent analysis in the future.
 
 ```{r}
 write_rds(NGA_wp, "data/rds/NGA_wp.rds")
