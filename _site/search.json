@@ -98,34 +98,6 @@
     "text": "7.2 Point-in-polygon count\nScenario 1: Find out the number of pre-schools in each planning subzone\nSteps:\n\nIdentify pre-schools located inside each planning subzone using st_intersects() and use length() to calculate the number of pre-schools within each subzone.\n\n\nmpsz3414$`PreSch Count`<- lengths(st_intersects(mpsz3414, preschool3414))\n\n\nsummary(mpsz3414$`PreSch Count`)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n   0.00    0.00    3.00    5.96    9.00   58.00 \n\n\n\nList the planning subzone with the most number of schools using top_n()\n\n\ntop_n(mpsz3414, 1, `PreSch Count`)\n\nSimple feature collection with 1 feature and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 39655.33 ymin: 35966 xmax: 42940.57 ymax: 38622.37\nProjected CRS: SVY21 / Singapore TM\n  OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C\n1      189          2 TAMPINES EAST    TMSZ02      N   TAMPINES         TM\n     REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng\n1 EAST REGION       ER 21658EAAF84F4D8D 2014-12-05 41122.55 37392.39   10180.62\n  SHAPE_Area                       geometry PreSch Count\n1    4339824 MULTIPOLYGON (((42196.76 38...           58\n\n\nScenario 2: Calculate Density of pre-school planning subzone\n\nUse st_area() to get area of each planning subzone\nUse mutate() to compute density\n\n\nmpsz3414$Area <- mpsz3414 %>%\n  st_area()\n\n\nmpsz3414 <- mpsz3414 %>%\n  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)"
   },
   {
-    "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html",
-    "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html",
-    "title": "In-Class Exercise 2: Geospatial Data Wrangling",
-    "section": "",
-    "text": "pacman::p_load(sf, tidyverse,funModeling)"
-  },
-  {
-    "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-geoboundaries-data-set",
-    "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-geoboundaries-data-set",
-    "title": "In-Class Exercise 2: Geospatial Data Wrangling",
-    "section": "Importing geoBoundaries data set",
-    "text": "Importing geoBoundaries data set\n\ngeoNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"geoBoundaries-NGA-ADM2\") %>%\n  st_transform(crs = 26392)\n\nReading layer `geoBoundaries-NGA-ADM2' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84"
-  },
-  {
-    "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-nga-data-set",
-    "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-nga-data-set",
-    "title": "In-Class Exercise 2: Geospatial Data Wrangling",
-    "section": "Importing NGA data set",
-    "text": "Importing NGA data set\n\nNGA <- st_read(\"data/geospatial/\",\n                  layer = \n                  \"nga_admbnda_adm2_osgof_20190417\") %>%\n  st_transform(crs = 26392)\n\nReading layer `nga_admbnda_adm2_osgof_20190417' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-Class_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 774 features and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.668534 ymin: 4.273007 xmax: 14.67882 ymax: 13.89442\nGeodetic CRS:  WGS 84"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "IS415-GAA",
-    "section": "",
-    "text": "Welcome to IS415 Geospatial Analytics and Applications.\nThis is the course website of IS415 I study this term. You will find my coursework on this website."
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",
     "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",
     "title": "Hands-on Exercise 2: Chroropleth Mapping With R",
@@ -189,11 +161,11 @@
     "text": "3.5 3.5 Map Layouts\n\n3.5.1 Map Legend\nChanging the placement, format and appearance of the legend using different legend options.\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\", \n          style = \"jenks\", \n          palette = \"Blues\", \n          legend.hist = TRUE, \n          legend.is.portrait = TRUE,\n          legend.hist.z = 0.1) +\n  tm_layout(main.title = \"Distribution of Dependency Ratio by planning subzone \\n(Jenks classification)\",\n            main.title.position = \"center\",\n            main.title.size = 1,\n            legend.height = 0.45, \n            legend.width = 0.35,\n            legend.outside = FALSE,\n            legend.position = c(\"right\", \"bottom\"),\n            frame = FALSE) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n\n\n3.5.2 Map Style\nUsing tmap_style() to change the layout settings\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"-Greens\") +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"classic\")\n\n\n\n\n\n\n3.5.3 Cartographic Furniture\nUsing tm_compass(), tm_scale_bar() and tm_grid() to add compass, scale bar and grid lines respectively\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"Blues\",\n          title = \"No. of persons\") +\n  tm_layout(main.title = \"Distribution of Dependency Ratio \\nby planning subzone\",\n            main.title.position = \"center\",\n            main.title.size = 1.2,\n            legend.height = 0.45, \n            legend.width = 0.35,\n            frame = TRUE) +\n  tm_borders(alpha = 0.5) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar(width = 0.15) +\n  tm_grid(lwd = 0.1, alpha = 0.2) +\n  tm_credits(\"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\\n and Population data from Department of Statistics DOS\", \n             position = c(\"left\", \"bottom\"))\n\n\n\n\nResetting the default style\n\ntmap_style(\"white\")"
   },
   {
-    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#small-multiple-choropleth-maps",
-    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#small-multiple-choropleth-maps",
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#drawing-small-multiple-choropleth-maps-facet-maps",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#drawing-small-multiple-choropleth-maps-facet-maps",
     "title": "Hands-on Exercise 2: Chroropleth Mapping With R",
-    "section": "3.6 Small Multiple Choropleth Maps",
-    "text": "3.6 Small Multiple Choropleth Maps"
+    "section": "3.6 3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)",
+    "text": "3.6 3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)\n\n3.6.1 Assigning multiple Values to at least one aesthetic argument\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(c(\"YOUNG\", \"AGED\"),\n          style = \"equal\", \n          palette = \"Blues\") +\n  tm_layout(legend.position = c(\"right\", \"bottom\")) +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"white\")\n\n\n\n\n\ntm_shape(mpsz_pop2020)+ \n  tm_polygons(c(\"DEPENDENCY\",\"AGED\"),\n          style = c(\"equal\", \"quantile\"), \n          palette = list(\"Blues\",\"Greens\")) +\n  tm_layout(legend.position = c(\"right\", \"bottom\"))\n\n\n\n\n\n\n3.6.2 tm_facets()\nUsing tm_facets to define a group-by variable to create multiple small choropleth maps\n\ntm_shape(mpsz_pop2020) +\n  tm_fill(\"DEPENDENCY\",\n          style = \"quantile\",\n          palette = \"Blues\",\n          thres.poly = 0) + \n  tm_facets(by=\"REGION_N\", \n            free.coords=TRUE, \n            drop.shapes=TRUE) +\n  tm_layout(legend.show = FALSE,\n            title.position = c(\"center\", \"center\"), \n            title.size = 20) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n\n\n3.6.3 tmap_arrange()\nUsing tmap_arrange() to create multiple stand alone maps\n\nyoungmap <- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"YOUNG\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\nagedmap <- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"AGED\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\ntmap_arrange(youngmap, agedmap, asp=1, ncol=2)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#mapping-spatial-object-meeting-a-selection-criterion",
@@ -203,18 +175,11 @@
     "text": "3.7 3.7 Mapping spatial Object meeting a selection criterion\nUsing selection function to map spatial objects meeting the selection criterion\n\ntm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N==\"CENTRAL REGION\", ])+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"Blues\", \n          legend.hist = TRUE, \n          legend.is.portrait = TRUE,\n          legend.hist.z = 0.1) +\n  tm_layout(legend.outside = TRUE,\n            legend.height = 0.45, \n            legend.width = 5.0,\n            legend.position = c(\"right\", \"bottom\"),\n            frame = FALSE) +\n  tm_borders(alpha = 0.5)"
   },
   {
-    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#drawing-small-multiple-choropleth-maps-facet-maps",
-    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#drawing-small-multiple-choropleth-maps-facet-maps",
-    "title": "Hands-on Exercise 2: Chroropleth Mapping With R",
-    "section": "3.6 3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)",
-    "text": "3.6 3.6 Drawing Small Multiple Choropleth Maps (Facet Maps)\n\n3.6.1 Assigning multiple Values to at least one aesthetic argument\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(c(\"YOUNG\", \"AGED\"),\n          style = \"equal\", \n          palette = \"Blues\") +\n  tm_layout(legend.position = c(\"right\", \"bottom\")) +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"white\")\n\n\n\n\n\ntm_shape(mpsz_pop2020)+ \n  tm_polygons(c(\"DEPENDENCY\",\"AGED\"),\n          style = c(\"equal\", \"quantile\"), \n          palette = list(\"Blues\",\"Greens\")) +\n  tm_layout(legend.position = c(\"right\", \"bottom\"))\n\n\n\n\n\n\n3.6.2 tm_facets()\nUsing tm_facets to define a group-by variable to create multiple small choropleth maps\n\ntm_shape(mpsz_pop2020) +\n  tm_fill(\"DEPENDENCY\",\n          style = \"quantile\",\n          palette = \"Blues\",\n          thres.poly = 0) + \n  tm_facets(by=\"REGION_N\", \n            free.coords=TRUE, \n            drop.shapes=TRUE) +\n  tm_layout(legend.show = FALSE,\n            title.position = c(\"center\", \"center\"), \n            title.size = 20) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n\n\n3.6.3 tmap_arrange()\nUsing tmap_arrange() to create multiple stand alone maps\n\nyoungmap <- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"YOUNG\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\nagedmap <- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"AGED\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\ntmap_arrange(youngmap, agedmap, asp=1, ncol=2)"
-  },
-  {
-    "objectID": "In-class_Ex/In-class_Ex03/In-Class_Ex03.html",
-    "href": "In-class_Ex/In-class_Ex03/In-Class_Ex03.html",
-    "title": "In-Class Exercise 3: Analytical Mapping",
+    "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html",
+    "href": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html",
+    "title": "In-Class Exercise 2: Geospatial Data Wrangling",
     "section": "",
-    "text": "pacman::p_load(tmap, tidyverse, sf)"
+    "text": "pacman::p_load(sf, tidyverse,funModeling)"
   },
   {
     "objectID": "In-class_Ex/In-Class_Ex02/In-class_Ex02.html#importing-geospatial-data",
@@ -273,6 +238,13 @@
     "text": "Exporting NGA_wp data frame into rds format\nRetaining the sf object structure for subsequent analysis in the future.\n\nwrite_rds(NGA_wp, \"data/rds/NGA_wp.rds\")"
   },
   {
+    "objectID": "In-class_Ex/In-class_Ex03/In-Class_Ex03.html",
+    "href": "In-class_Ex/In-class_Ex03/In-Class_Ex03.html",
+    "title": "In-Class Exercise 3: Analytical Mapping",
+    "section": "",
+    "text": "pacman::p_load(tmap, tidyverse, sf)"
+  },
+  {
     "objectID": "In-class_Ex/In-class_Ex03/In-Class_Ex03.html#deriving-proportion-of-funtional-non-functional-wp",
     "href": "In-class_Ex/In-class_Ex03/In-Class_Ex03.html#deriving-proportion-of-funtional-non-functional-wp",
     "title": "In-Class Exercise 3: Analytical Mapping",
@@ -299,5 +271,12 @@
     "title": "In-Class Exercise 3: Analytical Mapping",
     "section": "5.2 Box Map",
     "text": "5.2 Box Map\nAn augmented quartile map with an additional lower and upper category. If there are lower outliers, starting point for the breaks is the minimum value, second break is the lower fence.\nOn the other hand, if there is no lower outliers, the starting point for the breaks is the lower fence, and the second break is the minimum value. There is no observations that fall in the interval between the lower fence and minimum value.\n\nggplot(data = NGA_wp,\n       aes(x = \"\",\n           y = wp_nonfunctional)) +\n  geom_boxplot()\n\n\n\n\nTo create a box map, custom breaks specifications will be used. However, the break points will vary depending on whether there are lower/upper outliers.\n\n5.2.1 Creatings functions\nboxbreaks function\nCreating break points for the box map.\nIt takes in the arguments v (a vector with multiple observations) and mult (multiplier for IQR, 1.5 by default). It returns bb, a vector with 7 break points compute quartile and fences\n\nboxbreaks <- function(v, mult=1.5) {\n  qv <- unname(quantile(v))\n  iqr <- qv[4] - qv[2]\n  upfence <- qv[4] + mult * iqr\n  lofence <- qv[2] - mult * iqr\n  \n  # initialise break points vector\n  bb <- vector(mode=\"numeric\", length=7)\n  \n  # logic for lower and upper fence\n  if (lofence < qv[1]) { # no lower outliers\n    bb[1] <- lofence\n    bb[2] <- floor(qv[1])\n  } else {\n    bb[2] <- lofence\n    bb[1] <- qv[1]\n  }\n  \n  if (upfence > qv[5]) { # no upper outliers\n    bb[7] <- upfence\n    bb[6] <- ceiling(qv[5])\n  } else {\n    bb[6] <- upfence\n    bb[7] <- qv[5]\n  }\n  \n  bb[3:5] <- qv[2:4]\n  return(bb)\n}\n\nget.var function\n\nget.var <- function(vname,df) {\n  v <- df[vname] %>% st_set_geometry(NULL)\n  v <- unname(v[,1])\n  return(v)\n}\n\nTesting the function\n\nvar <- get.var(\"wp_nonfunctional\", NGA_wp)\nboxbreaks(var)\n\n[1] -56.5   0.0  14.0  34.0  61.0 131.5 278.0\n\n\nBoxmap function \nFunction to create box map.\n\nboxmap <- function(vnam, df,\n                   legtitle=NA,\n                   mtitle = \"Box Map\",\n                   mult = 1.5) {\n  var <- get.var(vnam, df)\n  bb <- boxbreaks(var)\n  tm_shape(df) +\n    tm_polygons() +\n  tm_shape(df) +\n    tm_fill(vnam, title=legtitle,\n            breaks=bb,\n            palette=\"Blues\",\n            labels = c(\"lower outlier\",\n                       \"< 25%\",\n                       \"25% - 50%\",\n                       \"50% - 75%\",\n                       \">75%\",\n                       \"upper outlier\")) +\n    tm_borders() +\n    tm_layout(main.title = mtitle,\n              title.position = c(\"left\", \"top\"))\n}\n\n\ntmap_mode(\"plot\")\nboxmap(\"wp_nonfunctional\", NGA_wp)\n\n\n\n\n\nNGA_wp <- NGA_wp %>%\n  mutate(wp_functional = na_if(\n    total_wp, total_wp < 0))"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "IS415-GAA",
+    "section": "",
+    "text": "Welcome to IS415 Geospatial Analytics and Applications.\nThis is the course website of IS415 I study this term. You will find my coursework on this website."
   }
 ]
