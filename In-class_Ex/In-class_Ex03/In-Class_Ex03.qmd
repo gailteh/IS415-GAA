@@ -90,7 +90,6 @@ tm_shape(NGA_wp) +
 
 Variations of choropleth maps in which classification is designed to highlight extreme values at lower and upper ends of the scale (goal is to identify outliers).
 
-
 ## Percentile Map
 
 Quantile map with 6 specific categories (0-1%, 1-10%, 10-50%, 50-0%, 90-99%, 99-100%). Corresponding breakpoints are derived by means of the base R quantile command, passing an explicit vector of cumulative probabilities. Begin & end point needs to be included
@@ -112,6 +111,7 @@ var <- NGA_wp["pct_functional"] %>%
   st_set_geometry(NULL)
 quantile(var[,1], percent)
 ```
+
 When variables are extracted from an sf dataframe, the geometry is extracted as well. For mapping and spatial manipulations this is expected behavior, but many R functions cannot deal with geometry. quantile() will give an error. Hence, st_set_geometry(NULL) is used to drop the geometry field.
 
 ### Creating Functions
@@ -120,12 +120,9 @@ When variables are extracted from an sf dataframe, the geometry is extracted as 
 
 This function extracts a variable (e.g. wp_nonfunctional) as a vactor out of an sf dataframe.
 
-arguments:
-vname: variable name
-df: (name of the sf dataframe)
+arguments: vname: variable name df: (name of the sf dataframe)
 
-returns:
-v: a vector with values
+returns: v: a vector with values
 
 ```{r}
 get.var <- function(vname, df) {
@@ -165,7 +162,7 @@ percentmap("total_wp", NGA_wp)
 
 ## Box Map
 
-An augmented quartile map with an additional lower and upper category. If there are lower outliers, starting point for the breaks is the minimum value, second break is the lower fence. 
+An augmented quartile map with an additional lower and upper category. If there are lower outliers, starting point for the breaks is the minimum value, second break is the lower fence.
 
 On the other hand, if there is no lower outliers, the starting point for the breaks is the lower fence, and the second break is the minimum value. There is no observations that fall in the interval between the lower fence and minimum value.
 
@@ -175,13 +172,14 @@ ggplot(data = NGA_wp,
            y = wp_nonfunctional)) +
   geom_boxplot()
 ```
+
 To create a box map, custom breaks specifications will be used. However, the break points will vary depending on whether there are lower/upper outliers.
 
 ### Creatings functions
 
 **boxbreaks function**
 
-Creating break points for the box map. 
+Creating break points for the box map.
 
 It takes in the arguments v (a vector with multiple observations) and mult (multiplier for IQR, 1.5 by default). It returns bb, a vector with 7 break points compute quartile and fences
 
@@ -234,7 +232,7 @@ var <- get.var("wp_nonfunctional", NGA_wp)
 boxbreaks(var)
 ```
 
-**Boxmap function **
+**Boxmap function**
 
 Function to create box map.
 
@@ -263,7 +261,6 @@ boxmap <- function(vnam, df,
 }
 ```
 
-
 ```{r}
 tmap_mode("plot")
 boxmap("wp_nonfunctional", NGA_wp)
@@ -274,4 +271,3 @@ NGA_wp <- NGA_wp %>%
   mutate(wp_functional = na_if(
     total_wp, total_wp < 0))
 ```
-
