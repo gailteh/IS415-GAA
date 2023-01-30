@@ -5,9 +5,11 @@ date-modified: "`r Sys.Date()`"
 number-sections: true
 format: html
 execute: 
+  eval: true
+  echo: true
   message: false
   warning: false
-  editor: visual
+editor: visual
 ---
 
 # Installing and Loading Packages
