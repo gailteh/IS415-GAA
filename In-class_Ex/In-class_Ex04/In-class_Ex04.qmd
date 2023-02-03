@@ -23,6 +23,7 @@ Importing the data
 childcare_sf <- st_read("data/child-care-services-geojson.geojson") %>%
   st_transform(crs = 3414)
 ```
+
 ```{r}
 sg_sf <- st_read(dsn = "data", layer="CostalOutline")
 ```
@@ -32,17 +33,15 @@ mpsz_sf <- st_read(dsn = "data",
                 layer = "MP14_SUBZONE_WEB_PL")
 ```
 
+1.  Converting data from sf to spatial class
 
-
-1. Converting data from sf to spatial class
 ```{r}
 childcare <- as_Spatial(childcare_sf)
 mpsz <- as_Spatial(mpsz_sf)
 sg <- as_Spatial(sg_sf)
 ```
 
-
-2. Converting spatial class to generic sp format
+2.  Converting spatial class to generic sp format
 
 Only retains the geometry, drops the data table
 
@@ -51,7 +50,7 @@ childcare_sp <- as(childcare, "SpatialPoints")
 sg_sp <- as(sg, "SpatialPolygons")
 ```
 
-3. Converting to ppp format
+3.  Converting to ppp format
 
 List of the x and y coordinates of the points
 
@@ -59,5 +58,3 @@ List of the x and y coordinates of the points
 childcare_ppp <- as(childcare_sp, "ppp")
 childcare_ppp
 ```
-
-
