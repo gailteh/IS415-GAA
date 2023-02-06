@@ -58,7 +58,7 @@ List of the x and y coordinates of the points
 childcare_ppp <- as(childcare_sp, "ppp")
 childcare_ppp
 ```
-
+Plotting an interactive map
 
 ```{r}
 tmap_mode("view")+
