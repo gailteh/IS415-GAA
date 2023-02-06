@@ -58,3 +58,23 @@ List of the x and y coordinates of the points
 childcare_ppp <- as(childcare_sp, "ppp")
 childcare_ppp
 ```
+
+
+```{r}
+tmap_mode("view")+
+  tm_shape(childcare_sf)+
+  tm_dots(alph = 0.5,
+          size=0.01) +
+  tm_view(set.zoom.limits = c(11,14))
+
+tmap_mode("plot")
+```
+- using alph will control the intensity of the point colours
+- We can plot points using either tm_dots or tm_bubbles
+
+
+
+
+
+
+
