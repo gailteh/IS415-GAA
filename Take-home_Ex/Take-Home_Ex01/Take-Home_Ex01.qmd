@@ -360,9 +360,8 @@ osun_wp_nonfunctional_ppl_raster
 The crs property is NA for both, so we need to assign projection systems
 
 ```{r}
-projection(osun_wp_functional_ppl_raster) <- CRS("init=EPSG:26392")
-projection(osun_wp_nonfunctional_ppl_raster) <- CRS("init=EPSG:26392")
+projection(osun_wp_functional_ppl_raster) <- CRS("+init=EPSG:26392")
+projection(osun_wp_nonfunctional_ppl_raster) <- CRS("+init=EPSG:26392")
 ```
 
 ## Displaying Kernel Density Maps on OpenStreetMap
-

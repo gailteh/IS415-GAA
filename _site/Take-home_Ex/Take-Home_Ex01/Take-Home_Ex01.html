@@ -184,6 +184,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html">
  <span class="dropdown-text">In-Class Exercise 4</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html">
+ <span class="dropdown-text">In-Class Exercise 5</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -845,8 +849,8 @@ values     : -1.826702e-16, 9.25861  (min, max)</code></pre>
 </div>
 <p>The crs property is NA for both, so we need to assign projection systems</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(osun_wp_functional_ppl_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"init=EPSG:26392"</span>)</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(osun_wp_nonfunctional_ppl_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"init=EPSG:26392"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(osun_wp_functional_ppl_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:26392"</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(osun_wp_nonfunctional_ppl_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:26392"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
