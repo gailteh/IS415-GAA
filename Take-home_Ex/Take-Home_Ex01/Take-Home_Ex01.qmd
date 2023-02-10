@@ -360,8 +360,141 @@ osun_wp_nonfunctional_ppl_raster
 The crs property is NA for both, so we need to assign projection systems
 
 ```{r}
-projection(osun_wp_functional_ppl_raster) <- CRS("+init=EPSG:26392")
-projection(osun_wp_nonfunctional_ppl_raster) <- CRS("+init=EPSG:26392")
+projection(osun_wp_functional_ppl_raster) <- CRS("+init=EPSG:26392 +datum=WGS84 +units=km")
+projection(osun_wp_nonfunctional_ppl_raster) <- CRS("+init=EPSG:26392 +datum=WGS84 +units=km")
+```
+
+```{r}
+osun_wp_functional_ppl_raster
+osun_wp_nonfunctional_ppl_raster
 ```
 
 ## Displaying Kernel Density Maps on OpenStreetMap
+
+**Displaying Kernel Density Map**
+
+Functional Water Points
+
+```{r}
+functional_wp_density_map <- tm_basemap("OpenStreetMap") +
+tm_shape(osun_wp_functional_ppl_raster) +
+  tm_raster("v") + 
+  tm_layout(legend.position = c("right", "bottom"),
+            main.title = "Functional Water Points",
+            main.title.position = 'center',
+            frame = FALSE)
+```
+
+Non-Functional Water Points
+
+```{r}
+nonfunctional_wp_density_map <- tm_basemap("OpenStreetMap") +
+tm_shape(osun_wp_nonfunctional_ppl_raster) +
+  tm_raster("v") + 
+  tm_layout(legend.position = c("right", "bottom"),
+            main.title = "Functional Water Points",
+            main.title.position = 'center',
+            frame = FALSE)
+```
+
+```{r}
+tmap_arrange(functional_wp_density_map, nonfunctional_wp_density_map, nrow = 1)
+```
+
+## Spatial Pattern Analysis
+
+The functional and non-functional water points have most of the clusters mainly spread around the top half Osun but they are not in any specific area.
+
+## Advantage of Kernel Density Map over point map
+
+Comparing the kernel density map for the functional waterpoints to a point map of the functional waterpoints.
+
+```{r}
+tm_shape(NGA_Osun)+
+  tm_polygons() +
+  tm_shape(wp_functional)+
+  tm_dots()
+```
+
+(This includes other functional waterpoints outside of Osun as well.)
+
+The advantages of using a Kernel Density Map over a point map is that visualisation is made easier using a Kernel Density Map because it does not explicitly show every single point (we can quickly zoom into the areas that have clusters)
+
+# Second-order Spatial Point Patterns Analysis
+
+Based on the patterns we observed earlier, we now need to perform hypothesis testing to confirm our observations. We will conduct 2 hypothesis tests, one for the functional water points and one for the non-functional water points.
+
+## Functional Water Points
+
+-   H0: Distributions of Functional Water Points are randomly distributed
+
+-   H1: Distributions of Functional Water Points are not randomly distributed
+
+-   Confidence Interval: 95%
+
+-   We will reject the null hypothesis if the p-value is smaller than alpha value 0.05.
+
+**G-function** measures the distribution of the distances from an arbitrary event to its nearest event. We will be using Gest() to compute the G-function estimation as well as perform the Monte Carlo Simulation test using *envelope()*.
+
+**Computing G-Function Estimation**
+
+```{r}
+G_Funct = Gest(osun_wp_functional_ppp, correction = "border")
+plot(G_Funct, xlim=c(0,500))
+```
+
+**Spatial Randomness Test**
+
+```{r}
+G_Funct.csr <- envelope(osun_wp_functional_ppp, Gest, nsim = 39)
+```
+
+```{r}
+plot(G_Funct.csr)
+```
+
+From this, G(r) does not lie within the envelope but above it instead. This means that the functional water points are in a clustered pattern, hence we have sufficient statistical evidence to reject the null hypothesis that at a 95% confidence interval, the functional water points are randomly distributed.
+
+## Non-Functional Water Points
+
+Now, we will repeat the test with the Non-Functional Water Points
+
+-   H0: Distributions of Non-Functional Water Points are randomly distributed
+
+-   H1: Distributions of Non-Functional Water Points are not randomly distributed
+
+-   Confidence Interval: 95%
+
+-   We will reject the null hypothesis if the p-value is smaller than alpha value 0.05
+
+**Computing G-Function Estimation**
+
+```{r}
+G_NonFunct = Gest(osun_wp_nonfunctional_ppp, correction = "border")
+plot(G_NonFunct, xlim=c(0,500))
+```
+
+**Spatial Randomness Test**
+
+```{r}
+G_NonFunct.csr <- envelope(osun_wp_nonfunctional_ppp, Gest, nsim = 39)
+```
+
+```{r}
+plot(G_NonFunct.csr)
+```
+From this, G(r) does not lie within the envelope but above it instead. This means that the non functional water points are in a clustered pattern, hence we have sufficient statistical evidence to reject the null hypothesis that at a 95% confidence interval, the non functional water points are randomly distributed.
+
+# Spatial Correlation Analysis
+
+Now, we need to confirm statistically if the spatial distribution of functional and non-functional water points are independent from each other. We will be using the L-function.
+
+Hypotheses:
+
+- H0: The spatial distribution of functional and non-functional water points are independent from each other.
+
+- H1: The spatial distribution of functional and non-functional water points are **not** independent from each other.
+
+- Confidence Level: 95%
+
+- We will reject the null hypothesis if the p-value is smaller than the alpha value 0.05
