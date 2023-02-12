@@ -592,7 +592,7 @@
     "href": "Take-home_Ex/Take-Home_Ex01/Take-Home_Ex01.html",
     "title": "Take-Home Exercise 1: Application of Spatial Point Patterns Analysis to discover the geographical distribution of functional and non-function water points in Osun State, Nigeria",
     "section": "",
-    "text": "This analysis aims to analyse the distribution of the functional and non-functional water points and their co-locations in Osun State of Nigeria.\nThe 3 main parts of this analysis are:\n\nExploratory Spatial Data Analysis\nSecond Order Spatial Ppoint Patterns Analysis\nSpatial Correlation Analysis"
+    "text": "This analysis aims to analyse the distribution of the functional and non-functional water points and their co-locations in Osun State of Nigeria.\nThe 3 main parts of this analysis are:\n\nExploratory Spatial Data Analysis\nSecond Order Spatial Point Patterns Analysis\nSpatial Correlation Analysis"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#geospatial-data",
@@ -606,7 +606,7 @@
     "href": "Take-home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#aspatial-data",
     "title": "Take-Home Exercise 1: Application of Spatial Point Patterns Analysis to discover the geographical distribution of functional and non-function water points in Osun State, Nigeria",
     "section": "Aspatial Data",
-    "text": "Aspatial Data\nThe aspatial data used in this exercise will be the WPdx+ data set from the WPdx Global Data Repositries. This contains data about water points of each country around the world.\nNote: There are 2 versions of the data WPdx-Basic and WPdx+, but we are required to use WPdx+"
+    "text": "Aspatial Data\nThe aspatial data used in this exercise will be the WPdx+ data set from the WPdx Global Data Repositries. This contains data about water points of each country around the world.\nNote: There are 2 versions of the data, WPdx-Basic and WPdx+, but we will be using WPdx+."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#importing-geospatial-data",
@@ -697,7 +697,7 @@
     "href": "Take-home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#advantage-of-kernel-density-map-over-point-map",
     "title": "Take-Home Exercise 1: Application of Spatial Point Patterns Analysis to discover the geographical distribution of functional and non-function water points in Osun State, Nigeria",
     "section": "Advantage of Kernel Density Map over point map",
-    "text": "Advantage of Kernel Density Map over point map\nComparing the kernel density map for the functional waterpoints to a point map of the functional waterpoints.\n\ntm_shape(NGA_Osun)+\n  tm_polygons() +\n  tm_shape(wp_functional)+\n  tm_dots()\n\n\n\n\n(This includes other functional waterpoints outside of Osun as well.)\nThe advantages of using a Kernel Density Map over a point map is that visualisation is made easier using a Kernel Density Map because it does not explicitly show every single point (we can quickly zoom into the areas that have clusters)"
+    "text": "Advantage of Kernel Density Map over point map\nComparing the kernel density map for the functional waterpoints to a point map of the functional waterpoints.\n\ntm_shape(NGA_Osun)+\n  tm_polygons() +\n  tm_shape(wp_functional)+\n  tm_dots()\n\n\n\n\n(This includes other functional waterpoints outside of Osun as well.)\nThe advantages of using a Kernel Density Map over a point map is that visualisation is made easier using a Kernel Density Map because it does not explicitly show every single point (we can quickly zoom into the areas that have clusters). We can easily identify which regions have a greater distribution of functional/non-functional water points. Kernel density maps also map the concentrations of the data points as a colour gradient, hence it makes it easier for us to compare the difference in concentration between different regions."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#functional-water-points",

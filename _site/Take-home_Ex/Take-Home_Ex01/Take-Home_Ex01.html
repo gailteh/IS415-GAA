@@ -313,7 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 10, 2023</p>
+      <p class="date-modified">February 12, 2023</p>
     </div>
   </div>
     
@@ -328,7 +328,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The 3 main parts of this analysis are:</p>
 <ol type="1">
 <li><p>Exploratory Spatial Data Analysis</p></li>
-<li><p>Second Order Spatial Ppoint Patterns Analysis</p></li>
+<li><p>Second Order Spatial Point Patterns Analysis</p></li>
 <li><p>Spatial Correlation Analysis</p></li>
 </ol>
 </section>
@@ -341,7 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="aspatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="aspatial-data">Aspatial Data</h2>
 <p>The aspatial data used in this exercise will be the <strong>WPdx+</strong> data set from the <a href="https://www.waterpointdata.org/access-data/">WPdx Global Data Repositries.</a> This contains data about water points of each country around the world.</p>
-<p>Note: There are 2 versions of the data WPdx-Basic and WPdx+, but we are required to use WPdx+</p>
+<p>Note: There are 2 versions of the data, WPdx-Basic and WPdx+, but we will be using WPdx+.</p>
 </section>
 </section>
 <section id="installing-and-loading-packages" class="level1">
@@ -933,7 +933,7 @@ values     : -1.826702e-16, 9.25861  (min, max)</code></pre>
 </div>
 </div>
 <p>(This includes other functional waterpoints outside of Osun as well.)</p>
-<p>The advantages of using a Kernel Density Map over a point map is that visualisation is made easier using a Kernel Density Map because it does not explicitly show every single point (we can quickly zoom into the areas that have clusters)</p>
+<p>The advantages of using a Kernel Density Map over a point map is that visualisation is made easier using a Kernel Density Map because it does not explicitly show every single point (we can quickly zoom into the areas that have clusters). We can easily identify which regions have a greater distribution of functional/non-functional water points. Kernel density maps also map the concentrations of the data points as a colour gradient, hence it makes it easier for us to compare the difference in concentration between different regions.</p>
 </section>
 </section>
 <section id="second-order-spatial-point-patterns-analysis" class="level1">
@@ -1020,6 +1020,20 @@ Done.</code></pre>
 <li><p>Confidence Level: 95%</p></li>
 <li><p>We will reject the null hypothesis if the p-value is smaller than the alpha value 0.05</p></li>
 </ul>
+<p><strong>Functional Water Points</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co">#L_functional.csr &lt;- envelope(osun_wp_functional_ppp, Lest, nsim = 39, rank = 1, glocal=TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(L_functional.csr, . - r ~ r, xlab="d", ylab="L(d)-r")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Non-Functional Water Points</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co">#L_nonfunctional.csr &lt;- envelope(osun_wp_nonfunctional_ppp, Lest, nsim = 39, rank= 1, glocal = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(L_nonfunctional.csr, . - r ~ r, xlab="d", ylab="L(d)-r")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>

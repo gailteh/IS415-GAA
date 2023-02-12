@@ -503,24 +503,20 @@ Hypotheses:
 **Functional Water Points**
 
 ```{r}
-#|eval: FALSE
-L_functional.csr <- envelope(osun_wp_functional_ppp, Lest, nsim = 39, rank = 1, glocal=TRUE)
+#L_functional.csr <- envelope(osun_wp_functional_ppp, Lest, nsim = 39, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-#|eval: FALSE
-plot(L_functional.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+#plot(L_functional.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 
 
 **Non-Functional Water Points**
 
 ```{r}
-#|eval: FALSE
-L_nonfunctional.csr <- envelope(osun_wp_nonfunctional_ppp, Lest, nsim = 39, rank= 1, glocal = TRUE)
+#L_nonfunctional.csr <- envelope(osun_wp_nonfunctional_ppp, Lest, nsim = 39, rank= 1, glocal = TRUE)
 ```
 
 ```{r}
-#|eval: FALSE
-plot(L_nonfunctional.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+#plot(L_nonfunctional.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
