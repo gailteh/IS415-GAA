@@ -24,11 +24,13 @@ studyArea <- st_read(dsn="data",
                      layer="study_area") %>%
   st_transform(crs=3829)
 ```
+
 ```{r}
 stores <- st_read(dsn="data",
                   layer="stores") %>%
   st_transform(crs=3829)
 ```
+
 ##Visualising sf layers
 
 ```{r}
@@ -77,4 +79,3 @@ LCLQ <- local_colocation(A, B, nb, wt, 49)
 ```{r}
 LCLQ_Stores <- cbind(stores, LCLQ)
 ```
-

@@ -712,5 +712,12 @@
     "title": "Take-Home Exercise 1: Application of Spatial Point Patterns Analysis to discover the geographical distribution of functional and non-function water points in Osun State, Nigeria",
     "section": "Non-Functional Water Points",
     "text": "Non-Functional Water Points\nNow, we will repeat the test with the Non-Functional Water Points\n\nH0: Distributions of Non-Functional Water Points are randomly distributed\nH1: Distributions of Non-Functional Water Points are not randomly distributed\nConfidence Interval: 95%\nWe will reject the null hypothesis if the p-value is smaller than alpha value 0.05\n\nComputing G-Function Estimation\n\nG_NonFunct = Gest(osun_wp_nonfunctional_ppp, correction = \"border\")\nplot(G_NonFunct, xlim=c(0,500))\n\n\n\n\nSpatial Randomness Test\n\nG_NonFunct.csr <- envelope(osun_wp_nonfunctional_ppp, Gest, nsim = 39)\n\nGenerating 39 simulations of CSR  ...\n1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,  39.\n\nDone.\n\n\n\nplot(G_NonFunct.csr)\n\n\n\n\nFrom this, G(r) does not lie within the envelope but above it instead. This means that the non functional water points are in a clustered pattern, hence we have sufficient statistical evidence to reject the null hypothesis that at a 95% confidence interval, the non functional water points are randomly distributed."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html",
+    "title": "In-Class Exercise 6",
+    "section": "",
+    "text": "1 Installing and Loading R Packages\n\npacman::p_load(sf, tmap, sfdep, tidyverse)"
   }
 ]
