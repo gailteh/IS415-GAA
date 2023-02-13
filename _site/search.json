@@ -716,8 +716,57 @@
   {
     "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html",
     "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html",
-    "title": "In-Class Exercise 6",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
     "section": "",
-    "text": "1 Installing and Loading R Packages\n\npacman::p_load(sf, tmap, sfdep, tidyverse)"
+    "text": "pacman::p_load(sf, tmap, sfdep, tidyverse)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#importing-geospatial-data",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#importing-geospatial-data",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "2.1 Importing Geospatial Data",
+    "text": "2.1 Importing Geospatial Data\n\nhunan <- st_read(dsn = \"data/geospatial\",\n                 layer = \"Hunan\")\n\nReading layer `Hunan' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-class_Ex06\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#importing-aspatial-data",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#importing-aspatial-data",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "2.2 Importing Aspatial Data",
+    "text": "2.2 Importing Aspatial Data\nImporting Hunan_2012.csv into a tibble data frame\n\nhunan_2012 <- read_csv(\"data/aspatial/Hunan_2012.csv\")"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#combining-both-data-frame-by-using-left-join",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#combining-both-data-frame-by-using-left-join",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "2.3 Combining both data frame by using left join",
+    "text": "2.3 Combining both data frame by using left join\nIn order to retain the geospatial property, the left data frame must be the sf data frame.\n\nhunan_GDPPC <- left_join(hunan, hunan_2012) %>%\n  select(1:4, 7, 15)\n\n# normally we have to specify which common field to do the join\n# R is case sensitive, we need to check if the cases match (or else they will not join)\n# After joining, we retain columns 1-4, 7 and 15 of the joined dataframe only"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#plotting-a-choropleth-map",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#plotting-a-choropleth-map",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "2.4 Plotting a choropleth map",
+    "text": "2.4 Plotting a choropleth map\n\ntmap_mode(\"plot\")\ntm_shape(hunan_GDPPC)+\n  tm_fill(\"GDPPC\",\n          style=\"quantile\",\n          palette = \"Blues\",\n          title = \"GDPPC\") +\n  tm_layout(main.title = \"Distribution of GDP per capita by district, Hunan Province\",\n            main.title.position = \"center\",\n            main.title.size = 1.2,\n            legend.height = 0.45,\n            legend.width = 0.35,\n            frame = TRUE) +\n  tm_borders(alpha = 0.5) +\n  tm_compass(type = \"8star\", size = 2) +\n  tm_scale_bar() +\n  tm_grid(alpha = 0.2)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#contiguity-neighbours-method",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#contiguity-neighbours-method",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "3.1 Contiguity Neighbours Method",
+    "text": "3.1 Contiguity Neighbours Method\nst_contiguity() derives a contiguity neighbour list using Queen’s method (queen method by default, do not need to specify)\n\ncn_queen <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         .before = 1)\n\n# mutate creates a new field called nb which is the contiguity neighbour list\n# .before = 1 will create the new field as the first column\n\nUsing Rook’s Method:\n\ncn_rook <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         queen = FALSE,\n         .before = 1)\n\nNote: Bishop method does not exist for sfdep (only in spdep)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#queens-method",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#queens-method",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "4.1 Queen’s Method",
+    "text": "4.1 Queen’s Method\n\nwm_q <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         wt = st_weights(nb),\n         .before = 1)\n# can combine the steps of creating the contiguity neighbour list together with computing the contiguity weights\n\n# In the sfdep package"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#rooks-method",
+    "href": "In-class_Ex/In-class_Ex06/In-Class_Ex06.html#rooks-method",
+    "title": "In-Class Exercise 6: Spatial Weights - sfdep methods",
+    "section": "4.2 Rook’s Method",
+    "text": "4.2 Rook’s Method\n\nwm_r <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         queen = FALSE,\n         wt = st_weights(nb),\n         .before = 1)"
   }
 ]
