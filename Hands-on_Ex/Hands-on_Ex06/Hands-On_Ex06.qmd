@@ -320,22 +320,28 @@ rswm_q
 zero.policy=TRUE options allows for lists of non-neighbours. This should be used with caution since the user may not be aware of missing neighbours in their dataset. However, a zero.policy of FALSE will return an error.
 
 To see the weight of the first polygon's eight neighbours type:
+
 ```{r}
 rswm_q$weights[10]
 ```
+
 Each neighbour is assigned a 0.125 of the total weight, meaning that when R computes the average neighbouring income values, each neighbour's income will be multiplied by 0.2 before being tallied.
 
 Using the same method, we can derive a row standardised weight matrix:
+
 ```{r}
 rwsm_ids <- nb2listw(wm_q, glist = ids, style="B", zero.policy = TRUE)
 rwsm_ids
 ```
+
 ```{r}
 rwsm_ids$weights[1]
 ```
+
 ```{r}
 summary(unlist(rwsm_ids$weights))
 ```
+
 # Application of Spatial Weight Matrix
 
 Creating 4 different spatial lagged variables.
@@ -348,6 +354,7 @@ Now we will be computing the average GDPPC value for each polygon. These values 
 GDPPC.lag <- lag.listw(rswm_q, hunan$GDPPC)
 GDPPC.lag
 ```
+
 Retrieving GDPPC of the 5 neighbouring counties of polygon 1
 
 ```{r}
@@ -355,6 +362,7 @@ nb1 <- wm_q[[1]]
 nb1 <- hunan$GDPPC[nb1]
 nb1
 ```
+
 Appending the spatially lagged GDPPC values into hunan sf dataframe
 
 ```{R}
@@ -363,9 +371,11 @@ lag.res <- as.data.frame(lag.list)
 colnames(lag.res) <- c("NAME_3", "lag GDPPC")
 hunan <- left_join(hunan, lag.res)
 ```
+
 ```{r}
 head(hunan)
 ```
+
 Now, we plot the GDPPC and spatial lag GDPPC for comparison
 
 ```{r}
@@ -387,6 +397,7 @@ b_weights2 <- nb2listw(wm_q,
                        style = "B")
 b_weights2
 ```
+
 With proper weights assigned, we can use lag.listw to compute lag variable from our weight and GDPPC
 
 ```{r}
@@ -404,6 +415,7 @@ Appending lag_sum GDPPC field into hunan sf data frame
 ```{R}
 hunan <- left_join(hunan, lag.res)
 ```
+
 Comparing GDPPC and Spatial Lag Sum GDPPC
 
 ```{r}
@@ -427,13 +439,16 @@ The Number of nonzero links, Percentage nonzero weights and Average number of li
 ```{r}
 wm_qs[[1]]
 ```
-Now [1] has six neighbours instead of 5
+
+Now \[1\] has six neighbours instead of 5
 
 Obtaining weights:
+
 ```{r}
 wm_qs <- nb2listw(wm_qs)
 wm_qs
 ```
+
 Again, use nb2listw() and glist() to assign weight weight values.
 
 Lastly, create the lag variable from out weight strucutre and GDPPC variable
@@ -442,6 +457,7 @@ Lastly, create the lag variable from out weight strucutre and GDPPC variable
 lag_w_avg_gdpc <- lag.listw(wm_qs, hunan$GDPPC)
 lag_w_avg_gdpc
 ```
+
 Next, convert the lag variable listw object into a data frame using as.data.frame().
 
 ```{r}
@@ -457,6 +473,7 @@ Next, append lag_window_avg GDPPC values onto hunan sf data.frame by using left_
 ```{r}
 hunan <- left_join(hunan, lag_wm_qs.res)
 ```
+
 To compare the values of lag GDPPC and spatial window average, kable() of Knitr package is used to prepare a table:
 
 ```{r}
@@ -464,6 +481,7 @@ hunan %>%
   select("County", "lag GDPPC", "lag_window_avg GDPPC") %>%
   kable()
 ```
+
 Using qtm() to plot lag_gdppc and w_avg_gdppc maps for comparison
 
 ```{r}
@@ -481,13 +499,15 @@ To add the diagonal element to the neighbour list, use include.self()
 wm_qs <- include.self(wm_q)
 wm_qs
 ```
+
 Next, assign binray weights to the neighbour structure that includes diagonal element
 
 ```{r}
 b_weights <- lapply(wm_qs, function(x) 0*x + 1)
 b_weights[1]
 ```
-[1] has 6 neighbours instead of 5
+
+\[1\] has 6 neighbours instead of 5
 
 Again, we use nb2listw() and glist() to explicitly assign weight values.
 
@@ -497,12 +517,14 @@ b_weights2 <- nb2listw(wm_qs,
                        style = "B")
 b_weights2
 ```
+
 Computing lag variable
 
 ```{r}
 w_sum_gdppc <- list(hunan$NAME_3, lag.listw(b_weights2, hunan$GDPPC))
 w_sum_gdppc
 ```
+
 Next, we will convert the lag variable listw object into a data.frame by using as.data.frame().
 
 ```{r}
@@ -517,13 +539,14 @@ Next, the code chunk below will be used to append w_sum GDPPC values onto hunan 
 ```{r}
 hunan <- left_join(hunan, w_sum_gdppc.res)
 ```
+
 ```{r}
 hunan %>%
   select("County", "lag_sum GDPPC", "w_sum GDPPC") %>%
   kable()
 ```
+
 ```{r}
 w_sum_gdppc <- qtm(hunan, "w_sum GDPPC")
 tmap_arrange(lag_sum_gdppc, w_sum_gdppc, asp=1, ncol=2)
 ```
-
