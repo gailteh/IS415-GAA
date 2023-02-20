@@ -879,6 +879,55 @@
     "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html",
     "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
     "section": "",
-    "text": "1 Loading and Installing R packages\n\npacman::p_load(sf, spdep, tmap, tidyverse)"
+    "text": "In spatial policy, one of the main development objective of the local government and planners is to ensure equal distribution of development in the province. Our task in this study, hence, is to apply appropriate spatial statistical methods to discover if development are even distributed geographically. If the answer is No. Then, our next question will be “is there sign of spatial clustering?”. And, if the answer for this question is yes, then our next question will be “where are these clusters?”\nIn this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e. GDP per capita) of Hunan Provice, People Republic of China.\n\n\n\n\nHunan province administrative boundary layer at county level. This is a geospatial data set in ESRI shapefile format.\nHunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.\n\n\n\n\n\npacman::p_load(sf, spdep, tmap, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#importing-shapefile-into-r",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#importing-shapefile-into-r",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "2.1 Importing shapefile into R",
+    "text": "2.1 Importing shapefile into R\n\nhunan <- st_read(dsn= \"data/geospatial\",\n                 layer = \"Hunan\")\n\nReading layer `Hunan' from data source \n  `C:\\gailteh\\IS415-GAA\\Hands-on_Ex\\Hands-on_Ex07\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#importing-csv-fule-into-r",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#importing-csv-fule-into-r",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "2.2 Importing csv fule into R",
+    "text": "2.2 Importing csv fule into R\n\nhunan2012 <- read_csv(\"data/aspatial/Hunan_2012.csv\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#performing-relational-join",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#performing-relational-join",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "2.3 Performing Relational Join",
+    "text": "2.3 Performing Relational Join\n\nhunan <- left_join(hunan, hunan2012) %>%\n  select(1:4, 7, 15)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#viewing-regional-development-indicator",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#viewing-regional-development-indicator",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "2.4 Viewing Regional Development Indicator",
+    "text": "2.4 Viewing Regional Development Indicator\nCreating a map to show the distribution of GDPPC 2012\n\nequal <- tm_shape(hunan) + \n  tm_fill(\"GDPPC\",\n          n = 5,\n          style = \"equal\") +\n  tm_borders(alpha = 0.5) +\n  tm_layout(main.title = \"Equal Interval Classification\")\n\nquantile <- tm_shape(hunan) +\n  tm_fill(\"GDPPC\",\n          n = 5,\n          style = \"quantile\") +\n  tm_borders(alpha = 0.5) +\n  tm_layout(main.title = \"Equal Quantile Classification\")\n\ntmap_arrange(equal,\n             quantile,\n             asp=1,\n             ncol=2)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#computing-contiguity-spatial-weights",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#computing-contiguity-spatial-weights",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "3.1 Computing Contiguity Spatial Weights",
+    "text": "3.1 Computing Contiguity Spatial Weights\nBefore computing global spatial autocorrelations statistics, we need to construct a spatial weights of the study area. The spatial weights is used to define the neighbourhood relationships between geographical units in the study area.\nWe will use poly2nb() to compute contiguity weight matrices for the study area. It builds a neighbours list based on regions with contiguous boundaries.\nIf you look at the documentation you will see that you can pass a “queen” argument that takes TRUE or FALSE as options. If you do not specify this argument the default is set to TRUE, that is, if you don’t specify queen = FALSE this function will return a list of first order neighbours using the Queen criteria.\n\nwm_q <- poly2nb(hunan,\n                queen = TRUE)\nsummary(wm_q)\n\nNeighbour list object:\nNumber of regions: 88 \nNumber of nonzero links: 448 \nPercentage nonzero weights: 5.785124 \nAverage number of links: 5.090909 \nLink number distribution:\n\n 1  2  3  4  5  6  7  8  9 11 \n 2  2 12 16 24 14 11  4  2  1 \n2 least connected regions:\n30 65 with 1 link\n1 most connected region:\n85 with 11 links\n\n\nThe summary report above shows that there are 88 area units in Hunan. The most connected area unit has 11 neighbours. There are two area units with only one neighbours"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#row-standardised-weights-matrix",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#row-standardised-weights-matrix",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "3.2 Row Standardised weights matrix",
+    "text": "3.2 Row Standardised weights matrix\nNext, we need to assign weights to each neighboring polygon. In our case, each neighboring polygon will be assigned equal weight (style=“W”). This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values.\nWhile this is the most intuitive way to summarise the neighbors’ values, it has one drawback in that polygons along the edges of the study area will base their lagged values on fewer polygons, thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.\nFor this example, we’ll stick with the style=“W” option for simplicity’s sake but note that other more robust options are available, notably style=“B”.\n\nrswm_q <- nb2listw(wm_q,\n                   style=\"W\",\n                   zero.policy = TRUE)\nrswm_q\n\nCharacteristics of weights list object:\nNeighbour list object:\nNumber of regions: 88 \nNumber of nonzero links: 448 \nPercentage nonzero weights: 5.785124 \nAverage number of links: 5.090909 \n\nWeights style: W \nWeights constants summary:\n   n   nn S0       S1       S2\nW 88 7744 88 37.86334 365.9147\n\n\nThe input of nb2listw() must be object of class nb. The syntax of the function takes in 2 arguments, style and zero.poly.\nstyle can take values “W”, “B”, “C”, “U”, “minmax”, and “S”.\n\nB is basic binary coding\nW is row standardised (sums over all links to n)\nC is globally standardised (sums over all links to n)\nU is equal to C divided by the number of neighbours (sums over all links to unity)\nS is the variance stabilising coding scheme (sums over all links to n)\n\nIf zero policy is set to TRUE, weights vectors of zero length are inserted for regions without neighbours in the neighbours list. These will in turn generate lag values of zero, equivalent to the sum of products of the zero row t(rep(0, length=length(neighbours))) %*% x, for arbitrary numerical vector x of length length(neighbours). The spatially lagged value of x for the zero-neighbour region will then be zero, which may (or may not) be a sensible choice.\n#Global Spatial Autocorrelation: Moran’s I Test\nIn this section, we will perform Moran’s I statistics testing using moran.test() from spdep.\n\nmoran.test(hunan$GDPPC,\n           listw = rswm_q,\n           zero.policy = TRUE,\n           na.action = na.omit)\n\n\n    Moran I test under randomisation\n\ndata:  hunan$GDPPC  \nweights: rswm_q    \n\nMoran I statistic standard deviate = 4.7351, p-value = 1.095e-06\nalternative hypothesis: greater\nsample estimates:\nMoran I statistic       Expectation          Variance \n      0.300749970      -0.011494253       0.004348351 \n\n\nWhat statistical conclusions can be drawn from the output?"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#computing-monte-carlo-morans-i",
+    "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#computing-monte-carlo-morans-i",
+    "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
+    "section": "3.3 Computing Monte Carlo Moran’s I",
+    "text": "3.3 Computing Monte Carlo Moran’s I"
   }
 ]

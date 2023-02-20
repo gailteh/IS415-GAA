@@ -1,0 +1,12 @@
+---
+title: "Take-Home_Ex02"
+date: ""
+date-modified: "`r Sys.Date()`"
+number-sections: true
+format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
