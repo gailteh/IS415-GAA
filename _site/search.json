@@ -928,6 +928,83 @@
     "href": "Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html#computing-monte-carlo-morans-i",
     "title": "Hands-On Exercise 7: Global & Local Measures of Spatial Autocorrelation",
     "section": "3.3 Computing Monte Carlo Moran’s I",
-    "text": "3.3 Computing Monte Carlo Moran’s I"
+    "text": "3.3 Computing Monte Carlo Moran’s I\nThe code chunk below performs permutation test for Moran’s I statistic by using moran.mc() of spdep. A total of 1000 simulations will be performed."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "",
+    "text": "#Installing Loading R packages\n#Data ##Importing Geospatial Data"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#importing-aspatial-data",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#importing-aspatial-data",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "0.1 Importing Aspatial Data",
+    "text": "0.1 Importing Aspatial Data\n\nhunan2012 <- read_csv(\"data/aspatial/Hunan_2012.csv\")"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#performing-relational-join",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#performing-relational-join",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "0.2 Performing Relational Join",
+    "text": "0.2 Performing Relational Join\n\nhunan_GDPPC <- left_join(hunan, hunan2012) %>%\n  select(1:4, 7, 15)\n\n##Plotting Choropleth Map"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#deriving-contiguity-weights-queen-method",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#deriving-contiguity-weights-queen-method",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "1.1 Deriving contiguity weights (Queen Method)",
+    "text": "1.1 Deriving contiguity weights (Queen Method)\n\nwm_q <- hunan_GDPPC %>%\n  mutate(nb=st_contiguity(geometry),\n         wt= st_weights(nb,\n                        style=\"W\"),\n         .before=1)\nwm_q\n\nSimple feature collection with 88 features and 8 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\nFirst 10 features:\n                               nb\n1                 2, 3, 4, 57, 85\n2               1, 57, 58, 78, 85\n3                     1, 4, 5, 85\n4                      1, 3, 5, 6\n5                     3, 4, 6, 85\n6                4, 5, 69, 75, 85\n7                  67, 71, 74, 84\n8       9, 46, 47, 56, 78, 80, 86\n9           8, 66, 68, 78, 84, 86\n10 16, 17, 19, 20, 22, 70, 72, 73\n                                                                            wt\n1                                                      0.2, 0.2, 0.2, 0.2, 0.2\n2                                                      0.2, 0.2, 0.2, 0.2, 0.2\n3                                                       0.25, 0.25, 0.25, 0.25\n4                                                       0.25, 0.25, 0.25, 0.25\n5                                                       0.25, 0.25, 0.25, 0.25\n6                                                      0.2, 0.2, 0.2, 0.2, 0.2\n7                                                       0.25, 0.25, 0.25, 0.25\n8  0.1428571, 0.1428571, 0.1428571, 0.1428571, 0.1428571, 0.1428571, 0.1428571\n9             0.1666667, 0.1666667, 0.1666667, 0.1666667, 0.1666667, 0.1666667\n10                      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125\n     NAME_2  ID_3    NAME_3   ENGTYPE_3    County GDPPC\n1   Changde 21098   Anxiang      County   Anxiang 23667\n2   Changde 21100   Hanshou      County   Hanshou 20981\n3   Changde 21101    Jinshi County City    Jinshi 34592\n4   Changde 21102        Li      County        Li 24473\n5   Changde 21103     Linli      County     Linli 25554\n6   Changde 21104    Shimen      County    Shimen 27137\n7  Changsha 21109   Liuyang County City   Liuyang 63118\n8  Changsha 21110 Ningxiang      County Ningxiang 62202\n9  Changsha 21111 Wangcheng      County Wangcheng 70666\n10 Chenzhou 21112     Anren      County     Anren 12761\n                         geometry\n1  POLYGON ((112.0625 29.75523...\n2  POLYGON ((112.2288 29.11684...\n3  POLYGON ((111.8927 29.6013,...\n4  POLYGON ((111.3731 29.94649...\n5  POLYGON ((111.6324 29.76288...\n6  POLYGON ((110.8825 30.11675...\n7  POLYGON ((113.9905 28.5682,...\n8  POLYGON ((112.7181 28.38299...\n9  POLYGON ((112.7914 28.52688...\n10 POLYGON ((113.1757 26.82734..."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#computing-global-moran-i",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#computing-global-moran-i",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "1.2 Computing Global Moran I",
+    "text": "1.2 Computing Global Moran I\n\nmoranI <- global_moran(wm_q$GDPPC,\n                       wm_q$nb,\n                       wm_q$wt)\n\nThis is a redundant step\nPerforming Global Moran I test\n\nglobal_moran_test(wm_q$GDPPC,\n                  wm_q$nb,\n                  wm_q$wt)\n\n\n    Moran I test under randomisation\n\ndata:  x  \nweights: listw    \n\nMoran I statistic standard deviate = 4.7351, p-value = 1.095e-06\nalternative hypothesis: greater\nsample estimates:\nMoran I statistic       Expectation          Variance \n      0.300749970      -0.011494253       0.004348351 \n\n\np-value is much smaller than alpha value 0.05, meaning that we have sufficient statistical evidence to reject the null hypothesis."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#performing-global-moran-i-permutation-test-monte-carlo",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#performing-global-moran-i-permutation-test-monte-carlo",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "1.3 Performing Global Moran I permutation test (Monte Carlo)",
+    "text": "1.3 Performing Global Moran I permutation test (Monte Carlo)\n\nset.seed(1234)\n\nFor when there is simulations, use set.seed(). Makes the results reproducible.\n\nglobal_moran_perm(wm_q$GDPPC,\n                  wm_q$nb,\n                  wm_q$wt,\n                nsim = 99)\n\n\n    Monte-Carlo simulation of Moran I\n\ndata:  x \nweights: listw  \nnumber of simulations + 1: 100 \n\nstatistic = 0.30075, observed rank = 100, p-value < 2.2e-16\nalternative hypothesis: two.sided\n\n\nNote: The more simulations run, the more stable the results. For smaller observations, try to do more simulations."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#visualising-p-value-of-m",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#visualising-p-value-of-m",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "2.1 Visualising p-value of m",
+    "text": "2.1 Visualising p-value of m\n\n\n\np_ii is based on raw data use p_ii_sim because it is after the simulations have been run\n\nlisa_sig <- lisa %>%\n  filter(p_ii < 0.05)\ntmap_mode(\"plot\")\ntm_shape(lisa) +\n  tm_polygons() +\n  tm_borders(alpha = 0.5) +\ntm_shape(lisa_sig) +\n  tm_fill(\"mean\") +\n  tm_borders(alpha = 0.4)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#computing-local-moran-i",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#computing-local-moran-i",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "3.1 Computing Local Moran I",
+    "text": "3.1 Computing Local Moran I\n\nHCSA <- wm_q %>% \n  mutate(local_Gi = local_gstar_perm(\n    GDPPC, nb, wt, nsim = 99),\n    .before = 1) %>%\n  unnest(local_Gi)\nHCSA\n\nSimple feature collection with 88 features and 16 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\n# A tibble: 88 × 17\n    gi_star   e_gi     var_gi  p_value p_sim p_fol…¹ skewn…² kurto…³ nb    wt   \n      <dbl>  <dbl>      <dbl>    <dbl> <dbl>   <dbl>   <dbl>   <dbl> <nb>  <lis>\n 1 -0.00567 0.0115 0.00000812  9.95e-1  0.82    0.41   1.03    1.23  <int> <dbl>\n 2 -0.235   0.0110 0.00000581  8.14e-1  1       0.5    0.912   1.05  <int> <dbl>\n 3  0.298   0.0114 0.00000776  7.65e-1  0.7     0.35   0.455  -0.732 <int> <dbl>\n 4  0.145   0.0121 0.0000111   8.84e-1  0.64    0.32   0.900   0.726 <int> <dbl>\n 5  0.356   0.0113 0.0000119   7.21e-1  0.64    0.32   1.08    1.31  <int> <dbl>\n 6 -0.480   0.0116 0.00000706  6.31e-1  0.82    0.41   0.364  -0.676 <int> <dbl>\n 7  3.66    0.0116 0.00000825  2.47e-4  0.02    0.01   0.909   0.664 <int> <dbl>\n 8  2.14    0.0116 0.00000714  3.26e-2  0.16    0.08   1.13    1.48  <int> <dbl>\n 9  4.55    0.0113 0.00000656  5.28e-6  0.02    0.01   1.36    4.14  <int> <dbl>\n10  1.61    0.0109 0.00000341  1.08e-1  0.18    0.09   0.269  -0.396 <int> <dbl>\n# … with 78 more rows, 7 more variables: NAME_2 <chr>, ID_3 <int>,\n#   NAME_3 <chr>, ENGTYPE_3 <chr>, County <chr>, GDPPC <dbl>,\n#   geometry <POLYGON [°]>, and abbreviated variable names ¹​p_folded_sim,\n#   ²​skewness, ³​kurtosis"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#visualising-gi",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#visualising-gi",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "3.2 Visualising Gi*",
+    "text": "3.2 Visualising Gi*\n\ntmap_mode(\"plot\")\ntm_shape(HCSA) +\n  tm_fill(\"gi_star\") +\n  tm_borders(alpha = 0.5)+\n  tm_view(set.zoom.limits = c(6,8))\n\n\n\n\n##visualising p value of HCSA\n\ntmap_mode(\"plot\")\ntm_shape(HCSA) +\n  tm_fill(\"p_sim\")+\n  tm_borders(alpha = 0.5)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#creating-a-time-series-cube",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#creating-a-time-series-cube",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "4.1 Creating a Time Series Cube",
+    "text": "4.1 Creating a Time Series Cube\n\nGDPPC_st <- spacetime(GDPPC, hunan,\n                      .loc_col = \"County\",\n                      .time_col = \"Year\")\nGDPPC_st\n\n# A tibble: 1,496 × 3\n    Year County    GDPPC\n * <dbl> <chr>     <dbl>\n 1  2005 Longshan   3469\n 2  2005 Changsha  24612\n 3  2005 Wangcheng 14659\n 4  2005 Ningxiang 11687\n 5  2005 Liuyang   13406\n 6  2005 Zhuzhou    8546\n 7  2005 You       10944\n 8  2005 Chaling    8040\n 9  2005 Yanling    7383\n10  2005 Liling    11688\n# … with 1,486 more rows\n\n\n\n\n\n\n4.1.1 Computing Gi*"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#mann-kendal-test",
+    "href": "In-class_Ex/In-class_Ex07/In-class_Ex07.html#mann-kendal-test",
+    "title": "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods",
+    "section": "4.2 Mann-Kendal Test",
+    "text": "4.2 Mann-Kendal Test"
   }
 ]

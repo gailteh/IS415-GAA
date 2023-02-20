@@ -143,3 +143,8 @@ moran.test(hunan$GDPPC,
 
 ## Computing Monte Carlo Moran's I
 
+The code chunk below performs permutation test for Moran’s I statistic by using moran.mc() of spdep. A total of 1000 simulations will be performed.
+
+```{r}
+
+```

@@ -1,5 +1,5 @@
 ---
-title: "In-Class Exercise 7"
+title: "In-Class Exercise 7: Global and Local Measures of Spatial Association - sfdep methods"
 date: "20 February 2023"
 date-modified: "`r Sys.Date()`"
 number-sections: true
@@ -10,3 +10,158 @@ execute:
   warning: false
 editor: visual
 ---
+
+#Installing Loading R packages
+```{r}
+pacman::p_load(sf, tmap, sfdep, plotly, tidyverse)
+```
+
+#Data
+##Importing Geospatial Data
+```{r}
+hunan <- st_read(dsn = "data/geospatial",
+                 layer = "Hunan")
+```
+## Importing Aspatial Data
+```{r}
+hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+## Performing Relational Join
+```{r}
+hunan_GDPPC <- left_join(hunan, hunan2012) %>%
+  select(1:4, 7, 15)
+```
+##Plotting Choropleth Map
+```{r}
+
+```
+
+# Global Measures of Spatial Association
+## Deriving contiguity weights (Queen Method)
+```{r}
+wm_q <- hunan_GDPPC %>%
+  mutate(nb=st_contiguity(geometry),
+         wt= st_weights(nb,
+                        style="W"),
+         .before=1)
+wm_q
+```
+## Computing Global Moran I
+```{r}
+moranI <- global_moran(wm_q$GDPPC,
+                       wm_q$nb,
+                       wm_q$wt)
+```
+*This is a redundant step*
+
+Performing Global Moran I test
+```{r}
+global_moran_test(wm_q$GDPPC,
+                  wm_q$nb,
+                  wm_q$wt)
+```
+p-value is much smaller than alpha value 0.05, meaning that we have sufficient statistical evidence to reject the null hypothesis. 
+
+## Performing Global Moran I permutation test (Monte Carlo)
+```{r}
+set.seed(1234)
+```
+
+For when there is simulations, use set.seed(). Makes the results reproducible.
+
+```{r}
+global_moran_perm(wm_q$GDPPC,
+                  wm_q$nb,
+                  wm_q$wt,
+                nsim = 99)
+```
+Note: The more simulations run, the more stable the results. For smaller observations, try to do more simulations.
+
+# Computing Local Moran's I
+```{r}
+lisa <- wm_q %>%
+  mutate(local_moran = local_moran(
+    GDPPC, nb, wt, nsim = 99),
+      .before = 1) %>%
+  unnest(local_moran)
+lisa
+```
+*Use mean
+
+##Visualising local Moran I
+```{r}
+tmap_mode("plot")
+tm_shape(lisa) +
+  tm_fill("ii") +
+  tm_borders(alpha = 0.5) +
+  tm_view(set.zoom.limits = c(6,8))
+```
+## Visualising p-value of m
+```{r}
+
+```
+
+p_ii is based on raw data
+use p_ii_sim because it is after the simulations have been run
+
+```{r}
+lisa_sig <- lisa %>%
+  filter(p_ii < 0.05)
+tmap_mode("plot")
+tm_shape(lisa) +
+  tm_polygons() +
+  tm_borders(alpha = 0.5) +
+tm_shape(lisa_sig) +
+  tm_fill("mean") +
+  tm_borders(alpha = 0.4)
+```
+# Hotspot and Coldspot Analysis
+
+## Computing Local Moran I
+```{r}
+HCSA <- wm_q %>% 
+  mutate(local_Gi = local_gstar_perm(
+    GDPPC, nb, wt, nsim = 99),
+    .before = 1) %>%
+  unnest(local_Gi)
+HCSA
+```
+## Visualising Gi*
+```{r}
+tmap_mode("plot")
+tm_shape(HCSA) +
+  tm_fill("gi_star") +
+  tm_borders(alpha = 0.5)+
+  tm_view(set.zoom.limits = c(6,8))
+```
+##visualising p value of HCSA
+```{r}
+tmap_mode("plot")
+tm_shape(HCSA) +
+  tm_fill("p_sim")+
+  tm_borders(alpha = 0.5)
+```
+# Emerging Hotspot Analysis
+```{r}
+GDPPC <- read_csv("data/aspatial/Hunan_GDPPC.csv")
+```
+## Creating a Time Series Cube
+
+```{r}
+GDPPC_st <- spacetime(GDPPC, hunan,
+                      .loc_col = "County",
+                      .time_col = "Year")
+GDPPC_st
+```
+```{r}
+
+```
+
+### Computing Gi*
+```{r}
+
+```
+
+## Mann-Kendal Test
+
+
