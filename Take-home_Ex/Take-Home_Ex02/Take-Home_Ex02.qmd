@@ -1,5 +1,5 @@
 ---
-title: "Take-Home_Ex02"
+title: "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta"
 date: "February 21, 2013"
 date-modified: "`r Sys.Date()`"
 number-sections: true
@@ -44,6 +44,8 @@ The Packages we will be using for this analysis are:
 -   sfdep
 
 -   readxl
+
+-   plotly
 
 ```{r}
 pacman::p_load(sf, sfdep, tmap, tidyverse, readxl, plotly)
@@ -160,7 +162,7 @@ glimpse(july2021)
 
 There are no duplicates in the dataframes, and it has 27 columns.
 
-## Creting an Aspatial Data Pre-processing Function
+## Craeting an Aspatial Data Pre-processing Function
 
 For our aspatial data, we will only require certain columns to focus on in our analysis:
 
@@ -386,7 +388,7 @@ Now we can start on our analysis.
 
 # Computing Monthly Vaccination Rate
 
-As required by the exercise, we have to calculate the monthly vaccination rate from July 2021 to June 2022 at sub-district level. The vaccination rate is the number of vaccines/total vaccines for that month. We do this this by summing the number of vaccinated people (based on sub-district and date) and then dividing it by the total population. Based on our data, we can get the number of vaccinated by subtracting *Yet_to_vaccine* from *Target*.
+As required by the exercise, we have to calculate the monthly vaccination rate from July 2021 to June 2022 at sub-district level. The vaccination rate is the number of vaccines/total vaccines given. We do this this by summing the number of vaccinated people (based on sub-district and date) and then dividing it by the total population. Based on our data, we can get the number of vaccinated by subtracting *Yet_to_vaccine* from *Target*.
 
 ```{r}
 vaccine_rate <- vaccine_jkt %>%
@@ -441,6 +443,8 @@ tm_shape(df) +
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_mode("plot")
 tmap_arrange(map_function(vaccine_rate_pivot, "2021-07-31"),
              map_function(vaccine_rate_pivot, "2021-08-31"),
@@ -449,6 +453,8 @@ tmap_arrange(map_function(vaccine_rate_pivot, "2021-07-31"),
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_arrange(map_function(vaccine_rate_pivot, "2021-11-30"),
              map_function(vaccine_rate_pivot, "2021-12-31"),
              map_function(vaccine_rate_pivot, "2022-01-31"),
@@ -456,6 +462,8 @@ tmap_arrange(map_function(vaccine_rate_pivot, "2021-11-30"),
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_arrange(map_function(vaccine_rate_pivot, "2022-03-31"),
              map_function(vaccine_rate_pivot, "2022-04-30"),
              map_function(vaccine_rate_pivot, "2022-05-31"),
@@ -464,7 +472,7 @@ tmap_arrange(map_function(vaccine_rate_pivot, "2022-03-31"),
 
 ## Spatial Pattern Description
 
-The darker the shade of blue, the higher the vaccination rate. For the hole of Jakarta, the vaccination rates generally increase over time due to consistent vaccination efforts by the government. Since the first month of observation, the southern area seems to have a small cluster of higher vaccination rates as indicated by the darker shade of blue. As the months go by, the sub-districts located at the south of Jakarta continue to have a higher vaccination rates compared to the other sub-districts.
+The darker the shade of blue, the higher the vaccination rate. For the whole of Jakarta, the vaccination rates generally increase over time due to consistent vaccination efforts by the government. Since the first month of observation, the southern area seems to have a small cluster of higher vaccination rates as indicated by the darker shade of blue. As the months go by, the sub-districts located at the south of Jakarta continue to have a higher vaccination rates compared to the other sub-districts.
 
 # Local Gi\* Analysis
 
@@ -736,13 +744,13 @@ tmap_arrange(HCSA_mar2022_map, HCSA_april2022_map, HCSA_may2022_map, HCSA_june20
 
 ## Statistical Conclusions
 
-The hot spot areas are represented by the green areas, indicating that a subdistrict is associated with high vaccination rates in the neighbouring sub-districts. On the other hand, cold spot areas are represented by the red areas, indicating that a sub-distirct is associated with low vaccination rates in the neighbouring sub-districts.
+The hot spot areas are represented by the green areas, indicating that a subdistrict is associated with high vaccination rates in the neighbouring sub-districts. On the other hand, cold spot areas are represented by the red areas, indicating that a sub-district is associated with low vaccination rates in the neighbouring sub-districts.
 
-We can observe that there is an initial major hotspot
+In the first 3 months of the study period (July 2021 to Oct 2021), we notice that there is a few hotspots close to the Northern part of Jakarta. From October onwards we can see that there is a new and big hotspot forming at the South of Jakarta. From this we can infer that the sub-districts in the southern parts of Jakarta have a higher vaccination rate than the other parts of Jakarta.
 
-#Emergine Hotspot Analysis (EHSA)
+# Emerging Hotspot Analysis (EHSA)
 
-In this section, we will be conductiong EHSA analysis on the monthly vaccination rates. EHSA is a spatio-temporal analysis method used to reveal and describe how hotspot and coldspots evolve over time. There are 4 main steps to this analysis:
+In this section, we will be conducting EHSA analysis on the monthly vaccination rates. EHSA is a spatio-temporal analysis method used to reveal and describe how hotspot and coldspots evolve over time. There are 4 main steps to this analysis:
 
 1.  Building a space-time cube
 2.  Calculating Getis-Ord local Gi\* statistics for each bin using FDR correction
@@ -761,12 +769,103 @@ vaccine_rate_st <- spacetime(vaccine_rate, bd_jakarta,
 vaccine_rate_st
 ```
 
+Testing if an object is a spacetime cube:
+
 ```{r}
-
+is_spacetime_cube(vaccine_rate_st)
 ```
+The TRUE output indicates that vaccine_rate_st is space-time cube.
 
-## Computing Gi\*
+## Deriving Spatial Weights
 
 Next we will compute the local Gi\* statistics. We will derive the spatial weights by identifying the contiguity neighbours list and then deriving the inverse distance weights.
 
+```{r}
+# vaccine_nb <- vaccine_rate_st %>%
+#   activate("geometry") %>%
+#   mutate(nb = include_self(st_contiguity(geometry)),
+#          wt = st_inverse_distance(nb, geometry,
+#                                   scale = 1,
+#                                   alpha = 1),
+#          .before = 1)%>%
+#   set_wts("wt") %>%
+#   set_nbs("nb")
+# 
+# head(vaccine_nb)
+```
+
+## Computing local Gi\*
+
+We can use these new columns to manually calculate the local Gi\* for each location. We can do this by grouping by Date and using local_gstar_perm() of sfdep package. After which, we use unnest() to unnest gi_star column of the newly created gi_starts data frame.
+
+```{r}
+# gi_stars <- vaccine_nb %>% 
+#   group_by(`Date`) %>% 
+#   mutate(gi_star = local_gstar_perm(
+#     vaccine_rate, nb, wt)) %>% 
+#   tidyr::unnest(gi_star)
+# 
+# gi_stars
+```
+
+## Mann Kendall Test
+
+Now, we will conduct the Mann-Kendall test on 3 selected sub-districts. To decide which sub-districts to pick, we can check the highest vaccination rate at the end of the study period.
+
+```{r}
+june_rate <- vaccine_rate %>%
+  filter(Date == as.Date("2022-06-30"))%>%
+  arrange(desc(`vaccination_rate`))
+
+head(june_rate)
+```
+
+The 3 sub-districts with the highest vaccination rates are: HALIM PERDANA KUSUMAH, SRENGSENG SAWAH AND MANGGARAI SELATAN, so we will be focusing the analysis on these 3 sub-districts.
+
+Mann Kendall Test for the 3 subdistricts and then plotting the trend:
+
+```{r}
+#HALIM PERDANA KUSUMAH
+
+# cbg_hpk <- gi_stars %>% 
+#   ungroup() %>% 
+#   filter(Sub_District == "HALIM PERDANA KUSUMAH") |> 
+#   select(Sub_District, Date, gi_star)
+# 
+# ggplot(data = cbg_hpk, 
+#        aes(x = Date, 
+#            y = gi_star)) +
+#   geom_line() +
+#   theme_light()
+```
+
+```{r}
+#SRENGSENG SAWAH
+
+# cbg_ss <- gi_stars %>% 
+#   ungroup() %>% 
+#   filter(Sub_District == "SRENGSENG SAWAH") |> 
+#   select(Sub_District, Date, gi_star)
+# 
+# ggplot(data = cbg_ss, 
+#        aes(x = Date, 
+#            y = gi_star)) +
+#   geom_line() +
+#   theme_light()
+```
+
+```{r}
+#MANGGARAI SELATAN
+
+# cbg_ms <- gi_stars %>% 
+#   ungroup() %>% 
+#   filter(Sub_District == "MANGGARAI SELATAN") |> 
+#   select(Sub_District, Date, gi_star)
+# 
+# ggplot(data = cbg_ms, 
+#        aes(x = Date, 
+#            y = gi_star)) +
+#   geom_line() +
+#   theme_light()
+```
 

@@ -1178,42 +1178,42 @@
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "",
     "text": "Since late December 2019, an outbreak of a novel coronavirus disease (COVID-19; previously known as 2019-nCoV) was reported in Wuhan, China, which had subsequently affected 210 countries worldwide. In general, COVID-19 is an acute resolved disease but it can also be deadly, with a 2% case fatality rate.\nThe COVID-19 vaccination in Indonesia is an ongoing mass immunisation in response to the COVID-19 pandemic in Indonesia. On 13 January 2021, the program commenced when President Joko Widodo was vaccinated at the presidential palace. In terms of total doses given, Indonesia ranks third in Asia and fifth in the world.\nAccording to wikipedia, as of 5 February 2023 at 18:00 WIB (UTC+7), 204,266,655 people had received the first dose of the vaccine and 175,131,893 people had been fully vaccinated; 69,597,474 of them had been inoculated with the booster or the third dose, while 1,585,164 had received the fourth dose. Jakarta has the highest percentage of population fully vaccinated with 103.46%, followed by Bali and Special Region of Yogyakarta with 85.45% and 83.02% respectively.\nDespite its compactness, the cumulative vaccination rate are not evenly distributed within DKI Jakarta. The question is where are the sub-districts with relatively higher number of vaccination rate and how they changed over time."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#importing-geosptial-data",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#importing-geosptial-data",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "5.1 Importing Geosptial Data",
     "text": "5.1 Importing Geosptial Data\nHere, we will be using st_read to read the geospatial data and store the data into a dataframe called bd_jakarta.\n\nbd_jakarta <- st_read(dsn=\"data/geospatial\",\n                      layer=\"BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA\")\n\nReading layer `BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA' from data source \n  `C:\\gailteh\\IS415-GAA\\Take-home_Ex\\Take-Home_Ex02\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 269 features and 161 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 106.3831 ymin: -6.370815 xmax: 106.9728 ymax: -5.184322\nGeodetic CRS:  WGS 84\n\n\nBased on the output, things we can note:\n\nGeometry type is MULIPOLYGON\nDataset has 269 features and 161 fields\nCRS is WGS 84"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#checking-and-transforming-coordinate-system",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#checking-and-transforming-coordinate-system",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "5.2 Checking and Transforming Coordinate system",
     "text": "5.2 Checking and Transforming Coordinate system\nBefore proceeding, we need to ensure the data is in an appropriate coordinate system. Using st_crs() we can check the CRS of our datafram bd_jakarta.\n\nst_crs(bd_jakarta)\n\nCoordinate Reference System:\n  User input: WGS 84 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"longitude\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    ID[\"EPSG\",4326]]\n\n\nFrom here, we can see that the assigned coordinate system is in WGS 84. Since the dataset is Indonesia centric, this is not an appropriate system to be using, hence we need to transform the CRS into Indonesia’s CRS, DGN95 with EPSG code 23845. We can do this using st_transform().\n\nbd_jakarta <- st_transform(bd_jakarta, 23845)\n\nChecking the CRS again,\n\nst_crs(bd_jakarta)\n\nCoordinate Reference System:\n  User input: EPSG:23845 \n  wkt:\nPROJCRS[\"DGN95 / Indonesia TM-3 zone 54.1\",\n    BASEGEOGCRS[\"DGN95\",\n        DATUM[\"Datum Geodesi Nasional 1995\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4755]],\n    CONVERSION[\"Indonesia TM-3 zone 54.1\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",139.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",0.9999,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",200000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",1500000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"Cadastre.\"],\n        AREA[\"Indonesia - onshore east of 138°E.\"],\n        BBOX[-9.19,138,-1.49,141.01]],\n    ID[\"EPSG\",23845]]\n\n\nNow it’s in the appropriate CRS!"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#removing-outer-islands",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#removing-outer-islands",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "5.3 Removing Outer Islands",
     "text": "5.3 Removing Outer Islands\nFirst, we should visualise how the data looks.\n\nplot(bd_jakarta$geometry)\n\n\n\n\nbd_jakarta includes both the mainland and outer islands. As required by the assignment, we need to exclude the outer islands as we will not need them for out analysis.\nSome particular fields we should note are: PROVINSI (Province), KAB_KOTA (City), KECAMATAN (District) and DESA_KELUR (Village). Of all these fields, we should look further into KAB_KOTA as it’s the next highest level of distinction within the province of Jakarta.\n\nunique(bd_jakarta$\"KAB_KOTA\")\n\n[1] \"JAKARTA BARAT\"    \"JAKARTA PUSAT\"    \"KEPULAUAN SERIBU\" \"JAKARTA UTARA\"   \n[5] \"JAKARTA TIMUR\"    \"JAKARTA SELATAN\"  NA                \n\n\nAll cities within Jakarta have the prefix “Jakarta”, while KEPULAUAN SERIBU (“Thousand Islands” in English) is referring to the outer islands. Now we can remove the outer islands after identifying them.\n\nbd_jakarta <- filter(bd_jakarta, KAB_KOTA != \"KEPULAUAN SERIBU\")"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#retaining-first-9-fields",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#retaining-first-9-fields",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "5.4 Retaining first 9 fields",
     "text": "5.4 Retaining first 9 fields\nWe are also required to retain the first 9 fields, we will use select() to extract out columns 1-9.\n\nbd_jakarta <- bd_jakarta %>% select(1:9)"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#pre-importing-eda",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#pre-importing-eda",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "6.1 Pre-Importing EDA",
     "text": "6.1 Pre-Importing EDA\nAs we have multiple .xlsx files in our aspatial data folder (from July 2021 - June 2022), we should compile all the data together. Before doing so, we should perform EDA, to understand the data.\n\n#reading 31st July 2021 file and store it into a dataframe\njuly2021 <- read_xlsx(\"data/aspatial/Vaccination 31 Juli 2021 Jakarta.xlsx\")\nglimpse(july2021)\n\nRows: 268\nColumns: 27\n$ `KODE KELURAHAN`                             <chr> NA, \"3172051003\", \"317304…\n$ `WILAYAH KOTA`                               <chr> NA, \"JAKARTA UTARA\", \"JAK…\n$ KECAMATAN                                    <chr> NA, \"PADEMANGAN\", \"TAMBOR…\n$ KELURAHAN                                    <chr> \"TOTAL\", \"ANCOL\", \"ANGKE\"…\n$ SASARAN                                      <dbl> 8941211, 23947, 29381, 29…\n$ `BELUM VAKSIN`                               <dbl> 4441501, 12333, 13875, 18…\n$ `JUMLAH\\r\\nDOSIS 1`                          <dbl> 4499710, 11614, 15506, 10…\n$ `JUMLAH\\r\\nDOSIS 2`                          <dbl> 1663218, 4181, 4798, 3658…\n$ `TOTAL VAKSIN\\r\\nDIBERIKAN`                  <dbl> 6162928, 15795, 20304, 14…\n$ `LANSIA\\r\\nDOSIS 1`                          <dbl> 502579, 1230, 2012, 865, …\n$ `LANSIA\\r\\nDOSIS 2`                          <dbl> 440910, 1069, 1729, 701, …\n$ `LANSIA TOTAL \\r\\nVAKSIN DIBERIKAN`          <dbl> 943489, 2299, 3741, 1566,…\n$ `PELAYAN PUBLIK\\r\\nDOSIS 1`                  <dbl> 1052883, 3333, 2586, 2837…\n$ `PELAYAN PUBLIK\\r\\nDOSIS 2`                  <dbl> 666009, 2158, 1374, 1761,…\n$ `PELAYAN PUBLIK TOTAL\\r\\nVAKSIN DIBERIKAN`   <dbl> 1718892, 5491, 3960, 4598…\n$ `GOTONG ROYONG\\r\\nDOSIS 1`                   <dbl> 56660, 78, 122, 174, 71, …\n$ `GOTONG ROYONG\\r\\nDOSIS 2`                   <dbl> 38496, 51, 84, 106, 57, 7…\n$ `GOTONG ROYONG TOTAL\\r\\nVAKSIN DIBERIKAN`    <dbl> 95156, 129, 206, 280, 128…\n$ `TENAGA KESEHATAN\\r\\nDOSIS 1`                <dbl> 76397, 101, 90, 215, 73, …\n$ `TENAGA KESEHATAN\\r\\nDOSIS 2`                <dbl> 67484, 91, 82, 192, 67, 3…\n$ `TENAGA KESEHATAN TOTAL\\r\\nVAKSIN DIBERIKAN` <dbl> 143881, 192, 172, 407, 14…\n$ `TAHAPAN 3\\r\\nDOSIS 1`                       <dbl> 2279398, 5506, 9012, 5408…\n$ `TAHAPAN 3\\r\\nDOSIS 2`                       <dbl> 446028, 789, 1519, 897, 4…\n$ `TAHAPAN 3 TOTAL\\r\\nVAKSIN DIBERIKAN`        <dbl> 2725426, 6295, 10531, 630…\n$ `REMAJA\\r\\nDOSIS 1`                          <dbl> 531793, 1366, 1684, 1261,…\n$ `REMAJA\\r\\nDOSIS 2`                          <dbl> 4291, 23, 10, 1, 1, 8, 6,…\n$ `REMAJA TOTAL\\r\\nVAKSIN DIBERIKAN`           <dbl> 536084, 1389, 1694, 1262,…\n\n\nThere are no duplicates in the dataframes, and it has 27 columns."
   },
@@ -1227,86 +1227,86 @@
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#feeding-files-into-aspatial_preprocess-function",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#feeding-files-into-aspatial_preprocess-function",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "6.3 Feeding Files into aspatial_preprocess function",
     "text": "6.3 Feeding Files into aspatial_preprocess function\nAfter creating the function to preprocess asptial data, we now can feed the files into it. It can be done manually, but we can use list.files() and lapply() to make the process shorter.\nWhat the code does: In the folder ‘data/aspatial’, it find files with the extension ‘.xlsx’ and adds it to our fileslist. The full.names=TRUE prepends the directory path to the file names, giving a relative file path - otherwise, only the file names (not the paths) would be returned. After that, for every element in fileslist, we apply the aspatial_process function created earlier.\n\nfileslist <- list.files(path = \"data/aspatial\", pattern = \"*.xlsx\", full.names = TRUE)\ndflist <- lapply(seq_along(fileslist), function(x) aspatial_preprocess(fileslist[x]))\n\nNow, we need to convert dflist into a dataframe using ldply().\n\nvaccine_jkt <- plyr::ldply(dflist, data.frame)\n\nChecking what the dataframe looks like and making sure the columns are correct:\n\nglimpse(vaccine_jkt)\n\nRows: 3,216\nColumns: 6\n$ Date         <chr> \"27 Februari 2022\", \"27 Februari 2022\", \"27 Februari 2022…\n$ WILAYAH.KOTA <chr> NA, \"JAKARTA UTARA\", \"JAKARTA BARAT\", \"JAKARTA TIMUR\", \"J…\n$ KECAMATAN    <chr> NA, \"PADEMANGAN\", \"TAMBORA\", \"KRAMAT JATI\", \"JATINEGARA\",…\n$ KELURAHAN    <chr> \"TOTAL\", \"ANCOL\", \"ANGKE\", \"BALE KAMBANG\", \"BALI MESTER\",…\n$ SASARAN      <dbl> 8941211, 23947, 29381, 29074, 9752, 26285, 21566, 23886, …\n$ BELUM.VAKSIN <dbl> 1517196, 4592, 5319, 5903, 1649, 4030, 3950, 3344, 9382, …"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#formatting-date-column",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#formatting-date-column",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "6.4 Formatting Date Column",
     "text": "6.4 Formatting Date Column\nThe values in the Date column are in string format since they were derived from substrings. We need to convert it into datetime.\n\n# parses the 'Date' column into Month(Full Name)-YYYY datetime objects\n\n# locale=\"ind\" means that the locale has been set as Indonesia\nSys.setlocale(locale=\"ind\")\n\n[1] \"LC_COLLATE=Indonesian_Indonesia.1252;LC_CTYPE=Indonesian_Indonesia.1252;LC_MONETARY=Indonesian_Indonesia.1252;LC_NUMERIC=C;LC_TIME=Indonesian_Indonesia.1252\"\n\n\n\nvaccine_jkt$Date <- c(vaccine_jkt$Date) %>%\n  as.Date(vaccine_jkt$Date, format = \"%d %B %Y\")\n\nglimpse(vaccine_jkt)\n\nRows: 3,216\nColumns: 6\n$ Date         <date> 2022-02-27, 2022-02-27, 2022-02-27, 2022-02-27, 2022-02-~\n$ WILAYAH.KOTA <chr> NA, \"JAKARTA UTARA\", \"JAKARTA BARAT\", \"JAKARTA TIMUR\", \"J~\n$ KECAMATAN    <chr> NA, \"PADEMANGAN\", \"TAMBORA\", \"KRAMAT JATI\", \"JATINEGARA\",~\n$ KELURAHAN    <chr> \"TOTAL\", \"ANCOL\", \"ANGKE\", \"BALE KAMBANG\", \"BALI MESTER\",~\n$ SASARAN      <dbl> 8941211, 23947, 29381, 29074, 9752, 26285, 21566, 23886, ~\n$ BELUM.VAKSIN <dbl> 1517196, 4592, 5319, 5903, 1649, 4030, 3950, 3344, 9382, ~"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#further-data-processing",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#further-data-processing",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "6.6 Further Data Processing",
     "text": "6.6 Further Data Processing\nWe want to remove records from the outer islands (for those where the city value is “KAB.ADM.KEP.SERIBU”).\n\nvaccine_jkt <- filter(vaccine_jkt, City != \"KAB.ADM.KEP.SERIBU\")"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#renaming-columns",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#renaming-columns",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "5.5 Renaming Columns",
     "text": "5.5 Renaming Columns\nFor easy comprehension in the future, we can translate the column names into English.\n\nbd_jakarta <- bd_jakarta %>% \n  rename(\n    Object_ID=OBJECT_ID,\n    Province=PROVINSI, \n    City=KAB_KOTA, \n    District=KECAMATAN, \n    Village_Code=KODE_DESA, \n    Village=DESA, \n    Sub_District=DESA_KELUR,\n    Code=KODE, \n    Total_Population=JUMLAH_PEN\n    )"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#renaming-columns-1",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#renaming-columns-1",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "6.5 Renaming Columns",
     "text": "6.5 Renaming Columns\nSimilar to the Geospatial Data, we will be renaming the columns into English again.\n\nvaccine_jkt <- vaccine_jkt %>%\n  rename(\n    Date=Date,\n    City = WILAYAH.KOTA,\n    District = KECAMATAN,\n    Sub_District = KELURAHAN,\n    Target = SASARAN,\n    Yet_to_vaccine = BELUM.VAKSIN\n  )"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#preliminary-eda",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#preliminary-eda",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "7.1 Preliminary EDA",
     "text": "7.1 Preliminary EDA\nNow we will be joining both the geospatial and aspatial data frames together. First, let’s look for common fields between both data frames.\nColumn names of Geospatial data (bd_jakarta):\n\ncolnames(bd_jakarta)\n\n [1] \"Object_ID\"        \"Village_Code\"     \"Village\"          \"Code\"            \n [5] \"Province\"         \"City\"             \"District\"         \"Sub_District\"    \n [9] \"Total_Population\" \"geometry\"        \n\n\nColumn names of Aspatial Data (vaccine_jkt):\n\ncolnames(vaccine_jkt)\n\n[1] \"Date\"           \"City\"           \"District\"       \"Sub_District\"  \n[5] \"Target\"         \"Yet_to_vaccine\"\n\n\nFrom this, we can see City, District, Sub_District should match up. We can join the data frames based on those.\n\ncombined_jkt <- left_join(bd_jakarta, vaccine_jkt,\n                          by=c(\n                            \"City\" = \"City\",\n                            \"District\" = \"District\",\n                            \"Sub_District\" = \"Sub_District\")\n                          )\n\nVisualising current data:\n\ntarget_vaccine <- tm_shape(combined_jkt) +\n  tm_borders(alpha = 0.5) +\n  tm_fill(\"Target\")\n\nyet_to_vaccine <- tm_shape(combined_jkt) +\n  tm_borders(alpha = 0.5) +\n  tm_fill(\"Yet_to_vaccine\")\n\ntmap_arrange(target_vaccine, yet_to_vaccine)\n\n\n\n\nAs we can see, there are areas with missing values. Most likely this is cased by mismatched records, for example the names of the cities/districts/sub_districts do not match within the 2 data frames. We need to adjust them to fix this issue."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#identifying-mismatched-records",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#identifying-mismatched-records",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "7.2 Identifying Mismatched Records",
     "text": "7.2 Identifying Mismatched Records\nUpon further comparison of the geospatial and aspatial data, we find that the mismatch is in the Sub_Districts field.\nHere, we will be checking for unique values of Sub_Distric in vaccine_jkt that are not already present in bd_jakarta and vice versa.\n\nvaccine_subdistrict <- c(vaccine_jkt$Sub_District)\nbd_subdistrict <- c(bd_jakarta$Sub_District)\n\nunique(vaccine_subdistrict[!(vaccine_subdistrict %in% bd_subdistrict)])\n\n[1] \"BALE KAMBANG\"          \"HALIM PERDANA KUSUMAH\" \"JATI PULO\"            \n[4] \"KAMPUNG TENGAH\"        \"KERENDANG\"             \"KRAMAT JATI\"          \n[7] \"PAL MERIAM\"            \"PINANG RANTI\"          \"RAWA JATI\"            \n\n\n\nunique(bd_subdistrict[!(bd_subdistrict %in% vaccine_subdistrict)])\n\n[1] \"KRENDANG\"             \"RAWAJATI\"             \"TENGAH\"              \n[4] \"BALEKAMBANG\"          \"PINANGRANTI\"          \"JATIPULO\"            \n[7] \"PALMERIAM\"            \"KRAMATJATI\"           \"HALIM PERDANA KUSUMA\"\n\n\nSummary of the mismatched records\n\n\n\nAspatial (vaccine_jkt)\nGeospatial (bd_jakarta)\n\n\n\n\nBALE KAMBANG\nBALEKAMBANG\n\n\nHALIM PERDANA KUSUMAH\nHALIM PERDANA KUSUMA\n\n\nJATI PULO\nJATIPULO\n\n\nKAMPUNG TENGAH\nTENGAH\n\n\nKERENDANG\nKRENDANG\n\n\nKRAMAT JATI\nKRAMATJATI\n\n\nPAL MERIAM\nPALMERIAN\n\n\nPINANG RANTI\nPINANGRANTI\n\n\nRAWA JATI\nRAWAJATI"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#renaming-mismatched-records",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#renaming-mismatched-records",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "7.3 Renaming Mismatched Records",
     "text": "7.3 Renaming Mismatched Records\nNow, we need to fix the mismatches by renaming them\n\n# where bd_jakarta is a mismatched value, replace with the correct value\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'BALEKAMBANG'] <- 'BALE KAMBANG'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'HALIM PERDANA KUSUMA'] <- 'HALIM PERDANA KUSUMAH'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'JATIPULO'] <- 'JATI PULO'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'TENGAH'] <- 'KAMPUNG TENGAH'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'KRAMATJATI'] <- 'KRAMAT JATI'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'KRENDANG'] <- 'KERENDANG'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'PALMERIAM'] <- 'PAL MERIAM'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'PINANGRANTI'] <- 'PINANG RANTI'\nbd_jakarta$Sub_District[bd_jakarta$Sub_District == 'RAWAJATI'] <- 'RAWA JATI'"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#joining",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#joining",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "7.4 Joining",
     "text": "7.4 Joining\nWe can join the geospatial and aspatial dataframes again since we have a standardised common identifier amoung both. We will be joining vaccine_jkt to bd_jakarta using Sub_District.\n\ncombined_jkt <- left_join(bd_jakarta, vaccine_jkt,\n                          by=c(\"Sub_District\" = \"Sub_District\"))\n\nVisualising the data again:\n\ntarget_vaccine_update <- tm_shape(combined_jkt) +\n  tm_borders(alpha = 0.5) +\n  tm_fill(\"Target\")\n\nyet_to_vaccine_update <- tm_shape(combined_jkt) +\n  tm_borders(alpha = 0.5) +\n  tm_fill(\"Yet_to_vaccine\")\n\ntmap_arrange(target_vaccine_update, yet_to_vaccine_update)\n\n\n\n\nNow we can start on our analysis."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#spatial-pattern-description",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#spatial-pattern-description",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "9.1 Spatial Pattern Description",
-    "text": "9.1 Spatial Pattern Description\nThe darker the shade of blue, the higher the vaccination rate. For the hole of Jakarta, the vaccination rates generally increase over time due to consistent vaccination efforts by the government. Since the first month of observation, the southern area seems to have a small cluster of higher vaccination rates as indicated by the darker shade of blue. As the months go by, the sub-districts located at the south of Jakarta continue to have a higher vaccination rates compared to the other sub-districts."
+    "text": "9.1 Spatial Pattern Description\nThe darker the shade of blue, the higher the vaccination rate. For the whole of Jakarta, the vaccination rates generally increase over time due to consistent vaccination efforts by the government. Since the first month of observation, the southern area seems to have a small cluster of higher vaccination rates as indicated by the darker shade of blue. As the months go by, the sub-districts located at the south of Jakarta continue to have a higher vaccination rates compared to the other sub-districts."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#statistical-conclusions",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#statistical-conclusions",
-    "title": "Take-Home_Ex02",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
     "section": "10.1 Statistical Conclusions",
-    "text": "10.1 Statistical Conclusions\nThe hot spot areas are represented by the green areas, indicating that a subdistrict is associated with high vaccination rates in the neighbouring sub-districts. On the other hand, cold spot areas are represented by the red areas, indicating that a sub-distirct is associated with low vaccination rates in the neighbouring sub-districts.\nWe can observe that there is an initial major hotspot\n#Emergine Hotspot Analysis (EHSA)\nIn this section, we will be conductiong EHSA analysis on the monthly vaccination rates. EHSA is a spatio-temporal analysis method used to reveal and describe how hotspot and coldspots evolve over time. There are 4 main steps to this analysis:\n\nBuilding a space-time cube\nCalculating Getis-Ord local Gi* statistics for each bin using FDR correction\nEvaluating host and cold spot trends using Mann-Kendall trend test\nCategorising each study area location by referring to the resultant trend z-score and p-value for each location with data, and with the hot spot z-score and p-value for each bin."
+    "text": "10.1 Statistical Conclusions\nThe hot spot areas are represented by the green areas, indicating that a subdistrict is associated with high vaccination rates in the neighbouring sub-districts. On the other hand, cold spot areas are represented by the red areas, indicating that a sub-district is associated with low vaccination rates in the neighbouring sub-districts.\nIn the first 3 months of the study period (July 2021 to Oct 2021), we notice that there is a few hotspots close to the Northern part of Jakarta. From October onwards we can see that there is a new and big hotspot forming at the South of Jakarta. From this we can infer that the sub-districts in the southern parts of Jakarta have a higher vaccination rate than the other parts of Jakarta."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#building-a-time-series-cube",
     "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#building-a-time-series-cube",
-    "title": "Take-Home_Ex02",
-    "section": "10.2 Building a time series cube",
-    "text": "10.2 Building a time series cube\nspacetime() of sfdep used used to create an spatio-temporal cube. After which is_spacetime_cube() is used to verify if the spatio-temporal cube create is indeed a space-time cube object.\n\nvaccine_rate_st <- spacetime(vaccine_rate, bd_jakarta,\n                             .loc_col = \"Sub_District\",\n                             .time_col = \"Date\")\n\nvaccine_rate_st\n\n# A tibble: 3,132 x 3\n# Groups:   Sub_District [261]\n   Sub_District Date       vaccination_rate\n * <chr>        <date>                <dbl>\n 1 ANCOL        2021-07-31            0.485\n 2 ANCOL        2021-08-31            0.616\n 3 ANCOL        2021-09-30            0.721\n 4 ANCOL        2021-10-31            0.750\n 5 ANCOL        2021-11-30            0.769\n 6 ANCOL        2021-12-31            0.789\n 7 ANCOL        2022-01-31            0.806\n 8 ANCOL        2022-02-27            0.808\n 9 ANCOL        2022-03-31            0.811\n10 ANCOL        2022-04-30            0.814\n# ... with 3,122 more rows"
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
+    "section": "11.1 Building a time series cube",
+    "text": "11.1 Building a time series cube\nspacetime() of sfdep used used to create an spatio-temporal cube. After which is_spacetime_cube() is used to verify if the spatio-temporal cube create is indeed a space-time cube object.\n\nvaccine_rate_st <- spacetime(vaccine_rate, bd_jakarta,\n                             .loc_col = \"Sub_District\",\n                             .time_col = \"Date\")\n\nvaccine_rate_st\n\n# A tibble: 3,132 x 3\n# Groups:   Sub_District [261]\n   Sub_District Date       vaccination_rate\n * <chr>        <date>                <dbl>\n 1 ANCOL        2021-07-31            0.485\n 2 ANCOL        2021-08-31            0.616\n 3 ANCOL        2021-09-30            0.721\n 4 ANCOL        2021-10-31            0.750\n 5 ANCOL        2021-11-30            0.769\n 6 ANCOL        2021-12-31            0.789\n 7 ANCOL        2022-01-31            0.806\n 8 ANCOL        2022-02-27            0.808\n 9 ANCOL        2022-03-31            0.811\n10 ANCOL        2022-04-30            0.814\n# ... with 3,122 more rows\n\n\nTesting if an object is a spacetime cube:\n\nis_spacetime_cube(vaccine_rate_st)\n\n[1] TRUE\n\n\nThe TRUE output indicates that vaccine_rate_st is space-time cube."
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#computing-gi",
@@ -1314,5 +1314,33 @@
     "title": "Take-Home_Ex02",
     "section": "10.3 Computing Gi*",
     "text": "10.3 Computing Gi*\nNext we will compute the local Gi* statistics. We will derive the spatial weights by identifying the contiguity neighbours list and then deriving the inverse distance weights."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#craeting-an-aspatial-data-pre-processing-function",
+    "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#craeting-an-aspatial-data-pre-processing-function",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
+    "section": "6.2 Craeting an Aspatial Data Pre-processing Function",
+    "text": "6.2 Craeting an Aspatial Data Pre-processing Function\nFor our aspatial data, we will only require certain columns to focus on in our analysis:\n\nWilayah Kota (City)\nKecamatan (District)\nKelurahan (Sub-district)\nSasaran (Target number of people to vaccinate)\nBelum Vaksin (Number of people yet to be Vaccinated)\n\nWe need to create and extra date column containing the month and year of the observation (e.g. 31 July 2021).\nWe will do this by creating a function that will import the files into 1 data frame, retaining the necessary columns and then adding the date column.\n\n#taking in filepath of aspatial data\naspatial_preprocess <- function(filepath){\n  # reading the xlsx file\n  result_file <- read_xlsx(filepath)\n  \n  # creating the date column\n  # currently the files are named as: Vaccination DD Month YYYY Jarkarta\n  # Start point: Vaccination, End point: Jakarta (use [[1]] to indicate first element in the list)\n  # we will be loading the date it as DD-Month-YYYY format\n  startpoint <- gregexpr(pattern = \"Vaccination\", filepath)[[1]] + 12\n  endpoint <- gregexpr(pattern = \"Jakarta\", filepath)[[1]] -2\n  result_file$Date <- substr(filepath, startpoint, endpoint)\n\n# Retaining relevant Columns\nresult_file <- result_file %>%\n  select(\"Date\",\n         \"WILAYAH KOTA\",\n         \"KECAMATAN\",\n         \"KELURAHAN\",\n         \"SASARAN\",\n         \"BELUM VAKSIN\")\n\nreturn(result_file)\n}"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#deriving-spatial-weights",
+    "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#deriving-spatial-weights",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
+    "section": "11.2 Deriving Spatial Weights",
+    "text": "11.2 Deriving Spatial Weights\nNext we will compute the local Gi* statistics. We will derive the spatial weights by identifying the contiguity neighbours list and then deriving the inverse distance weights.\n\n# vaccine_nb <- vaccine_rate_st %>%\n#   activate(\"geometry\") %>%\n#   mutate(nb = include_self(st_contiguity(geometry)),\n#          wt = st_inverse_distance(nb, geometry,\n#                                   scale = 1,\n#                                   alpha = 1),\n#          .before = 1)%>%\n#   set_wts(\"wt\") %>%\n#   set_nbs(\"nb\")\n# \n# head(vaccine_nb)"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#computing-local-gi",
+    "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#computing-local-gi",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
+    "section": "11.3 Computing local Gi*",
+    "text": "11.3 Computing local Gi*\nWe can use these new columns to manually calculate the local Gi* for each location. We can do this by grouping by Date and using local_gstar_perm() of sfdep package. After which, we use unnest() to unnest gi_star column of the newly created gi_starts data frame.\n\n# gi_stars <- vaccine_nb %>% \n#   group_by(`Date`) %>% \n#   mutate(gi_star = local_gstar_perm(\n#     vaccine_rate, nb, wt)) %>% \n#   tidyr::unnest(gi_star)\n# \n# gi_stars"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#mann-kendall-test",
+    "href": "Take-home_Ex/Take-Home_Ex02/Take-Home_Ex02.html#mann-kendall-test",
+    "title": "Take Home Exercise 2: Spatio-temporal Analysis of Vaccination Trends in DKI Jakarta",
+    "section": "11.4 Mann Kendall Test",
+    "text": "11.4 Mann Kendall Test\nNow, we will conduct the Mann-Kendall test on 3 selected sub-districts. To decide which sub-districts to pick, we can check the highest vaccination rate at the end of the study period.\n\njune_rate <- vaccine_rate %>%\n  filter(Date == as.Date(\"2022-06-30\"))%>%\n  arrange(desc(`vaccination_rate`))\n\nhead(june_rate)\n\n# A tibble: 6 x 3\n# Groups:   Sub_District [6]\n  Sub_District          Date       vaccination_rate\n  <chr>                 <date>                <dbl>\n1 HALIM PERDANA KUSUMAH 2022-06-30            0.898\n2 SRENGSENG SAWAH       2022-06-30            0.879\n3 MANGGARAI SELATAN     2022-06-30            0.876\n4 MALAKA SARI           2022-06-30            0.873\n5 GLODOK                2022-06-30            0.871\n6 TEBET TIMUR           2022-06-30            0.871\n\n\nThe 3 sub-districts with the highest vaccination rates are: HALIM PERDANA KUSUMAH, SRENGSENG SAWAH AND MANGGARAI SELATAN, so we will be focusing the analysis on these 3 sub-districts.\nMann Kendall Test for the 3 subdistricts and then plotting the trend:\n\n#HALIM PERDANA KUSUMAH\n\n# cbg_hpk <- gi_stars %>% \n#   ungroup() %>% \n#   filter(Sub_District == \"HALIM PERDANA KUSUMAH\") |> \n#   select(Sub_District, Date, gi_star)\n# \n# ggplot(data = cbg_hpk, \n#        aes(x = Date, \n#            y = gi_star)) +\n#   geom_line() +\n#   theme_light()\n\n\n#SRENGSENG SAWAH\n\n# cbg_ss <- gi_stars %>% \n#   ungroup() %>% \n#   filter(Sub_District == \"SRENGSENG SAWAH\") |> \n#   select(Sub_District, Date, gi_star)\n# \n# ggplot(data = cbg_ss, \n#        aes(x = Date, \n#            y = gi_star)) +\n#   geom_line() +\n#   theme_light()\n\n\n#MANGGARAI SELATAN\n\n# cbg_ms <- gi_stars %>% \n#   ungroup() %>% \n#   filter(Sub_District == \"MANGGARAI SELATAN\") |> \n#   select(Sub_District, Date, gi_star)\n# \n# ggplot(data = cbg_ms, \n#        aes(x = Date, \n#            y = gi_star)) +\n#   geom_line() +\n#   theme_light()"
   }
 ]
