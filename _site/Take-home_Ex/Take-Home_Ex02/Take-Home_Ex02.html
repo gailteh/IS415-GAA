@@ -1240,7 +1240,7 @@ $ vaccination_rate &lt;dbl&gt; 0.4849877, 0.6161941, 0.7207166, 0.7498225, 0.769
 <h2 data-number="11.1" class="anchored" data-anchor-id="building-a-time-series-cube"><span class="header-section-number">11.1</span> Building a time series cube</h2>
 <p>spacetime() of sfdep used used to create an spatio-temporal cube. After which is_spacetime_cube() is used to verify if the spatio-temporal cube create is indeed a space-time cube object.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>vaccine_rate_st <span class="ot">&lt;-</span> <span class="fu">spacetime</span>(vaccine_rate, bd_jakarta,</span>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>vaccine_rate_st <span class="ot">&lt;-</span> <span class="fu">spacetime</span>(<span class="at">.data =</span> vaccine_rate, <span class="at">.geometry =</span> bd_jakarta,</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">.loc_col =</span> <span class="st">"Sub_District"</span>,</span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">.time_col =</span> <span class="st">"Date"</span>)</span>
 <span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
