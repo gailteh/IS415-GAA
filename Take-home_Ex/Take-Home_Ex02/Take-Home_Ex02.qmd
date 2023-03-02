@@ -762,7 +762,7 @@ In this section, we will be conducting EHSA analysis on the monthly vaccination 
 spacetime() of sfdep used used to create an spatio-temporal cube. After which is_spacetime_cube() is used to verify if the spatio-temporal cube create is indeed a space-time cube object.
 
 ```{r}
-vaccine_rate_st <- spacetime(vaccine_rate, bd_jakarta,
+vaccine_rate_st <- spacetime(.data = vaccine_rate, .geometry = bd_jakarta,
                              .loc_col = "Sub_District",
                              .time_col = "Date")
 
