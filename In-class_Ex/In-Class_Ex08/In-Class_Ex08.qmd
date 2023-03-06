@@ -1,0 +1,24 @@
+---
+title: "In-Class Exercise 8"
+date: "March 6th, 2023"
+date-modified: "`r Sys.Date()`"
+number-sections: true
+format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+# Installing and Loading packages
+
+```{r}
+pacman::p_load(olsrr, ggpubr, sf, spdep, GWmodel, tmap, tidyverse, gtsummary)
+```
+
+Note: Install corrplot separately but don't load it in the library because it may have conflicts with other packages. In the section that uses corrplot, specify corrplot in the code. e.g. corplot::
+
+# Geospatial Data
+
+
+
