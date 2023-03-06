@@ -20,5 +20,22 @@ Note: Install corrplot separately but don't load it in the library because it ma
 
 # Geospatial Data
 
+```{r}
+mpsz = st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL") %>%
+  st_transform(3414)
+```
+
+# Aspatial Data
+
+```{r}
+condo_resale = read_csv("data/aspatial/Condo_resale_2015.csv")
+```
+```{r}
+glimpse(condo_resale)
+```
+
+```{r}
+summary(condo_resale)
+```
 
 
