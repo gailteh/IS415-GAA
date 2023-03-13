@@ -14,9 +14,8 @@ editor: visual
 # Installing and Loading Packages
 
 ```{r}
-pacman::p_load(sf, spdep, GWmodel, SpatialML, tidyverse, tmap, ggpubr, olsrr, devtools, tidymodels)
+pacman::p_load(sf, spdep, GWmodel, SpatialML, tidyverse, tmap, ggpubr, olsrr, devtools, rsample)
 ```
-
 
 # Preparing Data
 
@@ -28,8 +27,158 @@ mdata <- read_rds("data/aspatial/mdata.rds")
 
 ## Data Sampling
 
+```{r}
+set.seed(1234)
+resale_split <- initial_split(mdata,
+                              prop = 6.5/10)
+train_data <- training(resale_split)
+test_data <- testing(resale_split)
+```
 
+Writing training and testing data into rds file:
 
+```{r}
+write_rds(train_data, "data/model/train_data.rds")
+write_rds(test_data, "data/model/test_data.rds")
+```
 
+# Building Model (OLS Method)
 
+```{r}
+price_mlr <- lm(resale_price ~ floor_area_sqm + 
+                  storey_order + remaining_lease_mths +
+                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER + 
+                  PROX_MRT + PROX_PARK + PROX_MRT + 
+                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+                  WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+                  WITHIN_1KM_PRISCH,
+                data = train_data)
+summary(price_mlr)
+```
 
+Writing model into rds file:
+
+```{r}
+write_rds(price_mlr, "data/model/price_mlr.rds")
+```
+
+# GWR Predictive Method
+
+## Converting sf dataframe into SpatialPointDataFrame
+
+```{r}
+train_data_sp <- as_Spatial(train_data)
+train_data_sp
+```
+
+## Computing Adaptive Bandwidth
+
+*this is similar to hands on ex 8, but note that it needs to use the training data*
+
+# Preparing Coordinates Data
+
+## Extracting coordintes data
+
+Extracting the x,y coordinates of the full, training and test data sets. sf dataframe contains lists, and ranger does not understand sf objects (currently our data is in sf data).
+
+We need to extract the coordinates and save it separately.
+
+```{r}
+coords <- st_coordinates(mdata)
+coords_train <- st_coordinates(train_data)
+coords_test <- st_coordinates(test_data)
+```
+
+Saving into rds file:
+
+```{r}
+coords_train <- write_rds(coords_train, "data/model/coords_train.rds")
+coords_test <- write_rds(coords_test, "data/model/coords_test.rds")
+```
+
+## Dropping Geometry Field
+
+```{r}
+train_data <- train_data %>%
+  st_drop_geometry()
+```
+
+# Calibrating Random Forest
+
+```{r}
+set.seed(1234)
+rf <- ranger(resale_price ~ floor_area_sqm + 
+                  storey_order + remaining_lease_mths +
+                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER + 
+                  PROX_MRT + PROX_PARK + PROX_MRT + 
+                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+                  WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+                  WITHIN_1KM_PRISCH,
+                data = train_data)
+```
+
+```{r}
+print(rf)
+```
+
+Number of subsets = 500 by default. Sample size is the total number of observations. Minimum target non = 5 by default.
+
+Random forest performs better since R squared value is higher. But we should be looking at MSE value for better comparison.
+
+# Calibrating Geographically Weighted Random Forest
+
+Using grf() from SpatialML package to calibrate random forest model.
+
+```{r}
+# set.seed(1234)
+# gwRF_adaptive <- grf(formula = resale_price ~ floor_area_sqm + 
+#                   storey_order + remaining_lease_mths +
+#                   PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER + 
+#                   PROX_MRT + PROX_PARK + PROX_MRT + 
+#                   PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+#                   WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+#                   WITHIN_1KM_PRISCH,
+#                   dframe = train_data,
+#                   bw = 55,
+#                   kernel = "adaptive",
+#                   coords = coords_train)
+```
+
+bw = number of closests datapoints (adaptive) If it is fixed kernel, bw represents the bandwidth distance.
+
+Free up memory first before running this: or else computation time will take very long
+
+Retreiving variable importance as dataframe to be able to put into report: vi_df \<- as.data.frame(gwRF_adaptive$Global.Model$variable.importance)
+
+```{r}
+# writing as rds file
+# gwRF_adaptive <- write_rds(gwRF_adaptive, "data/model/gwRF_adaptive.rds")
+```
+
+## Predicting using Test Data
+
+### Preparing Test Data
+
+Combining test data with the corresponding coordinates data, then dorpping the geometry column.
+
+```{r}
+test_data <- cbind(test_data, coords_test) %>%
+  st_drop_geometry()
+```
+
+### Predicting with Test data
+
+```{r}
+# gwRF_pred <- predict.grf(gwRF_adaptive,
+#                          test_data,
+#                          x.var.name = "X",
+#                          y.var.name = "Y",
+#                          local.w = 1,
+#                          global.w = 0)
+```
+
+```{r}
+# gwRF_pred <- write_rds(gwRF_pred, "data/model/gwRF_pred.rds")
+```
+
+## Converting predicted output into dataframe
