@@ -1,0 +1,35 @@
+---
+title: "In-Class Exercise 9"
+date: "9 March 2023"
+date-modified: "`r Sys.Date()`"
+number-sections: true
+format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Installing and Loading Packages
+
+```{r}
+pacman::p_load(sf, spdep, GWmodel, SpatialML, tidyverse, tmap, ggpubr, olsrr, devtools, tidymodels)
+```
+
+
+# Preparing Data
+
+## Reading Data file to rds
+
+```{r}
+mdata <- read_rds("data/aspatial/mdata.rds")
+```
+
+## Data Sampling
+
+
+
+
+
+
