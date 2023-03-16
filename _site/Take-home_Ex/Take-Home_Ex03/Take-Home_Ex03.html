@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-03-09">
+
+<title>IS415-GAA - Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">IS415-GAA</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-on Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.html">
+ <span class="dropdown-text">Hands-on Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.html">
+ <span class="dropdown-text">Hands-on Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.html">
+ <span class="dropdown-text">Hands-on Exercise 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html">
+ <span class="dropdown-text">Hands-on Exercise 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html">
+ <span class="dropdown-text">Hands-on Exercise 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex09/Hands-on_Ex09.html">
+ <span class="dropdown-text">Hands-on Exercise 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex10/Hands-on_Ex10.html">
+ <span class="dropdown-text">Hands-on Exercise 10</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex11/Hands-on_Ex11.html">
+ <span class="dropdown-text">Hands-on Exercise 11</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-Class Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex02/In-Class_Ex02.html">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex03/In-Class_Ex03.html">
+ <span class="dropdown-text">In-Class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html">
+ <span class="dropdown-text">In-Class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html">
+ <span class="dropdown-text">In-Class Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex06/In-Class_Ex06.html">
+ <span class="dropdown-text">In-Class Exercise 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html">
+ <span class="dropdown-text">In-Class Exercise 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex08/In-Class_Ex08.html">
+ <span class="dropdown-text">In-Class Exercise 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex09/In-Class_Ex09.html">
+ <span class="dropdown-text">In-Class Exercise 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex10/In-Class_Ex10.html">
+ <span class="dropdown-text">In-Class Exercise 10</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex11/In-Class_Ex11.html">
+ <span class="dropdown-text">In-Class Exercise 11</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-Home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">
+ <span class="dropdown-text">Take-Home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html">
+ <span class="dropdown-text">Take-Home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex03/Take-home_Ex03.html">
+ <span class="dropdown-text">Take-Home Exercise 3</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a>
+  <ul class="collapse">
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background"><span class="toc-section-number">1.1</span>  Background</a></li>
+  <li><a href="#problem" id="toc-problem" class="nav-link" data-scroll-target="#problem"><span class="toc-section-number">1.2</span>  Problem</a></li>
+  <li><a href="#task" id="toc-task" class="nav-link" data-scroll-target="#task"><span class="toc-section-number">1.3</span>  Task</a></li>
+  </ul></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">2</span>  Data</a>
+  <ul class="collapse">
+  <li><a href="#aspatial-data" id="toc-aspatial-data" class="nav-link" data-scroll-target="#aspatial-data"><span class="toc-section-number">2.1</span>  Aspatial Data</a></li>
+  <li><a href="#geospatial-data" id="toc-geospatial-data" class="nav-link" data-scroll-target="#geospatial-data"><span class="toc-section-number">2.2</span>  Geospatial Data</a></li>
+  </ul></li>
+  <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages"><span class="toc-section-number">3</span>  Packages</a></li>
+  <li><a href="#aspatial-data-wrangling" id="toc-aspatial-data-wrangling" class="nav-link" data-scroll-target="#aspatial-data-wrangling"><span class="toc-section-number">4</span>  Aspatial Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#importing-aspatial-data" id="toc-importing-aspatial-data" class="nav-link" data-scroll-target="#importing-aspatial-data"><span class="toc-section-number">4.1</span>  Importing Aspatial Data</a></li>
+  </ul></li>
+  <li><a href="#filter-resale-data" id="toc-filter-resale-data" class="nav-link" data-scroll-target="#filter-resale-data"><span class="toc-section-number">5</span>  Filter Resale Data</a>
+  <ul class="collapse">
+  <li><a href="#transforming-resale-data" id="toc-transforming-resale-data" class="nav-link" data-scroll-target="#transforming-resale-data"><span class="toc-section-number">5.1</span>  Transforming Resale Data</a>
+  <ul class="collapse">
+  <li><a href="#creating-new-columns" id="toc-creating-new-columns" class="nav-link" data-scroll-target="#creating-new-columns"><span class="toc-section-number">5.1.1</span>  Creating New Columns</a></li>
+  <li><a href="#summing-up-remaining-lease-in-months" id="toc-summing-up-remaining-lease-in-months" class="nav-link" data-scroll-target="#summing-up-remaining-lease-in-months"><span class="toc-section-number">5.1.2</span>  Summing up remaining lease in months</a></li>
+  <li><a href="#retrieving-postal-codes-and-coordinates-of-addresses" id="toc-retrieving-postal-codes-and-coordinates-of-addresses" class="nav-link" data-scroll-target="#retrieving-postal-codes-and-coordinates-of-addresses"><span class="toc-section-number">5.1.3</span>  Retrieving Postal Codes and Coordinates of Addresses</a></li>
+  </ul></li>
+  <li><a href="#creating-rds-file" id="toc-creating-rds-file" class="nav-link" data-scroll-target="#creating-rds-file"><span class="toc-section-number">5.2</span>  Creating rds file</a></li>
+  <li><a href="#importing-rds-file" id="toc-importing-rds-file" class="nav-link" data-scroll-target="#importing-rds-file"><span class="toc-section-number">5.3</span>  Importing RDS file</a>
+  <ul class="collapse">
+  <li><a href="#transform-and-checking-crs" id="toc-transform-and-checking-crs" class="nav-link" data-scroll-target="#transform-and-checking-crs"><span class="toc-section-number">5.3.1</span>  Transform and Checking CRS</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#locational-factors-data-wrangling" id="toc-locational-factors-data-wrangling" class="nav-link" data-scroll-target="#locational-factors-data-wrangling"><span class="toc-section-number">6</span>  Locational Factors Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#locational-factors-with-geographic-coordinates" id="toc-locational-factors-with-geographic-coordinates" class="nav-link" data-scroll-target="#locational-factors-with-geographic-coordinates"><span class="toc-section-number">6.1</span>  Locational Factors with geographic coordinates</a>
+  <ul class="collapse">
+  <li><a href="#importing-data-checking-crs" id="toc-importing-data-checking-crs" class="nav-link" data-scroll-target="#importing-data-checking-crs"><span class="toc-section-number">6.1.1</span>  Importing Data &amp; Checking CRS</a></li>
+  <li><a href="#assigning-epsg-code-and-transforming-crs" id="toc-assigning-epsg-code-and-transforming-crs" class="nav-link" data-scroll-target="#assigning-epsg-code-and-transforming-crs"><span class="toc-section-number">6.1.2</span>  Assigning EPSG code and Transforming CRS</a></li>
+  <li><a href="#calculating-proximity" id="toc-calculating-proximity" class="nav-link" data-scroll-target="#calculating-proximity"><span class="toc-section-number">6.1.3</span>  Calculating Proximity</a></li>
+  <li><a href="#creating-get_within-function" id="toc-creating-get_within-function" class="nav-link" data-scroll-target="#creating-get_within-function"><span class="toc-section-number">6.1.4</span>  Creating get_within function</a></li>
+  </ul></li>
+  <li><a href="#locational-factors-without-geographic-coordinates" id="toc-locational-factors-without-geographic-coordinates" class="nav-link" data-scroll-target="#locational-factors-without-geographic-coordinates"><span class="toc-section-number">6.2</span>  Locational Factors without geographic coordinates</a>
+  <ul class="collapse">
+  <li><a href="#cbd" id="toc-cbd" class="nav-link" data-scroll-target="#cbd"><span class="toc-section-number">6.2.1</span>  CBD</a></li>
+  <li><a href="#primary-schools" id="toc-primary-schools" class="nav-link" data-scroll-target="#primary-schools"><span class="toc-section-number">6.2.2</span>  Primary Schools</a></li>
+  <li><a href="#good-primary-schools" id="toc-good-primary-schools" class="nav-link" data-scroll-target="#good-primary-schools"><span class="toc-section-number">6.2.3</span>  Good Primary Schools</a></li>
+  </ul></li>
+  <li><a href="#writing-to-rds-file" id="toc-writing-to-rds-file" class="nav-link" data-scroll-target="#writing-to-rds-file"><span class="toc-section-number">6.3</span>  Writing to RDS file</a></li>
+  </ul></li>
+  <li><a href="#encoding-locational-factors" id="toc-encoding-locational-factors" class="nav-link" data-scroll-target="#encoding-locational-factors"><span class="toc-section-number">7</span>  Encoding Locational Factors</a>
+  <ul class="collapse">
+  <li><a href="#reading-rds-file" id="toc-reading-rds-file" class="nav-link" data-scroll-target="#reading-rds-file"><span class="toc-section-number">7.1</span>  Reading RDS File</a></li>
+  <li><a href="#extracting-unique-storey_range-and-sort" id="toc-extracting-unique-storey_range-and-sort" class="nav-link" data-scroll-target="#extracting-unique-storey_range-and-sort"><span class="toc-section-number">7.2</span>  Extracting unique storey_range and sort</a></li>
+  <li><a href="#creating-dataframe-storey_range_order-to-store-the-order-of-storey_range" id="toc-creating-dataframe-storey_range_order-to-store-the-order-of-storey_range" class="nav-link" data-scroll-target="#creating-dataframe-storey_range_order-to-store-the-order-of-storey_range"><span class="toc-section-number">7.3</span>  Creating dataframe storey_range_order to store the order of storey_range</a></li>
+  <li><a href="#combining-storey_order-with-resale-dataframe" id="toc-combining-storey_order-with-resale-dataframe" class="nav-link" data-scroll-target="#combining-storey_order-with-resale-dataframe"><span class="toc-section-number">7.4</span>  Combining storey_order with resale dataframe</a></li>
+  <li><a href="#selecting-required-columns-for-analysis" id="toc-selecting-required-columns-for-analysis" class="nav-link" data-scroll-target="#selecting-required-columns-for-analysis"><span class="toc-section-number">7.5</span>  Selecting required columns for analysis</a></li>
+  <li><a href="#writing-to-rds-file-1" id="toc-writing-to-rds-file-1" class="nav-link" data-scroll-target="#writing-to-rds-file-1"><span class="toc-section-number">7.6</span>  Writing to rds file</a></li>
+  <li><a href="#viewing-summary" id="toc-viewing-summary" class="nav-link" data-scroll-target="#viewing-summary"><span class="toc-section-number">7.7</span>  Viewing Summary</a></li>
+  </ul></li>
+  <li><a href="#geospatial-data-wrangling" id="toc-geospatial-data-wrangling" class="nav-link" data-scroll-target="#geospatial-data-wrangling"><span class="toc-section-number">8</span>  Geospatial Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data"><span class="toc-section-number">8.1</span>  Importing Geospatial Data</a></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis"><span class="toc-section-number">9</span>  Exploratory Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#statistical-graphs" id="toc-statistical-graphs" class="nav-link" data-scroll-target="#statistical-graphs"><span class="toc-section-number">9.1</span>  Statistical Graphs</a></li>
+  </ul></li>
+  <li><a href="#predictive-modelling" id="toc-predictive-modelling" class="nav-link" data-scroll-target="#predictive-modelling"><span class="toc-section-number">10</span>  Predictive Modelling</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 9, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 16, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Overview</h1>
+<section id="background" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="background"><span class="header-section-number">1.1</span> Background</h2>
+<p>Housing is an essential component of household wealth worldwide. Buying a housing has always been a major investment for most people. The price of housing is affected by many factors. Some of them are global in nature such as the general economy of a country or inflation rate. Others can be more specific to the properties themselves. These factors can be further divided to <strong>structural</strong> and <strong>locational</strong> factors.</p>
+<p><strong>Structural factors</strong> are variables related to the property themselves such as the size, fitting, and tenure of the property. <strong>Locational factors</strong> are variables related to the neighbourhood of the properties such as proximity to childcare centre, public transport service and shopping centre.</p>
+</section>
+<section id="problem" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="problem"><span class="header-section-number">1.2</span> Problem</h2>
+<p>Conventional, housing resale prices predictive models were built by using <strong>Ordinary Least Square (OLS)</strong> method. However, this method failed to take into consideration that spatial autocorrelation and spatial heterogeneity exists in geographic data sets such as housing transactions.</p>
+<p>With the existence of spatial autocorrelation, the OLS estimation of predictive housing resale pricing models could lead to biased, inconsistent, or inefficient results (Anselin 1998). In view of this limitation, <strong>Geographical Weighted Models</strong> were introduced for calibrating predictive models for housing resale prices.</p>
+</section>
+<section id="task" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="task"><span class="header-section-number">1.3</span> Task</h2>
+<p>In this take-home exercise, we will be creating models to <strong>predict HDB resale prices at the sub-market level</strong> (i.e.&nbsp;HDB 3-room, HDB 4-room and HDB 5-room) for the month of <em>January and February 2023</em> in Singapore.</p>
+<p>We will be building the models using both the conventional OLS and GWR method. We will then compare the performance of the conventional OLS method versus the geographical weighted methods.</p>
+</section>
+</section>
+<section id="data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data</h1>
+<section id="aspatial-data" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="aspatial-data"><span class="header-section-number">2.1</span> Aspatial Data</h2>
+<ul>
+<li><a href="https://data.gov.sg/dataset/resale-flat-prices">resale-flat-prices.csv</a>: HDB Resale Prices from 2017 onwards (.csv)</li>
+</ul>
+</section>
+<section id="geospatial-data" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="geospatial-data"><span class="header-section-number">2.2</span> Geospatial Data</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Format</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MPSZ-2019</td>
+<td>.shp</td>
+<td>From Prof.&nbsp;Kam’s In-Class Exercise Data</td>
+</tr>
+<tr class="even">
+<td>MRT Locations</td>
+<td>.shp</td>
+<td><a href="https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=mrt">LTA Data Mall</a></td>
+</tr>
+<tr class="odd">
+<td>Bustop Locations</td>
+<td>.shp</td>
+<td><a href="https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=bus%20stop">LTA Data Mall</a></td>
+</tr>
+<tr class="even">
+<td>Eldercare Services</td>
+<td>.shp</td>
+<td><a href="https://data.gov.sg/dataset/eldercare-services">data.gov.sg</a></td>
+</tr>
+<tr class="odd">
+<td>Hawker Centers</td>
+<td>.geojson</td>
+<td><a href="https://data.gov.sg/dataset/hawker-centres">data.gov.sg</a></td>
+</tr>
+<tr class="even">
+<td>Parks</td>
+<td>.shp</td>
+<td><a href="https://dataportal.asia/dataset/192521342_parks/resource/0fe1f447-9964-47a8-b802-f97fa8fed6a0">data.gov.sg</a></td>
+</tr>
+<tr class="odd">
+<td>Supermarkets</td>
+<td>.geojson</td>
+<td><a href="https://dataportal.asia/dataset/192501037_supermarkets/resource/3933d0d7-a795-4c41-b611-e0e4f4697e54">data.gov.sg</a></td>
+</tr>
+<tr class="even">
+<td>CHAS Clinics</td>
+<td>.geojson</td>
+<td><a href="https://dataportal.asia/dataset/192501037_chas-clinics">data.gov.sg</a></td>
+</tr>
+<tr class="odd">
+<td>Childcare Centers</td>
+<td>.geojson</td>
+<td><a href="https://dataportal.asia/dataset/203030733_child-care-services/resource/d5d984bc-331b-4865-9c43-29588f7f78ff">data.gov.sg</a></td>
+</tr>
+<tr class="even">
+<td>Kindergarten/Preschool</td>
+<td>.geojson</td>
+<td><a href="https://dataportal.asia/dataset/203030733_pre-schools-location">data.gov.sg</a></td>
+</tr>
+<tr class="odd">
+<td>Shopping Malls</td>
+<td>.csv</td>
+<td><a href="https://github.com/ValaryLim/Mall-Coordinates-Web-Scraper">Mall Coordinates Web Scraper</a></td>
+</tr>
+<tr class="even">
+<td>Primary Schools (extracted from the list on General information of schools)</td>
+<td>.csv</td>
+<td><a href="https://dataportal.asia/dataset/192521611_school-directory-and-information/resource/ede26d32-01af-4228-b1ed-f05c45a1d8ee">data.gov.sg</a></td>
+</tr>
+<tr class="odd">
+<td>Good Primary Schools</td>
+<td>-</td>
+<td><a href="https://www.salary.sg/2022/best-primary-schools-2022-by-popularity/">2022 Primary School Rankings</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="packages" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Packages</h1>
+<p>The packages we will be using in this analysis are:</p>
+<ul>
+<li><p>olsrr: R package for building OLS and performing diagnostics tests</p></li>
+<li><p>ggpubr: creating and customising ggplot2 based publication ready plots</p></li>
+<li><p>sf: importing, managing and processing geospatial data</p></li>
+<li><p>spdep: creating spatial weight matrix objects, global and spatial autocorrelation statistics and related calculations</p></li>
+<li><p>gwmodel: R package for calibrating geographical weighted family of models</p></li>
+<li><p>tmap: choropleth mapping</p></li>
+<li><p>tidyverse: attribute data handing</p></li>
+<li><p>gtsummary: creating publication-ready summary tables</p></li>
+<li><p>corrplot: Multivariate data visualisation and analysis</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(olsrr, corrplot, ggpubr, sf, spdep, GWmodel, tmap, tidyverse, gtsummary, httr, jsonlite, SpatialML, devtools, rsample)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="aspatial-data-wrangling" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Aspatial Data Wrangling</h1>
+<section id="importing-aspatial-data" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="importing-aspatial-data"><span class="header-section-number">4.1</span> Importing Aspatial Data</h2>
+<p>First, we will be using read_csv() to import resale-flat-prices.csv into R as a tibble data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resale <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/resale-flat-prices.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since the study requires us to focus on either three-room, four-room or five-room flat, I have decided to focus on 4 room flats. Hence, we need to filter the data to extract out the necessary data required.</p>
+</section>
+</section>
+<section id="filter-resale-data" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Filter Resale Data</h1>
+<p>filter() from dplyr is used to select the desired flat_type and stores it in resale dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>resale <span class="ot">&lt;-</span> resale <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flat_type <span class="sc">==</span> <span class="st">"4 ROOM"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="transforming-resale-data" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="transforming-resale-data"><span class="header-section-number">5.1</span> Transforming Resale Data</h2>
+<section id="creating-new-columns" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="creating-new-columns"><span class="header-section-number">5.1.1</span> Creating New Columns</h3>
+<p>We will be creating new columns using mutate():</p>
+<ul>
+<li><p>address: concatenating block and street_name together using paste() function</p></li>
+<li><p>remaining_lease_yr &amp; remaining_lease_mth: splitting the year and months of the remaining_lease column using str_sub() and then converting the characters into integers using as.integer()</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>resale_transform <span class="ot">&lt;-</span> resale <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(resale, <span class="at">address =</span> <span class="fu">paste</span>(block,street_name)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(resale, <span class="at">remaining_lease_yr =</span> <span class="fu">as.integer</span>(<span class="fu">str_sub</span>(remaining_lease, <span class="dv">0</span>, <span class="dv">2</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(resale, <span class="at">remaining_lease_mth =</span> <span class="fu">as.integer</span>(<span class="fu">str_sub</span>(remaining_lease, <span class="dv">9</span>, <span class="dv">11</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="summing-up-remaining-lease-in-months" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="summing-up-remaining-lease-in-months"><span class="header-section-number">5.1.2</span> Summing up remaining lease in months</h3>
+<p>Now we will replace NA values in the remaining_lease_mth column with 0 using is.na(). After which, we will multiply remaining_lease_yr by 12 to convert it into months. Then, we will create another column called “remaining_lease_mths” which sums the remaining_lease_year and remaining_lease_mth columns using rowSums().</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>resale_transform<span class="sc">$</span>remaining_lease_mth[<span class="fu">is.na</span>(resale_transform<span class="sc">$</span>remaining_lease_mth)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>resale_transform<span class="sc">$</span>remaining_lease_yr <span class="ot">&lt;-</span> resale_transform<span class="sc">$</span>remaining_lease_yr <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>resale_transform <span class="ot">&lt;-</span> resale_transform <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(resale_transform, <span class="at">remaining_lease_mths =</span> <span class="fu">rowSums</span>(resale_transform[, <span class="fu">c</span>(<span class="st">"remaining_lease_yr"</span>, <span class="st">"remaining_lease_mth"</span>)])) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, town, address, block, street_name, flat_type, storey_range, floor_area_sqm, flat_model, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>         lease_commence_date, remaining_lease_mths, resale_price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="retrieving-postal-codes-and-coordinates-of-addresses" class="level3" data-number="5.1.3">
+<h3 data-number="5.1.3" class="anchored" data-anchor-id="retrieving-postal-codes-and-coordinates-of-addresses"><span class="header-section-number">5.1.3</span> Retrieving Postal Codes and Coordinates of Addresses</h3>
+<p>Now we will be retrieving postal codes and coordinates of the addresses so that we can get their proximity to locational factors.</p>
+<p><strong>Creating a list storing unique addresses</strong></p>
+<p>We create a list to store unique addresses to ensure that we do not run the GET request more than what is necessary We can also sort it to make it easier for us to see at which address the GET request will fail. Here, we use unique() function of base R package to extract the unique addresses then use sort() function of base R package to sort the unique vectors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>add_list <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(resale_transform<span class="sc">$</span>address))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Creating a function to retrieve coordinates</strong></p>
+<p>Now we will create a function called get_coords to retrieve the coordinates from the OneMap.SG API.</p>
+<ol type="1">
+<li><p>Create a dataframe called <code>postal_coords</code> to store all the final retrieved coordinates</p></li>
+<li><p>Use GET() function from httr package to make a GET request to the API</p>
+<ul>
+<li><p>OneMap SG offers functions for us to query spatial data from the API in a tidy format and provides additional functionalities to allow easy data manipulation.</p></li>
+<li><p>Here, we will be using their REST APIs to search address data for a given search value and retrieve the coordinates of the searched location.</p></li>
+<li><p>The required variables to be included in the GET request is as follows:</p>
+<ul>
+<li><p><strong><code>searchVal</code></strong>: Keywords entered by user that is used to filter out the results.</p></li>
+<li><p><strong><code>returnGeom</code></strong> {Y/N}: Checks if user wants to return the geometry.</p></li>
+<li><p><strong><code>getAddrDetails</code></strong> {Y/N}: Checks if user wants to return address details for a point.</p></li>
+</ul></li>
+</ul></li>
+<li><p>Create a dataframe <code>new_row</code> which stores each final set of coordinates retrieved during the loop</p></li>
+<li><p>Check the number of responses returned and append to the main dataframe accordingly. We do this because:</p>
+<ul>
+<li><p>Num of returned responses of the searched location varies because some locations have only 1 result while others have multiple. Hence we need to first look at only those that do not have empty postal codes then take the first set of coordinates</p></li>
+<li><p>We can check to see if an address is invalid by looking at the number of rows returned by the request</p></li>
+</ul></li>
+<li><p>Lastly, we will append the returned response (<code>new_row</code>) with the necessary fields to the main dataframe (<code>postal_coords</code>) using <em>rbind()</em> function of base R package.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>get_coords <span class="ot">&lt;-</span> <span class="cf">function</span>(add_list){</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a data frame to store all retrieved coordinates</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  postal_coords <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> add_list){</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(i)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">'https://developers.onemap.sg/commonapi/search?'</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">query=</span><span class="fu">list</span>(<span class="at">searchVal=</span>i,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">returnGeom=</span><span class="st">'Y'</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">getAddrDetails=</span><span class="st">'Y'</span>))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(r<span class="sc">$</span>content))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    found <span class="ot">&lt;-</span> data<span class="sc">$</span>found</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">&lt;-</span> data<span class="sc">$</span>results</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a new data frame for each address</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    new_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If single result, append </span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (found <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      postal <span class="ot">&lt;-</span> res<span class="sc">$</span>POSTAL </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>      lat <span class="ot">&lt;-</span> res<span class="sc">$</span>LATITUDE</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      lng <span class="ot">&lt;-</span> res<span class="sc">$</span>LONGITUDE</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>      new_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">address=</span> i, <span class="at">postal =</span> postal, <span class="at">latitude =</span> lat, <span class="at">longitude =</span> lng)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If multiple results, drop NIL and append top 1</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span> (found <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Remove those with NIL as postal</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>      res_sub <span class="ot">&lt;-</span> res[res<span class="sc">$</span>POSTAL <span class="sc">!=</span> <span class="st">"NIL"</span>, ]</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Set as NA first if no Postal</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">nrow</span>(res_sub) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>          new_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">address=</span> i, <span class="at">postal =</span> <span class="cn">NA</span>, <span class="at">latitude =</span> <span class="cn">NA</span>, <span class="at">longitude =</span> <span class="cn">NA</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>{</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>        top1 <span class="ot">&lt;-</span> <span class="fu">head</span>(res_sub, <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>        postal <span class="ot">&lt;-</span> top1<span class="sc">$</span>POSTAL </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        lat <span class="ot">&lt;-</span> top1<span class="sc">$</span>LATITUDE</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        lng <span class="ot">&lt;-</span> top1<span class="sc">$</span>LONGITUDE</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        new_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">address=</span> i, <span class="at">postal =</span> postal, <span class="at">latitude =</span> lat, <span class="at">longitude =</span> lng)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>      new_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">address=</span> i, <span class="at">postal =</span> <span class="cn">NA</span>, <span class="at">latitude =</span> <span class="cn">NA</span>, <span class="at">longitude =</span> <span class="cn">NA</span>)</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add the row</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    postal_coords <span class="ot">&lt;-</span> <span class="fu">rbind</span>(postal_coords, new_row)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(postal_coords)</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Calling the function to retrieve coordinates</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">get_coords</span>(add_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Inspecting results</strong></p>
+<p>Here, we check whether the relevant columns contains any NA values with is.na() function of base R package and also “NIL”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>coords[(<span class="fu">is.na</span>(coords<span class="sc">$</span>postal) <span class="sc">|</span> <span class="fu">is.na</span>(coords<span class="sc">$</span>latitude) <span class="sc">|</span> <span class="fu">is.na</span>(coords<span class="sc">$</span>longitude) <span class="sc">|</span> coords<span class="sc">$</span>postal<span class="sc">==</span><span class="st">"NIL"</span>), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From this, we notice that the address “215 CHOA CHU KANG CTRL” and “216 CHOA CHU KANG CTRL” do not have a postal code but has geographic coordinates. Upon further research, it has the postal code 608215 and 680216 respectively. However, as the API returned the same set of coordinates for both of these addresses, we shall proceed with keeping them as we are more interested in the coordinates for our analysis later on.</p>
+<p><strong>Combining resale and coordinates data</strong></p>
+<p>After retrieving the coordinates, we should combine the successful ones with our transformed resale dataset. We can do this by using left_join() function of dplyr package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rs_coords <span class="ot">&lt;-</span> <span class="fu">left_join</span>(resale_transform, coords, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'address'</span> <span class="ot">=</span> <span class="st">'address'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="creating-rds-file" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="creating-rds-file"><span class="header-section-number">5.2</span> Creating rds file</h2>
+<p>Now that the resale dataset is now complete with the coordinates, we can save it in an rds file. This also prevents is from needing to run the GET request everytime.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rs_coords_rds <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(rs_coords, <span class="st">"data/rds/rs_coords.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importing-rds-file" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="importing-rds-file"><span class="header-section-number">5.3</span> Importing RDS file</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rs_coords <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/rs_coords.rds"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(rs_coords)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="transform-and-checking-crs" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="transform-and-checking-crs"><span class="header-section-number">5.3.1</span> Transform and Checking CRS</h3>
+<p>Since the coordinates (latitude and longitude) are in decimal degrees, the projected CRS is WGS84. We will need to assign them WGS84’s EPSG code 4326 first before transforming it to 3414, the EPSG code for SVY21. st_as_sf() converts the dataframe into an sf object, then st_transform() transforms the coordinates into the appropriate CRS.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(rs_coords,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"latitude"</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(rs_coords_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="locational-factors-data-wrangling" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Locational Factors Data Wrangling</h1>
+<section id="locational-factors-with-geographic-coordinates" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="locational-factors-with-geographic-coordinates"><span class="header-section-number">6.1</span> Locational Factors with geographic coordinates</h2>
+<section id="importing-data-checking-crs" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="importing-data-checking-crs"><span class="header-section-number">6.1.1</span> Importing Data &amp; Checking CRS</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Importing Data</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Check CRS</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>eldercare <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/locational"</span>, <span class="at">layer =</span> <span class="st">"ELDERCARE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mrt <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/locational"</span>, <span class="at">layer =</span> <span class="st">"Train_Station_Exit_Layer"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bus <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/locational"</span>, <span class="at">layer =</span> <span class="st">"BusStop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>parks <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/locational"</span>, <span class="at">layer =</span> <span class="st">"NATIONALPARKS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hawker <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/locational/hawker-centres-geojson.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>supermarket <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/locational/supermarkets.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>clinic <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/locational/moh-chas-clinics.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>childcare <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/locational/childcare.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kindergarten <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/locational/preschools-location.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>malls <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/locational/mall_coordinates_updated.csv"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>mall_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(malls, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs=</span><span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(eldercare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mrt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(bus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(parks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(hawker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(supermarket)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(clinic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(childcare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(kindergarten)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mall_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>From the Results:</p>
+<ul>
+<li><p>Datasets with WGS48 Geodetic CRS: hawker, supermarket, clinic, childcare, kindergarten, malls_sf. We will need to transform the CRS into SVY21</p></li>
+<li><p>Datasets with SVY21 as Projected CRS: eldercare, mrt, bus, parks. For all of them, the EPSG code is 9001, which is wrong. We need to change the CRS into the correct EPSG code for SVY21, <strong>3414</strong></p></li>
+</ul>
+</section>
+<section id="assigning-epsg-code-and-transforming-crs" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="assigning-epsg-code-and-transforming-crs"><span class="header-section-number">6.1.2</span> Assigning EPSG code and Transforming CRS</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Check CRS</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>eldercare <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(eldercare, <span class="dv">3414</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>mrt <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(mrt, <span class="dv">3414</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>bus <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(bus, <span class="dv">3414</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>parks <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(parks, <span class="dv">3414</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>hawker <span class="ot">&lt;-</span> hawker <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">3414</span>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>supermarket <span class="ot">&lt;-</span> supermarket <span class="sc">%&gt;%</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">3414</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>clinic <span class="ot">&lt;-</span> clinic <span class="sc">%&gt;%</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">3414</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>childcare <span class="ot">&lt;-</span> childcare <span class="sc">%&gt;%</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">3414</span>)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>kindergarten <span class="ot">&lt;-</span> kindergarten <span class="sc">%&gt;%</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">3414</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>mall_sf <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(mall_sf, <span class="at">crs=</span><span class="dv">3414</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(eldercare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mrt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(bus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(parks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(hawker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(supermarket)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(clinic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(childcare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(kindergarten)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mall_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>From the above results, we can see that the EPSG code of all the data has now been assigned correctly and they are all EPSG 3414.</p>
+</section>
+<section id="calculating-proximity" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="calculating-proximity"><span class="header-section-number">6.1.3</span> Calculating Proximity</h3>
+<section id="creating-get_prox-function" class="level4" data-number="6.1.3.1">
+<h4 data-number="6.1.3.1" class="anchored" data-anchor-id="creating-get_prox-function"><span class="header-section-number">6.1.3.1</span> Creating get_prox function</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>get_prox <span class="ot">&lt;-</span> <span class="cf">function</span>(origin_df, dest_df, col_name){</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># creates a matrix of distances</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  dist_matrix <span class="ot">&lt;-</span> <span class="fu">st_distance</span>(origin_df, dest_df)           </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find the nearest location_factor and create new data frame</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  near <span class="ot">&lt;-</span> origin_df <span class="sc">%&gt;%</span> </span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">PROX =</span> <span class="fu">apply</span>(dist_matrix, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">min</span>(x)) <span class="sc">/</span> <span class="dv">1000</span>) </span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rename column name according to input parameter</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(near)[<span class="fu">names</span>(near) <span class="sc">==</span> <span class="st">'PROX'</span>] <span class="ot">&lt;-</span> col_name</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return df</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(near)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What the code does:</p>
+<ul>
+<li><p>create a matrix of distances between the HDB and the locational factor using st_distance of sf package.</p></li>
+<li><p>get the nearest point of the locational factor by looking at the minimum distance using min function of base R package then add it to HDB resale data under a new column using mutate() function of dpylr package.</p></li>
+<li><p>rename the column name according to input given by user so that the columns have appropriate and distinct names that are different from one another.</p></li>
+</ul>
+</section>
+<section id="calling-get_prox-function" class="level4" data-number="6.1.3.2">
+<h4 data-number="6.1.3.2" class="anchored" data-anchor-id="calling-get_prox-function"><span class="header-section-number">6.1.3.2</span> Calling get_prox function</h4>
+<p>We will be calling the function to get the proximity of the resale HDB flats and the locational factors such as: Eldercare, MRT, Hawker, Parks, Supermarkets, Clinics</p>
+<p>Then we will create a new column in rs_coords_sf dataframe to store the proximity</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, eldercare, <span class="st">"PROX_ELDERLYCARE"</span>) </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, mrt, <span class="st">"PROX_MRT"</span>) </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, hawker, <span class="st">"PROX_HAWKER"</span>) </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, parks, <span class="st">"PROX_PARK"</span>) </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, supermarket, <span class="st">"PROX_SUPERMARKET"</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, clinic, <span class="st">"PROX_CLINIC"</span>)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, mall_sf, <span class="st">"PROX_MALL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="creating-get_within-function" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="creating-get_within-function"><span class="header-section-number">6.1.4</span> Creating get_within function</h3>
+<p>Now we will create a get_within function to calculate the number of factors within a specific distance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>get_within <span class="ot">&lt;-</span> <span class="cf">function</span>(origin_df, dest_df, threshold_dist, col_name){</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># creates a matrix of distances</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  dist_matrix <span class="ot">&lt;-</span> <span class="fu">st_distance</span>(origin_df, dest_df)   </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># count the number of location_factors within threshold_dist and create new data frame</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  wdist <span class="ot">&lt;-</span> origin_df <span class="sc">%&gt;%</span> </span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">WITHIN_DT =</span> <span class="fu">apply</span>(dist_matrix, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">sum</span>(x <span class="sc">&lt;=</span> threshold_dist)))</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rename column name according to input parameter</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(wdist)[<span class="fu">names</span>(wdist) <span class="sc">==</span> <span class="st">'WITHIN_DT'</span>] <span class="ot">&lt;-</span> col_name</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return df</span></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(wdist)</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What the function does:</p>
+<ul>
+<li><p>create a matrix of distances between the HDB and the locational factor using st_distance of sf package.</p></li>
+<li><p>get the sum of points of the locational factor that are within the threshold distance using sum function of base R package then add it to HDB resale data under a new column using mutate() function of dpylr package.</p></li>
+<li><p>rename the column name according to input given by user so that the columns have appropriate and distinct names that are different from one another.</p></li>
+</ul>
+<section id="calling-get_within-function" class="level4" data-number="6.1.4.1">
+<h4 data-number="6.1.4.1" class="anchored" data-anchor-id="calling-get_within-function"><span class="header-section-number">6.1.4.1</span> Calling get_within function</h4>
+<p>Here, we call the get_within function created earlier to get the number of locational factors that are within a certain threshold distance.</p>
+<p>The threshold we set it to will be Within 350m for locational factors such as, Kindergartens, Childcare centres and Bus stops.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_within</span>(rs_coords_sf, kindergarten, <span class="dv">350</span>, <span class="st">"WITHIN_350M_KINDERGARTEN"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_within</span>(rs_coords_sf, childcare, <span class="dv">350</span>, <span class="st">"WITHIN_350M_CHILDCARE"</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_within</span>(rs_coords_sf, bus, <span class="dv">350</span>, <span class="st">"WITHIN_350M_BUS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="locational-factors-without-geographic-coordinates" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="locational-factors-without-geographic-coordinates"><span class="header-section-number">6.2</span> Locational Factors without geographic coordinates</h2>
+<p>In this section, we retrieve those locational factors that are not easily obtainable from data.gov.sg and/or does not have any geographic coordinates.</p>
+<section id="cbd" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="cbd"><span class="header-section-number">6.2.1</span> CBD</h3>
+<p>We are required to get the proximity of the resale HDBs to the CBD. Based on a quick search, the latitude and longitude of Downtown Core (also known as CBD) are <strong>1.287953</strong> and <strong>103.851784</strong> respectively.</p>
+<p>Since we already have the geographic coordinates of the resale data, we just need to convert the latitude and longitude of CBD into EPSG 3414 (SVY21) before running the get_prox function.</p>
+<p>We will first create a dataframe consisting of the latitude and longitude coordinates of the CBD area then transform it to EPSG 3414 (SVY21) format.</p>
+<p><strong>Storing CDB coordinates in a dataframe:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CBD Area'</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>latitude<span class="ot">=</span> <span class="fu">c</span>(<span class="fl">1.287953</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>longitude<span class="ot">=</span> <span class="fu">c</span>(<span class="fl">103.851784</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>cbd_coords <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(name, latitude, longitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Assigning and transforming CRS</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>cbd_coords_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(cbd_coords,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"latitude"</span>),</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(cbd_coords_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Calling get_prox function</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, cbd_coords_sf, <span class="st">"PROX_CBD"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="primary-schools" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="primary-schools"><span class="header-section-number">6.2.2</span> Primary Schools</h3>
+<p><strong>Reading CSV File</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pri_sch <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/locational/general-information-of-schools.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Extracting Primary Schools and Required Columns</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>pri_sch <span class="ot">&lt;-</span> pri_sch <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(mainlevel_code <span class="sc">==</span> <span class="st">"PRIMARY"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_name, address, postal_code, mainlevel_code)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Creating a list to store postal codes</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>prisch_list <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(pri_sch<span class="sc">$</span>postal_code))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Calling get_coords function to get coordinates of Primary Schools</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>prisch_coords <span class="ot">&lt;-</span> <span class="fu">get_coords</span>(prisch_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>prisch_coords[(<span class="fu">is.na</span>(prisch_coords<span class="sc">$</span>postal) <span class="sc">|</span> <span class="fu">is.na</span>(prisch_coords<span class="sc">$</span>latitude) <span class="sc">|</span> <span class="fu">is.na</span>(prisch_coords<span class="sc">$</span>longitude)),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The postal codes of the schools with NA values in the postal code, latitude and longitude are:</p>
+<ul>
+<li>319133 (Pei Chun Public School)</li>
+<li>228091 (St.&nbsp;Margaret’s Primary School)</li>
+</ul>
+<p>This is due to the postal codes and the addresses in our data not matching with the postal codes and addresses in the API. Let’s quickly modify those:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Pei Chun Public School</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>pri_sch[pri_sch<span class="sc">$</span>school_name <span class="sc">==</span> <span class="st">"PEI CHUN PUBLIC SCHOOL"</span>, <span class="st">"address"</span>] <span class="ot">&lt;-</span> <span class="st">"16 LORONG 7 TOA PAYOH"</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>pri_sch[pri_sch<span class="sc">$</span>school_name <span class="sc">==</span> <span class="st">"PEI CHUN PUBLIC SCHOOL"</span>, <span class="st">"postal_code"</span>] <span class="ot">&lt;-</span> <span class="st">"319320"</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co">#St. Margaret's Primary School</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>pri_sch[pri_sch<span class="sc">$</span>school_name <span class="sc">==</span> <span class="st">"ST. MARGARET'S PRIMARY SCHOOL"</span>, <span class="st">"address"</span>] <span class="ot">&lt;-</span> <span class="st">"2 MATTAR ROAD"</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>pri_sch[pri_sch<span class="sc">$</span>school_name <span class="sc">==</span> <span class="st">"ST. MARGARET'S PRIMARY SCHOOL"</span>, <span class="st">"postal_code"</span>] <span class="ot">&lt;-</span> <span class="st">"387724"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Updating the coordinates dataframe again:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>prisch_list <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(pri_sch<span class="sc">$</span>postal_code))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>prisch_coords <span class="ot">&lt;-</span> <span class="fu">get_coords</span>(prisch_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Checking again to make sure we have no more NA values:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>prisch_coords[(<span class="fu">is.na</span>(prisch_coords<span class="sc">$</span>postal) <span class="sc">|</span> <span class="fu">is.na</span>(prisch_coords<span class="sc">$</span>latitude) <span class="sc">|</span> <span class="fu">is.na</span>(prisch_coords<span class="sc">$</span>longitude)),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>0 rows with NA values.</p>
+<p><strong>Combining coordinates with Primary School Names</strong></p>
+<p>Here, we combine the retrieved coordinates with the df that has the Primary School Names so that we can verify whether we have extracted it correctly. We combine it using the left_join function of dplyr package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>prisch_coords <span class="ot">=</span> prisch_coords[<span class="fu">c</span>(<span class="st">"postal"</span>,<span class="st">"latitude"</span>, <span class="st">"longitude"</span>)]</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>pri_sch <span class="ot">&lt;-</span> <span class="fu">left_join</span>(pri_sch, prisch_coords, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'postal_code'</span> <span class="ot">=</span> <span class="st">'postal'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Checking again for any NA values:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>pri_sch[(<span class="fu">is.na</span>(pri_sch<span class="sc">$</span>latitude) <span class="sc">|</span> <span class="fu">is.na</span>(pri_sch<span class="sc">$</span>longitude)),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We have successfully retrived all the coordinates of the primary schools.</p>
+<p><strong>Converting pri_sch dataframe into an sf object and transforming CRS</strong></p>
+<p>We will use st_as_sf() function of sf package to convert the data frame into sf object, and then use st_transform() function of sf package to transform the coordinates of the sf object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>prisch_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(pri_sch,</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"latitude"</span>),</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(prisch_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Calling get_within function</strong></p>
+<p>Now we will call the get_within function to get the number of primary schools within the 1km threshold.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_within</span>(rs_coords_sf, prisch_sf, <span class="dv">1000</span>, <span class="st">"WITHIN_1KM_PRISCH"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="good-primary-schools" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="good-primary-schools"><span class="header-section-number">6.2.3</span> Good Primary Schools</h3>
+<p>We need to extract the list of “good” primary schools from online websites since there are no datasets available. In particular, we can look at salary.sg for the list of Best Primary Schools of 2022. Here is the top 10 list:</p>
+<p><img src="images/image-159004597.png" class="img-fluid"></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creating a dataframe to store the schools</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>school_name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"METHODIST GIRLS' SCHOOL (PRIMARY)"</span>,</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"CATHOLIC HIGH SCHOOL"</span>,</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"TAO NAN SCHOOL"</span>,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"PEI HWA PRESBYTERIAN PRIMARY SCHOOL"</span>,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"HOLY INNOCENTS' PRIMARY SCHOOL"</span>,</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"NAN HUA PRIMARY SCHOOL"</span>,</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"CHIJ SAINT. NICHOLAS GIRLS' SCHOOL"</span>,</span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"ADMIRALTY PRIMARY SCHOOL"</span>,</span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"SAINT. HILDA'S PRIMARY SCHOOL"</span>,</span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"AI TONG SCHOOL"</span>)</span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>top_good_pri <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(school_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Getting coordinates of the schools</strong></p>
+<p>We can call out get_coords function to retrieve the coordinates of the top 10 primary schools. But first, we need to store the school names in a list.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>good_pri_list <span class="ot">&lt;-</span> <span class="fu">unique</span>(top_good_pri<span class="sc">$</span>school_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>goodprisch_coords <span class="ot">&lt;-</span> <span class="fu">get_coords</span>(good_pri_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Inspecting results</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>goodprisch_coords[(<span class="fu">is.na</span>(goodprisch_coords<span class="sc">$</span>postal) <span class="sc">|</span> <span class="fu">is.na</span>(goodprisch_coords<span class="sc">$</span>latitude) <span class="sc">|</span> <span class="fu">is.na</span>(goodprisch_coords<span class="sc">$</span>longitude)), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>No values with NA, all the coordinates of the good primary schools have been retrived successfully.</p>
+<p><strong>Converting goodprisch_coords dataframe into an sf object and transforming CRS</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>goodpri_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(goodprisch_coords,</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, </span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"latitude"</span>),</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(goodpri_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Getting proximity to good primary schools</strong></p>
+<p>Now we call the get_prox function to get the proximity of the HDB flats and good primary schools.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>rs_coords_sf <span class="ot">&lt;-</span> <span class="fu">get_prox</span>(rs_coords_sf, goodpri_sf, <span class="st">"PROX_GOOD_PRISCH"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="writing-to-rds-file" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="writing-to-rds-file"><span class="header-section-number">6.3</span> Writing to RDS file</h2>
+<p>Now our resale data is complete with all the locational factors. We can save it in an rds file so that we do not have to keep running all the codes above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>rs_factors_rds <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(rs_coords_sf, <span class="st">"data/rds/rs_factors.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="encoding-locational-factors" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Encoding Locational Factors</h1>
+<section id="reading-rds-file" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="reading-rds-file"><span class="header-section-number">7.1</span> Reading RDS File</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>rs_sf <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/rs_factors.rds"</span>)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(rs_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From the dataframe, we can see that storey_range is in character type. It is a categorical variable, which cannot be used in the regression equation just as it is. It needs to be recoded into a series of variables which then can be used in the regression model.</p>
+<p>We can use “dummy coding” where it consists of creating dichotomous variables where each level of the categorical variable is contrasted to a specified reference level.</p>
+<p>However, some categorical variables have levels that are ordered. Hence, they can be converted to numerical values instead and used as is. In this scenario, storey_range can be ranked from low to high. By doing so, we can gain insight as to whether higher/lower floors affect the resale price.</p>
+<p>Hence, instead of using dummy variables, we will be using sorting the storey_range categorical variable and assigning numerical values that are in ascending order.</p>
+</section>
+<section id="extracting-unique-storey_range-and-sort" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="extracting-unique-storey_range-and-sort"><span class="header-section-number">7.2</span> Extracting unique storey_range and sort</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>storeys <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(rs_sf<span class="sc">$</span>storey_range))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="creating-dataframe-storey_range_order-to-store-the-order-of-storey_range" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="creating-dataframe-storey_range_order-to-store-the-order-of-storey_range"><span class="header-section-number">7.3</span> Creating dataframe storey_range_order to store the order of storey_range</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>storey_order <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(storeys)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>storey_range_order <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(storeys, storey_order)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(storey_range_order)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="combining-storey_order-with-resale-dataframe" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="combining-storey_order-with-resale-dataframe"><span class="header-section-number">7.4</span> Combining storey_order with resale dataframe</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>rs_sf <span class="ot">&lt;-</span> <span class="fu">left_join</span>(rs_sf, storey_range_order, <span class="at">by=</span> <span class="fu">c</span>(<span class="st">"storey_range"</span> <span class="ot">=</span> <span class="st">"storeys"</span>))</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(rs_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="selecting-required-columns-for-analysis" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="selecting-required-columns-for-analysis"><span class="header-section-number">7.5</span> Selecting required columns for analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>rs_req <span class="ot">&lt;-</span> rs_sf <span class="sc">%&gt;%</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, resale_price, floor_area_sqm, storey_order, remaining_lease_mths,</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>         PROX_CBD, PROX_ELDERLYCARE, PROX_HAWKER, PROX_MRT, PROX_PARK, PROX_GOOD_PRISCH, PROX_MALL, PROX_CLINIC,</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>         PROX_SUPERMARKET, WITHIN_350M_KINDERGARTEN, WITHIN_350M_CHILDCARE, WITHIN_350M_BUS, WITHIN_1KM_PRISCH)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(rs_req)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="writing-to-rds-file-1" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="writing-to-rds-file-1"><span class="header-section-number">7.6</span> Writing to rds file</h2>
+<p>This is the final resale data file we will use for our model later.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>resale_final <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(rs_req, <span class="st">"data/rds/resale_final.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="viewing-summary" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="viewing-summary"><span class="header-section-number">7.7</span> Viewing Summary</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>resale_final <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/resale_final.rds"</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(resale_final)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    month            resale_price     floor_area_sqm    storey_order   
+ Length:61961       Min.   : 218000   Min.   : 70.00   Min.   : 1.000  
+ Class :character   1st Qu.: 385000   1st Qu.: 91.00   1st Qu.: 2.000  
+ Mode  :character   Median : 446000   Median : 93.00   Median : 3.000  
+                    Mean   : 475349   Mean   : 95.08   Mean   : 3.364  
+                    3rd Qu.: 528000   3rd Qu.:102.00   3rd Qu.: 4.000  
+                    Max.   :1370000   Max.   :145.00   Max.   :17.000  
+ remaining_lease_mths    PROX_CBD       PROX_ELDERLYCARE  PROX_HAWKER     
+ Min.   : 517.0       Min.   : 0.9994   Min.   :0.0000   Min.   :0.03046  
+ 1st Qu.: 799.0       1st Qu.: 9.8417   1st Qu.:0.3148   1st Qu.:0.38411  
+ Median : 944.0       Median :13.2615   Median :0.6230   Median :0.66519  
+ Mean   : 941.2       Mean   :12.3244   Mean   :0.8013   Mean   :0.77650  
+ 3rd Qu.:1109.0       3rd Qu.:15.1536   3rd Qu.:1.1121   3rd Qu.:0.99302  
+ Max.   :1171.0       Max.   :19.6501   Max.   :3.3016   Max.   :2.86763  
+    PROX_MRT         PROX_PARK       PROX_GOOD_PRISCH    PROX_MALL     
+ Min.   :0.02179   Min.   :0.04422   Min.   :0.07076   Min.   :0.0000  
+ 1st Qu.:0.26848   1st Qu.:0.51139   1st Qu.:1.90254   1st Qu.:0.3654  
+ Median :0.47611   Median :0.72548   Median :3.14692   Median :0.5687  
+ Mean   :0.55589   Mean   :0.83752   Mean   :3.25342   Mean   :0.6465  
+ 3rd Qu.:0.75320   3rd Qu.:1.04176   3rd Qu.:4.44199   3rd Qu.:0.8416  
+ Max.   :2.12909   Max.   :2.66145   Max.   :8.76399   Max.   :2.3385  
+  PROX_CLINIC     PROX_SUPERMARKET WITHIN_350M_KINDERGARTEN
+ Min.   :0.0000   Min.   :0.0000   Min.   : 0.000          
+ 1st Qu.:0.1187   1st Qu.:0.1693   1st Qu.: 3.000          
+ Median :0.1817   Median :0.2546   Median : 5.000          
+ Mean   :0.1994   Mean   :0.2790   Mean   : 4.845          
+ 3rd Qu.:0.2600   3rd Qu.:0.3642   3rd Qu.: 6.000          
+ Max.   :0.8699   Max.   :1.5713   Max.   :23.000          
+ WITHIN_350M_CHILDCARE WITHIN_350M_BUS  WITHIN_1KM_PRISCH          geometry    
+ Min.   : 0.000        Min.   : 0.000   Min.   :0.000     POINT        :61961  
+ 1st Qu.: 3.000        1st Qu.: 6.000   1st Qu.:2.000     epsg:3414    :    0  
+ Median : 4.000        Median : 8.000   Median :3.000     +proj=tmer...:    0  
+ Mean   : 3.914        Mean   : 8.018   Mean   :3.239                          
+ 3rd Qu.: 5.000        3rd Qu.:10.000   3rd Qu.:4.000                          
+ Max.   :20.000        Max.   :19.000   Max.   :9.000                          </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="geospatial-data-wrangling" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Geospatial Data Wrangling</h1>
+<section id="importing-geospatial-data" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="importing-geospatial-data"><span class="header-section-number">8.1</span> Importing Geospatial Data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, <span class="at">layer =</span> <span class="st">"MPSZ-2019"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `MPSZ-2019' from data source 
+  `C:\gailteh\IS415-GAA\Take-home_Ex\Take-Home_Ex03\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 332 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<p>Obtaining coordinate system using st_crs()</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: WGS 84 
+  wkt:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["latitude",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["longitude",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    ID["EPSG",4326]]</code></pre>
+</div>
+</div>
+<p>The projected CRS for mpsz dataframe is WGS84, but we need it to be in SVY21 with EPSG code 3414.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(mpsz, <span class="dv">3414</span>)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: EPSG:3414 
+  wkt:
+PROJCRS["SVY21 / Singapore TM",
+    BASEGEOGCRS["SVY21",
+        DATUM["SVY21",
+            ELLIPSOID["WGS 84",6378137,298.257223563,
+                LENGTHUNIT["metre",1]]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["degree",0.0174532925199433]],
+        ID["EPSG",4757]],
+    CONVERSION["Singapore Transverse Mercator",
+        METHOD["Transverse Mercator",
+            ID["EPSG",9807]],
+        PARAMETER["Latitude of natural origin",1.36666666666667,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8801]],
+        PARAMETER["Longitude of natural origin",103.833333333333,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8802]],
+        PARAMETER["Scale factor at natural origin",1,
+            SCALEUNIT["unity",1],
+            ID["EPSG",8805]],
+        PARAMETER["False easting",28001.642,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8806]],
+        PARAMETER["False northing",38744.572,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8807]]],
+    CS[Cartesian,2],
+        AXIS["northing (N)",north,
+            ORDER[1],
+            LENGTHUNIT["metre",1]],
+        AXIS["easting (E)",east,
+            ORDER[2],
+            LENGTHUNIT["metre",1]],
+    USAGE[
+        SCOPE["Cadastre, engineering survey, topographic mapping."],
+        AREA["Singapore - onshore and offshore."],
+        BBOX[1.13,103.59,1.47,104.07]],
+    ID["EPSG",3414]]</code></pre>
+</div>
+</div>
+<p>Its is now in the correct EPSG code.</p>
+<p>Checking for invalid geometry:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">which</span>(<span class="fu">st_is_valid</span>(mpsz) <span class="sc">==</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co">#making the geometries valid</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_make_valid</span>(mpsz)</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">which</span>(<span class="fu">st_is_valid</span>(mpsz) <span class="sc">==</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_bbox</span>(mpsz)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     xmin      ymin      xmax      ymax 
+ 2667.538 15748.721 56396.440 50256.334 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exploratory-data-analysis" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Exploratory Data Analysis</h1>
+<section id="statistical-graphs" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="statistical-graphs"><span class="header-section-number">9.1</span> Statistical Graphs</h2>
+<p>We can plot the distribution of resale_price.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>resale_final, <span class="fu">aes</span>(<span class="at">x=</span><span class="st">`</span><span class="at">resale_price</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">20</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"light blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-86-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>There is a right skewed distribution, meaning that more of the 4-Room flats were transacted at relative lower prices. Statistically, the skewed distribution can be normalised by doing log transformation. We can derive a new variable called log_resale_price by doing a log transformation on the variable resale_price by using mutate() of dplyr package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>resale_final <span class="ot">&lt;-</span> resale_final <span class="sc">%&gt;%</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">log_resale_price</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">log</span>(resale_price))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Plotting the distribution of log_resale_price:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>resale_final, <span class="fu">aes</span>(<span class="at">x=</span><span class="st">`</span><span class="at">log_resale_price</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">20</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"light blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-88-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see that the post-transformation distribution is relatively less skewed, but we will still use the original resale_price variable as log_resale_price has high correlation with actual resale price.</p>
+</section>
+</section>
+<section id="predictive-modelling" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Predictive Modelling</h1>
+<p>Now we will be creating a predictive model to predict the HDB resale prices. We will be using the Ordinary Least Squares method and Geographical Weighted Random Forest Method.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
