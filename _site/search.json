@@ -1720,5 +1720,208 @@
     "title": "IS415-GAA",
     "section": "",
     "text": "<!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’>     dataset\n\n\n        0 0     false"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "",
+    "text": "pacman::p_load(tmap, SpatialAcc, sf, ggstatsplot, reshape2, tidyverse)\n\npackage 'ggstatsplot' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n    C:\\Users\\gailt\\AppData\\Local\\Temp\\RtmpKGHn9L\\downloaded_packages"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#importing-geospatial-data",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#importing-geospatial-data",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "2.1 Importing Geospatial Data",
+    "text": "2.1 Importing Geospatial Data\nWe will be importing MP14_SUBZONE_NO_SEA_PL, hexagons and ELDERCARE geospatial data.\n\nmpsz <- st_read(dsn = \"data/geospatial\", layer = \"MP14_SUBZONE_NO_SEA_PL\")\n\nReading layer `MP14_SUBZONE_NO_SEA_PL' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-class_Ex10\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\n\nhexagons <- st_read(dsn = \"data/geospatial\", layer = \"hexagons\") \n\nReading layer `hexagons' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-class_Ex10\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 3125 features and 6 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 21506.33 xmax: 50010.26 ymax: 50256.33\nProjected CRS: SVY21 / Singapore TM\n\n\n\neldercare <- st_read(dsn = \"data/geospatial\", layer = \"ELDERCARE\") \n\nReading layer `ELDERCARE' from data source \n  `C:\\gailteh\\IS415-GAA\\In-class_Ex\\In-class_Ex10\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 120 features and 19 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 14481.92 ymin: 28218.43 xmax: 41665.14 ymax: 46804.9\nProjected CRS: SVY21 / Singapore TM"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#updating-crs-information",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#updating-crs-information",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "2.2 Updating CRS Information",
+    "text": "2.2 Updating CRS Information\nWe will be updating the newly imported mpsz with the correct ESPG code (i.e. 3414).\n\nmpsz <- st_transform(mpsz, 3414)\neldercare <- st_transform(eldercare, 3414)\nhexagons <- st_transform(hexagons, 3414)\n\nVerifying the new CRS:\n\nst_crs(mpsz)\n\nCoordinate Reference System:\n  User input: EPSG:3414 \n  wkt:\nPROJCRS[\"SVY21 / Singapore TM\",\n    BASEGEOGCRS[\"SVY21\",\n        DATUM[\"SVY21\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4757]],\n    CONVERSION[\"Singapore Transverse Mercator\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",1.36666666666667,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",103.833333333333,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",1,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",28001.642,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",38744.572,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"northing (N)\",north,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"easting (E)\",east,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"Cadastre, engineering survey, topographic mapping.\"],\n        AREA[\"Singapore - onshore and offshore.\"],\n        BBOX[1.13,103.59,1.47,104.07]],\n    ID[\"EPSG\",3414]]\n\n\nThe EPSG is now 3414."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#cleaning-and-updating-attribute-fields-of-the-geospatial-data",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#cleaning-and-updating-attribute-fields-of-the-geospatial-data",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "2.3 Cleaning and updating attribute fields of the geospatial data",
+    "text": "2.3 Cleaning and updating attribute fields of the geospatial data\nAs there are many redundant fields in the eldercare and hexagons data tables, we will be excluding them. At the same time, we will add new fields called demand and capacity into the hexagons and eldercare sf data frame respectively. Both fields are derived using mutate().\nWe will be selecting the columns relevant to the analysis, then renaming them.\n\neldercare <- eldercare %>%\n  select(fid, ADDRESSPOS) %>%\n  rename(destination_id = fid,\n         postal_code = ADDRESSPOS) %>%\n  mutate(capacity = 100)\n\n\nhexagons <- hexagons %>%\n  select(fid) %>%\n  rename(origin_id = fid)%>%\n  mutate(demand = 100)\n\nFor the purpose of this hands-on exercise, a constant value of 100 is used. In practice, actual demand of the hexagon and capacity of the eldercare centre should be used."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#importing-distance-matrix",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#importing-distance-matrix",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "3.1 Importing Distance Matrix",
+    "text": "3.1 Importing Distance Matrix\nWe will use read_cvs() to import OD_Matrix.csv. The imported object is a tibble data.frame called ODMatrix.\n\nODMatrix <- read_csv(\"data/aspatial/OD_Matrix.csv\", skip = 0)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#tidying-distance-matrix",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#tidying-distance-matrix",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "3.2 Tidying Distance Matrix",
+    "text": "3.2 Tidying Distance Matrix\nOur imported ODMatrix organised the distance matrix columnwise.\nHowever, most modelling packages in R expect a matrix where rows represent origins (i.e. also know as from field) and the columns represent destination (i.e. also known as to field.)\nWe will be using spread() of tidyr package is used to transform the O-D matrix from a thin format into a fat format.\n\ndistmat <- ODMatrix %>%\n  select(origin_id, destination_id, total_cost) %>%\n  spread(destination_id, total_cost)%>%\n  select(c(-c('origin_id')))\n\nSince tidyr version 1.0 a new function called pivot_wider() is introduce. You should use pivot_wider() instead of spread()\ndistmat has 3125 rows, the same number as the number of rows of hexagons. It also has 120 row, the number of elderly care centers.\nCurrently, the distance is measured in metre because SVY21 projected coordinate system is used. The code chunk below will be used to convert the unit of measurement from metre to kilometre.\n\ndistmat_km <- as.matrix(distmat/1000)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-hansens-accessibility",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-hansens-accessibility",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "5.1 Computing Hansen’s Accessibility",
+    "text": "5.1 Computing Hansen’s Accessibility\nNow we will be computing Hansen’s accessibility by using ac() of SpatialAcc package. After calculating accesibility\nwe will save it in a dataframe called acc_Hansen, so that we can join it to our hexagon dataframe later. In addition, originally, the result is a list of values which cannot be viewed easily, hence we save it into a dataframe.\n\nacc_Hansen <- data.frame(ac(hexagons$demand,\n                            eldercare$capacity,\n                            distmat_km, \n                            #d0 = 50,\n                            power = 2, \n                            family = \"Hansen\"))\n\nThe default field name is very messy, we will rename it to accHansen. Since there is only 1 column, it will replace the only column name with “accHansen”\n\ncolnames(acc_Hansen) <- \"accHansen\"\n\nNext, we will convert the data table into tibble format.\n\nacc_Hansen <- tibble::as_tibble(acc_Hansen)\n\nLastly, bind_cols() of dplyr will be used to join the acc_Hansen tibble data frame with the hexagons simple feature data frame. The output is called hexagon_Hansen.\n\nhexagon_Hansen <- bind_cols(hexagons, acc_Hansen)\n\nhexagon_Hansen is a simple feature data frame and not a typical tibble data frame.\n\n#Running all the steps in a single code chunk\nacc_Hansen <- data.frame(ac(hexagons$demand,\n                            eldercare$capacity,\n                            distmat_km, \n                            #d0 = 50,\n                            power = 0.5, \n                            family = \"Hansen\"))\n\ncolnames(acc_Hansen) <- \"accHansen\"\nacc_Hansen <- tbl_df(acc_Hansen)\nhexagon_Hansen <- bind_cols(hexagons, acc_Hansen)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-hansens-accesibility",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-hansens-accesibility",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "5.2 Visualising Hansen’s Accesibility",
+    "text": "5.2 Visualising Hansen’s Accesibility\n\n5.2.1 Extracting Map Extend\nFirstly, we will extract the extend of hexagons simple feature data frame by by using st_bbox() of sf package. This ensures our map is always within the study area.\n\nmapex <- st_bbox(hexagons)\n\nNow we will plot a cartographic quality map of the accesibility to eldercare centers in Singapore.\n\ntmap_mode(\"plot\")\ntm_shape(hexagon_Hansen,\n         bbox = mapex) + \n  tm_fill(col = \"accHansen\",\n          n = 10,\n          style = \"quantile\",\n          border.col = \"black\",\n          border.lwd = 1) +\ntm_shape(eldercare) +\n  tm_symbols(size = 0.1) +\n  tm_layout(main.title = \"Accessibility to eldercare: Hansen method\",\n            main.title.position = \"center\",\n            main.title.size = 2,\n            legend.outside = FALSE,\n            legend.height = 0.45, \n            legend.width = 3.0,\n            legend.format = list(digits = 6),\n            legend.position = c(\"right\", \"top\"),\n            frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar(width = 0.15) +\n  tm_grid(lwd = 0.1, alpha = 0.5)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "5.3 Statistical Graphic Visualisation",
+    "text": "5.3 Statistical Graphic Visualisation\nIn this section, we are going to compare the distribution of Hansen’s accessibility values by URA Planning Region.\nFirst, we have to add the planning region field into hexagon_Hansen sf dataframe.\n\nhexagon_Hansen <- st_join(hexagon_Hansen, mpsz,\n                          join = st_intersects)\n\nNext ggplot() is used to plot the distribution using the boxplot graphical method.\n\nggplot(data=hexagon_Hansen, \n       aes(y = log(accHansen), \n           x= REGION_N)) +\n  geom_boxplot() +\n  geom_point(stat=\"summary\", \n             fun.y=\"mean\", \n             colour =\"red\", \n             size=2)\n\n\n\n\nWe do a log_transformation of the Hansen accessibility for better visualisation and comparison."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-kd2sfcas-accessibility",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-kd2sfcas-accessibility",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "6.1 Computing KD2SFCA’s accessibility",
+    "text": "6.1 Computing KD2SFCA’s accessibility\nWe will be repating most of the steps in the previous section to perform the analysis. However, some of the codes will be combined into one code chunk.\nThe code below calculates Hansen’s accessibility using ac() of SpatialAcc, then uses data.frame() to save the output into a dataframe callsed acc_KD2SFCA. KD2SFCA is used for the family argument.\n\nacc_KD2SFCA <- data.frame(ac(hexagons$demand,\n                            eldercare$capacity,\n                            distmat_km, \n                            d0 = 50,\n                            power = 2, \n                            family = \"KD2SFCA\"))\n\ncolnames(acc_KD2SFCA) <- \"accKD2SFCA\"\nacc_KD2SFCA <- tbl_df(acc_KD2SFCA)\nhexagon_KD2SFCA <- bind_cols(hexagons, acc_KD2SFCA)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-kd2sfcas-accessibility",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-kd2sfcas-accessibility",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "6.2 Visualising KD2SFCA’s accessibility",
+    "text": "6.2 Visualising KD2SFCA’s accessibility\nWe will now create cartographic quality mao of accessibility to eldercare center in Singapore. We will reuse mapex for the bbox argument.\n\ntmap_mode(\"plot\")\ntm_shape(hexagon_KD2SFCA,\n         bbox = mapex) + \n  tm_fill(col = \"accKD2SFCA\",\n          n = 10,\n          style = \"quantile\",\n          border.col = \"black\",\n          border.lwd = 1) +\ntm_shape(eldercare) +\n  tm_symbols(size = 0.1) +\n  tm_layout(main.title = \"Accessibility to eldercare: KD2SFCA method\",\n            main.title.position = \"center\",\n            main.title.size = 2,\n            legend.outside = FALSE,\n            legend.height = 0.45, \n            legend.width = 3.0,\n            legend.format = list(digits = 6),\n            legend.position = c(\"right\", \"top\"),\n            frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar(width = 0.15) +\n  tm_grid(lwd = 0.1, alpha = 0.5)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation-1",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation-1",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "6.3 Statistical Graphic Visualisation",
+    "text": "6.3 Statistical Graphic Visualisation\nNow, we are going to compare the distribution of KD2CFA accessibility values by URA Planning Region.\nAdding the planning field region into hexagon_KD2SFCA:\n\nhexagon_KD2SFCA <- st_join(hexagon_KD2SFCA, mpsz, \n                          join = st_intersects)\n\nPlotting the distribution using boxplot graphical method:\n\nggplot(data=hexagon_KD2SFCA, \n       aes(y = accKD2SFCA, \n           x= REGION_N)) +\n  geom_boxplot() +\n  geom_point(stat=\"summary\", \n             fun.y=\"mean\", \n             colour =\"red\", \n             size=2)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-sam-accessibility",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-sam-accessibility",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "7.1 Computing SAM accessibility",
+    "text": "7.1 Computing SAM accessibility"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-sams-accessibility",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-sams-accessibility",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "7.2 Visualising SAM’s accessibility",
+    "text": "7.2 Visualising SAM’s accessibility"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation-2",
+    "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation-2",
+    "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
+    "section": "7.3 Statistical graphic visualisation",
+    "text": "7.3 Statistical graphic visualisation"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#preparing-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#preparing-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "10.1 Preparing Data",
+    "text": "10.1 Preparing Data\n\n10.1.1 Reading Data\n\nresale_final <- read_rds(\"data/rds/resale_final.rds\")\n\n\n\n10.1.2 Data Sampling\nWe need to split our data into training and testing data. From the requirements of the assignment, our training data is data from 1st January 2021 to 31st December 2022 while our training data is data between January and February 2023.\n\ntrain_data <- resale_final %>% filter(month >= \"2021-01\" & month <= \"2022-12\")\ntest_data <- resale_final %>% filter(month >= \"2023-01\" & month <= \"2023-02\")\n\n\nwrite_rds(train, \"data/rds/train.rds\")\nwrite_rds(test, \"data/rds/test.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#computing-correlation-matrix",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#computing-correlation-matrix",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "10.2 Computing Correlation Matrix",
+    "text": "10.2 Computing Correlation Matrix\nBefore loading the variables into a predictive model, we need to ensure that our variables are not highly correlated with each other, because using highly correlated variables in our model will compromise the quality of our model as it will be skewed towards the collinear variables.\n\nresale_nogeo <- resale_final %>%\n  st_drop_geometry()\ncorrplot::corrplot(cor(resale_nogeo[, 2:17]), \n                   diag = FALSE, \n                   order = \"AOE\",\n                   tl.pos = \"td\", \n                   tl.cex = 0.5, \n                   method = \"number\", \n                   type = \"upper\")\n\n\n\n\nBased on this, the variables WITHIN_350M_KINDERGARTEN and WITHIN_350M_CHILDCARE have a high positive correlation (0.91). This is likely because some childcare centers are also considered to be kindergartens as well. Hence we will drop the WITHIN_350_CHILDCARE variable for subsequent modelling."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#retrieving-stored-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#retrieving-stored-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "10.3 Retrieving Stored Data",
+    "text": "10.3 Retrieving Stored Data\n\ntrain_data <- read_rds(\"data/rds/train.rds\")\ntest_data <- read_rds(\"data/rds/test.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#predicting-using-test-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#predicting-using-test-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "11.1 Predicting using Test Data",
+    "text": "11.1 Predicting using Test Data\n\n11.1.1 Preparing Test Data\n\ntest_data <- test_data %>% st_drop_geometry"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#predicting-with-test-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#predicting-with-test-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "11.2 Predicting with test data",
+    "text": "11.2 Predicting with test data\n\nmlr_pred <- predict.lm(price_mlr, test_data)\n\nSaving the output into an rds file:\n\nmlr_pred <- write_rds(mlr_pred, \"data/rds/mlr_pred.rds\")\n\n\n11.2.1 Converting output into a dataframe\n\nmlr_pred <- read_rds(\"data/rds/mlr_pred.rds\")\nmlr_pred_df <- as.data.frame(mlr_pred)"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#retrieving-stored-data-1",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#retrieving-stored-data-1",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.1 Retrieving stored data",
+    "text": "12.1 Retrieving stored data\n\ntrain_data <- read_rds(\"data/rds/train.rds\")\ntest_data <- read_rds(\"data/rds/test.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#scaling-training-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#scaling-training-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.2 Scaling Training Data",
+    "text": "12.2 Scaling Training Data\nAs the computation time for the original training data set takes too long on my computer, I have decided to scale down the training data to the latest 3 months of data (October to December 2022), so that the I can still calibrate a model and do the prediction.\n\ntrain_data_scaled <- train_data %>% filter(month >= \"2022-10\" & month <= \"2022-12\")\n\nSaving as rds file:\n\nwrite_rds(train_data_scaled, \"data/rds/train_data_scaled.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#retrieving-scaled-training-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#retrieving-scaled-training-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.3 Retrieving scaled training data",
+    "text": "12.3 Retrieving scaled training data\n\ntrain_data_scaled <- read_rds(\"data/rds/train_data_scaled.rds\")\n\n\ntrain_data_sp <- as_Spatial(train_data_scaled)\ntrain_data_sp\n\nclass       : SpatialPointsDataFrame \nfeatures    : 2719 \nextent      : 11655.33, 42561.66, 28397.4, 48675.05  (xmin, xmax, ymin, ymax)\ncrs         : +proj=tmerc +lat_0=1.36666666666667 +lon_0=103.833333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs \nvariables   : 18\nnames       :   month, resale_price, floor_area_sqm, storey_order, remaining_lease_mths,         PROX_CBD,     PROX_ELDERLYCARE,        PROX_HAWKER,           PROX_MRT,          PROX_PARK,  PROX_GOOD_PRISCH,         PROX_MALL,          PROX_CLINIC,     PROX_SUPERMARKET, WITHIN_350M_KINDERGARTEN, ... \nmin values  : 2022-10,       370000,             74,            1,                  542, 1.00583660772922, 1.98943787433087e-08, 0.0395321340230547, 0.0315997456119679, 0.0458007770648803, 0.117653336456023, 0.054887381413689, 7.28527615277263e-09, 6.97304266584497e-07,                        0, ... \nmax values  : 2022-12,      1370000,            120,           17,                 1148, 19.4237844042343,      3.2823136575237,   2.80237498784495,   2.05868021203424,   2.64393394793345,   8.6550509283742,  2.24733612097267,    0.869920099464176,     1.36375821567757,                       20, ..."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#computing-adaptive-bandwidth",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#computing-adaptive-bandwidth",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.4 Computing Adaptive Bandwidth",
+    "text": "12.4 Computing Adaptive Bandwidth\nNext, we will use bw.gwr() package from GWmodel to determine the optimal bandwidth to be used.\n\nbw_adaptive <- bw.gwr(resale_price ~ floor_area_sqm +\n                  storey_order + remaining_lease_mths +\n                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +\n                  PROX_MRT + PROX_PARK + PROX_MALL + \n                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN+ \n                  WITHIN_350M_BUS + WITHIN_1KM_PRISCH,\n                  data=train_data_sp,\n                  approach=\"CV\",\n                  kernel=\"gaussian\",\n                  adaptive=TRUE,\n                  longlat=FALSE)\n\nScreenshot of the output:\n\nThe results show that 24 neighbour points will be the optimal bandwidth to be used for the adaptive bandwidth.\n\nwrite_rds(bw_adaptive, \"data/rds/bw_adaptive.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#preparing-coordinates-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#preparing-coordinates-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.5 Preparing Coordinates Data",
+    "text": "12.5 Preparing Coordinates Data\n\n12.5.1 Extracting Coordinates Data\nWe will extract the x and y coordinates of the full, training and test data sets.\n\ncoords <- st_coordinates(resale_final)\ncoords_train <- st_coordinates(train_data_scaled)\ncoords_test <- st_coordinates(test_data)\n\n\ncoords_train <- write_rds(coords_train, \"data/rds/coords_train.rds\" )\ncoords_test <- write_rds(coords_test, \"data/rds/coords_test.rds\" )\n\n\n\n12.5.2 Dropping Geometry field\n\ntrain_data_scaled <- train_data_scaled %>% \n  st_drop_geometry()"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#calibrating-geographical-random-forest-model",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#calibrating-geographical-random-forest-model",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.6 Calibrating Geographical Random Forest Model",
+    "text": "12.6 Calibrating Geographical Random Forest Model\nWe will now use grf() of SpatialML package to calibrate a Geographically Weighted Random Forest model to predict HDB resale pricing.\n\nset.seed(1234)\ngwRF_adaptive <- grf(formula = resale_price ~ floor_area_sqm + storey_order +\n                       remaining_lease_mths + PROX_CBD + PROX_ELDERLYCARE +\n                       PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_MALL +\n                       PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +\n                       WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +\n                       WITHIN_1KM_PRISCH,\n                     dframe=train_data_scaled, \n                     bw=bw_adaptive,\n                     kernel=\"adaptive\",\n                     coords=coords_train,\n                     ntree = 30)\n\nScreenshots of the output:\n\n\n\nSaving the model output into rds format:\n\nwrite_rds(gwRF_adaptive, \"data/rds/gwRF_adaptive.rds\")\n\nRetrieving the saved model for future use:\n\ngwRF_adaptive <- read_rds(\"data/model/gwRF_adaptive.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#predicting-by-using-test-data",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#predicting-by-using-test-data",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.7 Predicting by using test data",
+    "text": "12.7 Predicting by using test data\n\n12.7.1 Preparing Test Data\nWe will combine the test data with its corresponding coordinates data\n\n# test_data <- cbind(test_data, coords_test) %>%\n#   st_drop_geometry()\n\n\n\n12.7.2 Predicting with test data\nNext, predict.grf() of spatialML package will be used to predict the resale value by using the test data and gwRF_adaptive model calibrated earlier.\n\n# gwRF_pred <- predict.grf(gwRF_adaptive, \n#                            test_data, \n#                            x.var.name=\"X\",\n#                            y.var.name=\"Y\", \n#                            local.w=1,\n#                            global.w=0)\n\nSaving the output into rds file for future use.\n\n# GRF_pred <- write_rds(gwRF_pred, \"data/rds/GRF_pred.rds\")\n\n\n\n12.7.3 Converting Predicted Output into a dataframe\n\n# GRF_pred <- read_rds(\"data/rds/GRF_pred.rds\")\n# GRF_pred_df <- as.data.frame(GRF_pred)\n\n\n# test_data_p <- cbind(test_data, GRF_pred_df)\n\n\n# write_rds(test_data_p, \"data/model/test_data_p.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#calculating-root-mean-squared-error",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#calculating-root-mean-squared-error",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.8 Calculating Root Mean Squared Error",
+    "text": "12.8 Calculating Root Mean Squared Error\nRoot mean square error (RMSE) allows us to measure how far predicted values are from observed values in a regression analysis. rmse() of Metrics package is used to compute the RMSE.\n\n# rmse(test_data_p$resale_price, \n#      test_data_p$GRF_pred)"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#visualising-predicted-values",
+    "href": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#visualising-predicted-values",
+    "title": "Take-home Exercise 3: Predicting HDB Public Housing Resale Pricies using Geographically Weighted Methods",
+    "section": "12.9 Visualising Predicted Values",
+    "text": "12.9 Visualising Predicted Values\nWe can also use a scatterpolot to visualise the actual resale price and predicted resale price.\n\n# ggplot(data = test_data_p,\n#        aes(x = GRF_pred,\n#            y = resale_price)) +\n#   geom_point()"
   }
 ]

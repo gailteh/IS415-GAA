@@ -40,7 +40,7 @@ We will be building the models using both the conventional OLS and GWR method. W
 ## Geospatial Data
 
 | Name                                                                        | Format   | Source                                                                                                                                  |
-|--------------------|--------------------|---------------------------------|
+|--------------------|--------------------|--------------------------------|
 | MPSZ-2019                                                                   | .shp     | From Prof. Kam's In-Class Exercise Data                                                                                                 |
 | MRT Locations                                                               | .shp     | [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=mrt)                                    |
 | Bustop Locations                                                            | .shp     | [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=bus%20stop)                             |
@@ -61,24 +61,26 @@ The packages we will be using in this analysis are:
 
 -   olsrr: R package for building OLS and performing diagnostics tests
 
+-   corrplot: Multivariate data visualisation and analysis
+
 -   ggpubr: creating and customising ggplot2 based publication ready plots
 
 -   sf: importing, managing and processing geospatial data
 
 -   spdep: creating spatial weight matrix objects, global and spatial autocorrelation statistics and related calculations
 
--   gwmodel: R package for calibrating geographical weighted family of models
-
 -   tmap: choropleth mapping
 
 -   tidyverse: attribute data handing
 
--   gtsummary: creating publication-ready summary tables
+-   httr
 
--   corrplot: Multivariate data visualisation and analysis
+-   jsonlite
+
+-   SpatialML
 
 ```{r}
-pacman::p_load(olsrr, corrplot, ggpubr, sf, spdep, GWmodel, tmap, tidyverse, gtsummary, httr, jsonlite, SpatialML, devtools, rsample)
+pacman::p_load(olsrr, corrplot, ggpubr, sf, spdep, tmap, tidyverse, httr, jsonlite, GWmodel, SpatialML)
 ```
 
 # Aspatial Data Wrangling
@@ -962,13 +964,303 @@ Plotting the distribution of log_resale_price:
 ggplot(data=resale_final, aes(x=`log_resale_price`)) +
   geom_histogram(bins=20, color="black", fill="light blue")
 ```
-We can see that the post-transformation distribution is relatively less skewed, but we will still use the original resale_price variable as log_resale_price has high correlation with actual resale price.
 
+We can see that the post-transformation distribution is relatively less skewed, but we will still use the original resale_price variable as log_resale_price has high correlation with actual resale price.
 
 # Predictive Modelling
 
-Now we will be creating a predictive model to predict the HDB resale prices. We will be using the Ordinary Least Squares method and Geographical Weighted Random Forest Method.
+Now we will be creating predictive models to predict the HDB resale prices. We will be using the Ordinary Least Squares method and Geographical Weighted Random Forest Method.
 
+## Preparing Data
 
+### Reading Data
 
+```{r}
+resale_final <- read_rds("data/rds/resale_final.rds")
+```
 
+### Data Sampling
+
+We need to split our data into training and testing data. From the requirements of the assignment, our training data is data from 1st January 2021 to 31st December 2022 while our training data is data between January and February 2023.
+
+```{r}
+#| eval: false
+train_data <- resale_final %>% filter(month >= "2021-01" & month <= "2022-12")
+test_data <- resale_final %>% filter(month >= "2023-01" & month <= "2023-02")
+```
+
+```{r}
+#| eval: false
+write_rds(train, "data/rds/train.rds")
+write_rds(test, "data/rds/test.rds")
+```
+
+## Computing Correlation Matrix
+
+Before loading the variables into a predictive model, we need to ensure that our variables are not highly correlated with each other, because using highly correlated variables in our model will compromise the quality of our model as it will be skewed towards the collinear variables.
+
+```{r}
+resale_nogeo <- resale_final %>%
+  st_drop_geometry()
+corrplot::corrplot(cor(resale_nogeo[, 2:17]), 
+                   diag = FALSE, 
+                   order = "AOE",
+                   tl.pos = "td", 
+                   tl.cex = 0.5, 
+                   method = "number", 
+                   type = "upper")
+```
+
+Based on this, the variables WITHIN_350M_KINDERGARTEN and WITHIN_350M_CHILDCARE have a high positive correlation (0.91). This is likely because some childcare centers are also considered to be kindergartens as well. Hence we will drop the WITHIN_350_CHILDCARE variable for subsequent modelling.
+
+## Retrieving Stored Data
+
+```{r}
+train_data <- read_rds("data/rds/train.rds")
+test_data <- read_rds("data/rds/test.rds")
+```
+
+# Building a non-spatial Multiple Linear Regression model
+
+```{r}
+#| eval: false
+price_mlr <- lm(resale_price ~ floor_area_sqm +
+                  storey_order + remaining_lease_mths +
+                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
+                  PROX_MRT + PROX_PARK + PROX_MALL + PROX_GOOD_PRISCH +
+                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN + 
+                  WITHIN_350M_BUS + WITHIN_1KM_PRISCH,
+                data=train_data)
+summary(price_mlr)
+```
+
+```{r}
+#| eval: false
+write_rds(price_mlr, "data/rds/price_mlr.rds")
+```
+
+## Predicting using Test Data
+
+### Preparing Test Data
+
+```{r}
+#| eval: false
+test_data <- test_data %>% st_drop_geometry
+```
+
+## Predicting with test data
+
+```{r}
+#| eval: false
+mlr_pred <- predict.lm(price_mlr, test_data)
+```
+
+Saving the output into an rds file:
+
+```{r}
+#| eval: false
+mlr_pred <- write_rds(mlr_pred, "data/rds/mlr_pred.rds")
+```
+
+### Converting output into a dataframe
+
+```{r}
+mlr_pred <- read_rds("data/rds/mlr_pred.rds")
+mlr_pred_df <- as.data.frame(mlr_pred)
+```
+
+# Building Geographical Weighted Random Forest Predictive Model
+
+## Retrieving stored data
+
+```{r}
+train_data <- read_rds("data/rds/train.rds")
+test_data <- read_rds("data/rds/test.rds")
+```
+
+## Scaling Training Data
+
+As the computation time for the original training data set takes too long on my computer, I have decided to scale down the training data to the latest 3 months of data (October to December 2022), so that the I can still calibrate a model and do the prediction.
+
+```{r}
+train_data_scaled <- train_data %>% filter(month >= "2022-10" & month <= "2022-12")
+```
+
+Saving as rds file:
+
+```{r}
+#| eval: false
+write_rds(train_data_scaled, "data/rds/train_data_scaled.rds")
+```
+
+## Retrieving scaled training data
+
+```{r}
+train_data_scaled <- read_rds("data/rds/train_data_scaled.rds")
+```
+
+```{r}
+train_data_sp <- as_Spatial(train_data_scaled)
+train_data_sp
+```
+
+## Computing Adaptive Bandwidth
+
+Next, we will use bw.gwr() package from GWmodel to determine the optimal bandwidth to be used.
+
+```{r}
+#| eval: false
+bw_adaptive <- bw.gwr(resale_price ~ floor_area_sqm +
+                  storey_order + remaining_lease_mths +
+                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
+                  PROX_MRT + PROX_PARK + PROX_MALL + 
+                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN+ 
+                  WITHIN_350M_BUS + WITHIN_1KM_PRISCH,
+                  data=train_data_sp,
+                  approach="CV",
+                  kernel="gaussian",
+                  adaptive=TRUE,
+                  longlat=FALSE)
+```
+
+Screenshot of the output:
+
+![](images/image-836409430.png)
+
+The results show that 24 neighbour points will be the optimal bandwidth to be used for the adaptive bandwidth.
+
+```{r}
+#| eval: false
+write_rds(bw_adaptive, "data/rds/bw_adaptive.rds")
+```
+
+## Preparing Coordinates Data
+
+### Extracting Coordinates Data
+
+We will extract the x and y coordinates of the full, training and test data sets.
+
+```{r}
+coords <- st_coordinates(resale_final)
+coords_train <- st_coordinates(train_data_scaled)
+coords_test <- st_coordinates(test_data)
+```
+
+```{r}
+coords_train <- write_rds(coords_train, "data/rds/coords_train.rds" )
+coords_test <- write_rds(coords_test, "data/rds/coords_test.rds" )
+```
+
+### Dropping Geometry field
+
+```{r}
+train_data_scaled <- train_data_scaled %>% 
+  st_drop_geometry()
+```
+
+## Calibrating Geographical Random Forest Model
+
+We will now use grf() of SpatialML package to calibrate a Geographically Weighted Random Forest model to predict HDB resale pricing.
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive <- grf(formula = resale_price ~ floor_area_sqm + storey_order +
+                       remaining_lease_mths + PROX_CBD + PROX_ELDERLYCARE +
+                       PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_MALL +
+                       PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+                       WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+                       WITHIN_1KM_PRISCH,
+                     dframe=train_data_scaled, 
+                     bw=bw_adaptive,
+                     kernel="adaptive",
+                     coords=coords_train,
+                     ntree = 30)
+```
+
+Screenshots of the output:
+
+![](images/image-1589230712.png)
+
+![](images/image-920137067.png)
+
+![](images/image-748787081.png)
+
+Saving the model output into rds format:
+
+```{r}
+#| eval: false
+write_rds(gwRF_adaptive, "data/rds/gwRF_adaptive.rds")
+```
+
+Retrieving the saved model for future use:
+
+```{r}
+#| eval: false
+gwRF_adaptive <- read_rds("data/model/gwRF_adaptive.rds")
+```
+
+## Predicting by using test data
+
+### Preparing Test Data
+
+We will combine the test data with its corresponding coordinates data
+
+```{r}
+# test_data <- cbind(test_data, coords_test) %>%
+#   st_drop_geometry()
+```
+
+### Predicting with test data
+
+Next, predict.grf() of spatialML package will be used to predict the resale value by using the test data and gwRF_adaptive model calibrated earlier.
+
+```{r}
+# gwRF_pred <- predict.grf(gwRF_adaptive, 
+#                            test_data, 
+#                            x.var.name="X",
+#                            y.var.name="Y", 
+#                            local.w=1,
+#                            global.w=0)
+```
+
+Saving the output into rds file for future use.
+
+```{r}
+# GRF_pred <- write_rds(gwRF_pred, "data/rds/GRF_pred.rds")
+```
+
+### Converting Predicted Output into a dataframe
+
+```{r}
+# GRF_pred <- read_rds("data/rds/GRF_pred.rds")
+# GRF_pred_df <- as.data.frame(GRF_pred)
+```
+
+```{r}
+# test_data_p <- cbind(test_data, GRF_pred_df)
+```
+
+```{r}
+# write_rds(test_data_p, "data/model/test_data_p.rds")
+```
+
+## Calculating Root Mean Squared Error
+
+Root mean square error (RMSE) allows us to measure how far predicted values are from observed values in a regression analysis. rmse() of Metrics package is used to compute the RMSE.
+
+```{r}
+# rmse(test_data_p$resale_price, 
+#      test_data_p$GRF_pred)
+```
+
+## Visualising Predicted Values
+
+We can also use a scatterpolot to visualise the actual resale price and predicted resale price.
+
+```{r}
+# ggplot(data = test_data_p,
+#        aes(x = GRF_pred,
+#            y = resale_price)) +
+#   geom_point()
+```
