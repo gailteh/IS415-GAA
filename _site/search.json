@@ -1726,7 +1726,7 @@
     "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html",
     "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
     "section": "",
-    "text": "pacman::p_load(tmap, SpatialAcc, sf, ggstatsplot, reshape2, tidyverse)\n\npackage 'ggstatsplot' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n    C:\\Users\\gailt\\AppData\\Local\\Temp\\RtmpKGHn9L\\downloaded_packages"
+    "text": "pacman::p_load(tmap, SpatialAcc, sf, ggstatsplot, reshape2, tidyverse)\n\npackage 'ggstatsplot' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n    C:\\Users\\gailt\\AppData\\Local\\Temp\\Rtmp4g1OSr\\downloaded_packages"
   },
   {
     "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#importing-geospatial-data",
@@ -1810,21 +1810,21 @@
     "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#computing-sam-accessibility",
     "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
     "section": "7.1 Computing SAM accessibility",
-    "text": "7.1 Computing SAM accessibility"
+    "text": "7.1 Computing SAM accessibility\nIn this section, we will be repeating the steps in the previous sections to perform the analysis. The code chunk below calculates Hansen's accessibility using ac() of SpatialAcc and data.frame() is used to save the output in a data frame called acc_SAM. Notice that SAM is used for family argument.\n\nacc_SAM <- data.frame(ac(hexagons$demand,\n                         eldercare$capacity,\n                         distmat_km, \n                         d0 = 50,\n                         power = 2, \n                         family = \"SAM\"))\n\ncolnames(acc_SAM) <- \"accSAM\"\nacc_SAM <- tbl_df(acc_SAM)\nhexagon_SAM <- bind_cols(hexagons, acc_SAM)"
   },
   {
     "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-sams-accessibility",
     "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#visualising-sams-accessibility",
     "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
     "section": "7.2 Visualising SAM’s accessibility",
-    "text": "7.2 Visualising SAM’s accessibility"
+    "text": "7.2 Visualising SAM’s accessibility\n\ntmap_mode(\"plot\")\ntm_shape(hexagon_SAM,\n         bbox = mapex) + \n  tm_fill(col = \"accSAM\",\n          n = 10,\n          style = \"quantile\",\n          border.col = \"black\",\n          border.lwd = 1) +\ntm_shape(eldercare) +\n  tm_symbols(size = 0.1) +\n  tm_layout(main.title = \"Accessibility to eldercare: SAM method\",\n            main.title.position = \"center\",\n            main.title.size = 2,\n            legend.outside = FALSE,\n            legend.height = 0.45, \n            legend.width = 3.0,\n            legend.format = list(digits = 3),\n            legend.position = c(\"right\", \"top\"),\n            frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar(width = 0.15) +\n  tm_grid(lwd = 0.1, alpha = 0.5)"
   },
   {
     "objectID": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation-2",
     "href": "In-class_Ex/In-class_Ex10/In-Class_Ex10.html#statistical-graphic-visualisation-2",
     "title": "Hands-On Ex 10/ In-class Ex 10: Modelling Geographical Accesibility",
     "section": "7.3 Statistical graphic visualisation",
-    "text": "7.3 Statistical graphic visualisation"
+    "text": "7.3 Statistical graphic visualisation\n\nhexagon_SAM <- st_join(hexagon_SAM, mpsz, \n                       join = st_intersects)\n\n\nggplot(data=hexagon_SAM, \n       aes(y = accSAM, \n           x= REGION_N)) +\n  geom_boxplot() +\n  geom_point(stat=\"summary\", \n             fun.y=\"mean\", \n             colour =\"red\", \n             size=2)"
   },
   {
     "objectID": "Take-home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#preparing-data",
