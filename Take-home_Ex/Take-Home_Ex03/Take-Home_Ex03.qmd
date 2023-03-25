@@ -1031,7 +1031,6 @@ price_mlr <- lm(resale_price ~ floor_area_sqm +
                   PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN + 
                   WITHIN_350M_BUS + WITHIN_1KM_PRISCH,
                 data=train_data)
-summary(price_mlr)
 ```
 
 ```{r}
@@ -1039,16 +1038,12 @@ summary(price_mlr)
 write_rds(price_mlr, "data/rds/price_mlr.rds")
 ```
 
-## Predicting using Test Data
-
-### Preparing Test Data
-
 ```{r}
-#| eval: false
-test_data <- test_data %>% st_drop_geometry
+price_mlr <- read_rds("data/rds/price_mlr.rds")
+summary(price_mlr)
 ```
 
-## Predicting with test data
+## Predicting using Test Data
 
 ```{r}
 #| eval: false
@@ -1067,6 +1062,25 @@ mlr_pred <- write_rds(mlr_pred, "data/rds/mlr_pred.rds")
 ```{r}
 mlr_pred <- read_rds("data/rds/mlr_pred.rds")
 mlr_pred_df <- as.data.frame(mlr_pred)
+
+test_data_p_mlr <- cbind(test_data, mlr_pred_df)
+```
+
+### Calculating RMSE
+
+Root mean square error (RMSE) allows us to measure how far predicted values are from observed values in a regression analysis. rmse() of Metrics package is used to compute the RMSE.
+
+```{r}
+Metrics::rmse(test_data_p_mlr$resale_price, 
+     test_data_p_mlr$mlr_pred)
+```
+## Visualising Predicted Values
+
+```{r}
+ggplot(data = test_data_p_mlr,
+       aes(x = mlr_pred,
+           y = resale_price)) +
+  geom_point()
 ```
 
 # Building Geographical Weighted Random Forest Predictive Model
@@ -1080,10 +1094,10 @@ test_data <- read_rds("data/rds/test.rds")
 
 ## Scaling Training Data
 
-As the computation time for the original training data set takes too long on my computer, I have decided to scale down the training data to the latest 3 months of data (October to December 2022), so that the I can still calibrate a model and do the prediction.
+As the computation time for the original training data set takes too long on my computer, I have decided to scale down the training data to the latest 5 months of data (August to December 2022), so that the I can still calibrate a model and do the prediction.
 
 ```{r}
-train_data_scaled <- train_data %>% filter(month >= "2022-10" & month <= "2022-12")
+train_data_scaled <- train_data %>% filter(month >= "2022-08" & month <= "2022-12")
 ```
 
 Saving as rds file:
@@ -1125,9 +1139,9 @@ bw_adaptive <- bw.gwr(resale_price ~ floor_area_sqm +
 
 Screenshot of the output:
 
-![](images/image-836409430.png)
+![](images/image-1811017489.png)
 
-The results show that 24 neighbour points will be the optimal bandwidth to be used for the adaptive bandwidth.
+The results show that 34 neighbour points will be the optimal bandwidth to be used for the adaptive bandwidth.
 
 ```{r}
 #| eval: false
@@ -1141,14 +1155,23 @@ write_rds(bw_adaptive, "data/rds/bw_adaptive.rds")
 We will extract the x and y coordinates of the full, training and test data sets.
 
 ```{r}
+#| eval: false
 coords <- st_coordinates(resale_final)
 coords_train <- st_coordinates(train_data_scaled)
 coords_test <- st_coordinates(test_data)
 ```
 
 ```{r}
+#| eval: false
 coords_train <- write_rds(coords_train, "data/rds/coords_train.rds" )
 coords_test <- write_rds(coords_test, "data/rds/coords_test.rds" )
+```
+
+Retrieving Coords Data
+
+```{r}
+coords_train <- read_rds("data/rds/coords_train.rds")
+coords_test <- read_rds("data/rds/coords_test.rds")
 ```
 
 ### Dropping Geometry field
@@ -1169,22 +1192,16 @@ gwRF_adaptive <- grf(formula = resale_price ~ floor_area_sqm + storey_order +
                        remaining_lease_mths + PROX_CBD + PROX_ELDERLYCARE +
                        PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_MALL +
                        PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-                       WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
-                       WITHIN_1KM_PRISCH,
+                       WITHIN_350M_BUS + WITHIN_1KM_PRISCH,
                      dframe=train_data_scaled, 
                      bw=bw_adaptive,
                      kernel="adaptive",
                      coords=coords_train,
-                     ntree = 30)
+                     ntree = 30,
+                     min.node.size = 20)
 ```
 
 Screenshots of the output:
-
-![](images/image-1589230712.png)
-
-![](images/image-920137067.png)
-
-![](images/image-748787081.png)
 
 Saving the model output into rds format:
 
@@ -1197,7 +1214,7 @@ Retrieving the saved model for future use:
 
 ```{r}
 #| eval: false
-gwRF_adaptive <- read_rds("data/model/gwRF_adaptive.rds")
+gwRF_adaptive <- read_rds("data/rds/gwRF_adaptive.rds")
 ```
 
 ## Predicting by using test data
@@ -1207,8 +1224,9 @@ gwRF_adaptive <- read_rds("data/model/gwRF_adaptive.rds")
 We will combine the test data with its corresponding coordinates data
 
 ```{r}
-# test_data <- cbind(test_data, coords_test) %>%
-#   st_drop_geometry()
+#| eval: false
+test_data <- cbind(test_data, coords_test) %>%
+  st_drop_geometry()
 ```
 
 ### Predicting with test data
@@ -1216,51 +1234,55 @@ We will combine the test data with its corresponding coordinates data
 Next, predict.grf() of spatialML package will be used to predict the resale value by using the test data and gwRF_adaptive model calibrated earlier.
 
 ```{r}
-# gwRF_pred <- predict.grf(gwRF_adaptive, 
-#                            test_data, 
-#                            x.var.name="X",
-#                            y.var.name="Y", 
-#                            local.w=1,
-#                            global.w=0)
+#| eval: false
+gwRF_pred <- predict.grf(gwRF_adaptive,
+                           test_data,
+                           x.var.name="X",
+                           y.var.name="Y",
+                           local.w=1,
+                           global.w=0)
 ```
 
 Saving the output into rds file for future use.
 
 ```{r}
-# GRF_pred <- write_rds(gwRF_pred, "data/rds/GRF_pred.rds")
+#| eval: false
+GRF_pred <- write_rds(gwRF_pred, "data/rds/GRF_pred.rds")
 ```
 
 ### Converting Predicted Output into a dataframe
 
 ```{r}
-# GRF_pred <- read_rds("data/rds/GRF_pred.rds")
-# GRF_pred_df <- as.data.frame(GRF_pred)
+GRF_pred <- read_rds("data/rds/GRF_pred.rds")
+GRF_pred_df <- as.data.frame(GRF_pred)
+```
+
+cbind() is used to append the predicted values onto test_data.
+
+```{r}
+test_data_p <- cbind(test_data, GRF_pred_df) 
 ```
 
 ```{r}
-# test_data_p <- cbind(test_data, GRF_pred_df)
+write_rds(test_data_p, "data/rds/test_data_p.rds")
 ```
 
-```{r}
-# write_rds(test_data_p, "data/model/test_data_p.rds")
-```
-
-## Calculating Root Mean Squared Error
+### Calculating Root Mean Squared Error
 
 Root mean square error (RMSE) allows us to measure how far predicted values are from observed values in a regression analysis. rmse() of Metrics package is used to compute the RMSE.
 
 ```{r}
-# rmse(test_data_p$resale_price, 
-#      test_data_p$GRF_pred)
+Metrics::rmse(test_data_p$resale_price,
+     test_data_p$GRF_pred)
 ```
 
-## Visualising Predicted Values
+### Visualising Predicted Values
 
-We can also use a scatterpolot to visualise the actual resale price and predicted resale price.
+We can also use a scatterplot to visualise the actual resale price and predicted resale price.
 
 ```{r}
-# ggplot(data = test_data_p,
-#        aes(x = GRF_pred,
-#            y = resale_price)) +
-#   geom_point()
+ggplot(data = test_data_p,
+       aes(x = GRF_pred,
+           y = resale_price)) +
+  geom_point()
 ```

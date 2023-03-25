@@ -360,12 +360,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#predicting-using-test-data" id="toc-predicting-using-test-data" class="nav-link" data-scroll-target="#predicting-using-test-data"><span class="toc-section-number">11.1</span>  Predicting using Test Data</a>
   <ul class="collapse">
-  <li><a href="#preparing-test-data" id="toc-preparing-test-data" class="nav-link" data-scroll-target="#preparing-test-data"><span class="toc-section-number">11.1.1</span>  Preparing Test Data</a></li>
+  <li><a href="#converting-output-into-a-dataframe" id="toc-converting-output-into-a-dataframe" class="nav-link" data-scroll-target="#converting-output-into-a-dataframe"><span class="toc-section-number">11.1.1</span>  Converting output into a dataframe</a></li>
+  <li><a href="#calculating-rmse" id="toc-calculating-rmse" class="nav-link" data-scroll-target="#calculating-rmse"><span class="toc-section-number">11.1.2</span>  Calculating RMSE</a></li>
   </ul></li>
-  <li><a href="#predicting-with-test-data" id="toc-predicting-with-test-data" class="nav-link" data-scroll-target="#predicting-with-test-data"><span class="toc-section-number">11.2</span>  Predicting with test data</a>
-  <ul class="collapse">
-  <li><a href="#converting-output-into-a-dataframe" id="toc-converting-output-into-a-dataframe" class="nav-link" data-scroll-target="#converting-output-into-a-dataframe"><span class="toc-section-number">11.2.1</span>  Converting output into a dataframe</a></li>
-  </ul></li>
+  <li><a href="#visualising-predicted-values" id="toc-visualising-predicted-values" class="nav-link" data-scroll-target="#visualising-predicted-values"><span class="toc-section-number">11.2</span>  Visualising Predicted Values</a></li>
   </ul></li>
   <li><a href="#building-geographical-weighted-random-forest-predictive-model" id="toc-building-geographical-weighted-random-forest-predictive-model" class="nav-link" data-scroll-target="#building-geographical-weighted-random-forest-predictive-model"><span class="toc-section-number">12</span>  Building Geographical Weighted Random Forest Predictive Model</a>
   <ul class="collapse">
@@ -381,12 +379,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#calibrating-geographical-random-forest-model" id="toc-calibrating-geographical-random-forest-model" class="nav-link" data-scroll-target="#calibrating-geographical-random-forest-model"><span class="toc-section-number">12.6</span>  Calibrating Geographical Random Forest Model</a></li>
   <li><a href="#predicting-by-using-test-data" id="toc-predicting-by-using-test-data" class="nav-link" data-scroll-target="#predicting-by-using-test-data"><span class="toc-section-number">12.7</span>  Predicting by using test data</a>
   <ul class="collapse">
-  <li><a href="#preparing-test-data-1" id="toc-preparing-test-data-1" class="nav-link" data-scroll-target="#preparing-test-data-1"><span class="toc-section-number">12.7.1</span>  Preparing Test Data</a></li>
-  <li><a href="#predicting-with-test-data-1" id="toc-predicting-with-test-data-1" class="nav-link" data-scroll-target="#predicting-with-test-data-1"><span class="toc-section-number">12.7.2</span>  Predicting with test data</a></li>
+  <li><a href="#preparing-test-data" id="toc-preparing-test-data" class="nav-link" data-scroll-target="#preparing-test-data"><span class="toc-section-number">12.7.1</span>  Preparing Test Data</a></li>
+  <li><a href="#predicting-with-test-data" id="toc-predicting-with-test-data" class="nav-link" data-scroll-target="#predicting-with-test-data"><span class="toc-section-number">12.7.2</span>  Predicting with test data</a></li>
   <li><a href="#converting-predicted-output-into-a-dataframe" id="toc-converting-predicted-output-into-a-dataframe" class="nav-link" data-scroll-target="#converting-predicted-output-into-a-dataframe"><span class="toc-section-number">12.7.3</span>  Converting Predicted Output into a dataframe</a></li>
+  <li><a href="#calculating-root-mean-squared-error" id="toc-calculating-root-mean-squared-error" class="nav-link" data-scroll-target="#calculating-root-mean-squared-error"><span class="toc-section-number">12.7.4</span>  Calculating Root Mean Squared Error</a></li>
+  <li><a href="#visualising-predicted-values-1" id="toc-visualising-predicted-values-1" class="nav-link" data-scroll-target="#visualising-predicted-values-1"><span class="toc-section-number">12.7.5</span>  Visualising Predicted Values</a></li>
   </ul></li>
-  <li><a href="#calculating-root-mean-squared-error" id="toc-calculating-root-mean-squared-error" class="nav-link" data-scroll-target="#calculating-root-mean-squared-error"><span class="toc-section-number">12.8</span>  Calculating Root Mean Squared Error</a></li>
-  <li><a href="#visualising-predicted-values" id="toc-visualising-predicted-values" class="nav-link" data-scroll-target="#visualising-predicted-values"><span class="toc-section-number">12.9</span>  Visualising Predicted Values</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -414,7 +412,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 20, 2023</p>
+      <p class="date-modified">March 25, 2023</p>
     </div>
   </div>
     
@@ -1415,37 +1413,92 @@ PROJCRS["SVY21 / Singapore TM",
 <span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>                  PROX_MRT <span class="sc">+</span> PROX_PARK <span class="sc">+</span> PROX_MALL <span class="sc">+</span> PROX_GOOD_PRISCH <span class="sc">+</span></span>
 <span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>                  PROX_SUPERMARKET <span class="sc">+</span> WITHIN_350M_KINDERGARTEN <span class="sc">+</span> </span>
 <span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>                  WITHIN_350M_BUS <span class="sc">+</span> WITHIN_1KM_PRISCH,</span>
-<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data=</span>train_data)</span>
-<span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(price_mlr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data=</span>train_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(price_mlr, <span class="st">"data/rds/price_mlr.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>price_mlr <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/price_mlr.rds"</span>)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(price_mlr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = resale_price ~ floor_area_sqm + storey_order + remaining_lease_mths + 
+    PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER + PROX_MRT + PROX_PARK + 
+    PROX_MALL + PROX_GOOD_PRISCH + PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN + 
+    WITHIN_350M_BUS + WITHIN_1KM_PRISCH, data = train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-378846  -44193    -466   45248  392343 
+
+Coefficients:
+                           Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept)               89969.053   8028.126   11.207  &lt; 2e-16 ***
+floor_area_sqm             3435.672     68.948   49.830  &lt; 2e-16 ***
+storey_order              16233.828    227.195   71.453  &lt; 2e-16 ***
+remaining_lease_mths        347.776      3.191  108.990  &lt; 2e-16 ***
+PROX_CBD                 -15982.636    153.206 -104.321  &lt; 2e-16 ***
+PROX_ELDERLYCARE          -6294.118    781.114   -8.058 8.13e-16 ***
+PROX_HAWKER              -20214.410    946.856  -21.349  &lt; 2e-16 ***
+PROX_MRT                 -29133.168   1322.028  -22.037  &lt; 2e-16 ***
+PROX_PARK                  5264.408   1042.177    5.051 4.42e-07 ***
+PROX_MALL                -17752.299   1331.878  -13.329  &lt; 2e-16 ***
+PROX_GOOD_PRISCH          -3177.914    284.756  -11.160  &lt; 2e-16 ***
+PROX_SUPERMARKET           7599.888   3101.589    2.450   0.0143 *  
+WITHIN_350M_KINDERGARTEN   -860.577    210.862   -4.081 4.49e-05 ***
+WITHIN_350M_BUS            1240.502    165.170    7.510 6.10e-14 ***
+WITHIN_1KM_PRISCH        -10697.646    349.536  -30.605  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 68710 on 23641 degrees of freedom
+Multiple R-squared:  0.7187,    Adjusted R-squared:  0.7185 
+F-statistic:  4314 on 14 and 23641 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
 <section id="predicting-using-test-data" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="predicting-using-test-data"><span class="header-section-number">11.1</span> Predicting using Test Data</h2>
-<section id="preparing-test-data" class="level3" data-number="11.1.1">
-<h3 data-number="11.1.1" class="anchored" data-anchor-id="preparing-test-data"><span class="header-section-number">11.1.1</span> Preparing Test Data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> test_data <span class="sc">%&gt;%</span> st_drop_geometry</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="predicting-with-test-data" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="predicting-with-test-data"><span class="header-section-number">11.2</span> Predicting with test data</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>mlr_pred <span class="ot">&lt;-</span> <span class="fu">predict.lm</span>(price_mlr, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>mlr_pred <span class="ot">&lt;-</span> <span class="fu">predict.lm</span>(price_mlr, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Saving the output into an rds file:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>mlr_pred <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(mlr_pred, <span class="st">"data/rds/mlr_pred.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>mlr_pred <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(mlr_pred, <span class="st">"data/rds/mlr_pred.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="converting-output-into-a-dataframe" class="level3" data-number="11.2.1">
-<h3 data-number="11.2.1" class="anchored" data-anchor-id="converting-output-into-a-dataframe"><span class="header-section-number">11.2.1</span> Converting output into a dataframe</h3>
+<section id="converting-output-into-a-dataframe" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="converting-output-into-a-dataframe"><span class="header-section-number">11.1.1</span> Converting output into a dataframe</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>mlr_pred <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/mlr_pred.rds"</span>)</span>
-<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>mlr_pred_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(mlr_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>mlr_pred <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/mlr_pred.rds"</span>)</span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>mlr_pred_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(mlr_pred)</span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>test_data_p_mlr <span class="ot">&lt;-</span> <span class="fu">cbind</span>(test_data, mlr_pred_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="calculating-rmse" class="level3" data-number="11.1.2">
+<h3 data-number="11.1.2" class="anchored" data-anchor-id="calculating-rmse"><span class="header-section-number">11.1.2</span> Calculating RMSE</h3>
+<p>Root mean square error (RMSE) allows us to measure how far predicted values are from observed values in a regression analysis. rmse() of Metrics package is used to compute the RMSE.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>Metrics<span class="sc">::</span><span class="fu">rmse</span>(test_data_p_mlr<span class="sc">$</span>resale_price, </span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>     test_data_p_mlr<span class="sc">$</span>mlr_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 82423.4</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="visualising-predicted-values" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="visualising-predicted-values"><span class="header-section-number">11.2</span> Visualising Predicted Values</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> test_data_p_mlr,</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> mlr_pred,</span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-101-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 </section>
 <section id="building-geographical-weighted-random-forest-predictive-model" class="level1" data-number="12">
@@ -1453,38 +1506,38 @@ PROJCRS["SVY21 / Singapore TM",
 <section id="retrieving-stored-data-1" class="level2" data-number="12.1">
 <h2 data-number="12.1" class="anchored" data-anchor-id="retrieving-stored-data-1"><span class="header-section-number">12.1</span> Retrieving stored data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/train.rds"</span>)</span>
-<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/test.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/train.rds"</span>)</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/test.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="scaling-training-data" class="level2" data-number="12.2">
 <h2 data-number="12.2" class="anchored" data-anchor-id="scaling-training-data"><span class="header-section-number">12.2</span> Scaling Training Data</h2>
-<p>As the computation time for the original training data set takes too long on my computer, I have decided to scale down the training data to the latest 3 months of data (October to December 2022), so that the I can still calibrate a model and do the prediction.</p>
+<p>As the computation time for the original training data set takes too long on my computer, I have decided to scale down the training data to the latest 5 months of data (August to December 2022), so that the I can still calibrate a model and do the prediction.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>train_data_scaled <span class="ot">&lt;-</span> train_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(month <span class="sc">&gt;=</span> <span class="st">"2022-10"</span> <span class="sc">&amp;</span> month <span class="sc">&lt;=</span> <span class="st">"2022-12"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>train_data_scaled <span class="ot">&lt;-</span> train_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(month <span class="sc">&gt;=</span> <span class="st">"2022-08"</span> <span class="sc">&amp;</span> month <span class="sc">&lt;=</span> <span class="st">"2022-12"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Saving as rds file:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(train_data_scaled, <span class="st">"data/rds/train_data_scaled.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(train_data_scaled, <span class="st">"data/rds/train_data_scaled.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="retrieving-scaled-training-data" class="level2" data-number="12.3">
 <h2 data-number="12.3" class="anchored" data-anchor-id="retrieving-scaled-training-data"><span class="header-section-number">12.3</span> Retrieving scaled training data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>train_data_scaled <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/train_data_scaled.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>train_data_scaled <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/train_data_scaled.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>train_data_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(train_data_scaled)</span>
-<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>train_data_sp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>train_data_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(train_data_scaled)</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>train_data_sp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>class       : SpatialPointsDataFrame 
-features    : 2719 
-extent      : 11655.33, 42561.66, 28397.4, 48675.05  (xmin, xmax, ymin, ymax)
+features    : 4733 
+extent      : 11655.33, 42645.18, 28330.23, 48675.05  (xmin, xmax, ymin, ymax)
 crs         : +proj=tmerc +lat_0=1.36666666666667 +lon_0=103.833333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs 
 variables   : 18
-names       :   month, resale_price, floor_area_sqm, storey_order, remaining_lease_mths,         PROX_CBD,     PROX_ELDERLYCARE,        PROX_HAWKER,           PROX_MRT,          PROX_PARK,  PROX_GOOD_PRISCH,         PROX_MALL,          PROX_CLINIC,     PROX_SUPERMARKET, WITHIN_350M_KINDERGARTEN, ... 
-min values  : 2022-10,       370000,             74,            1,                  542, 1.00583660772922, 1.98943787433087e-08, 0.0395321340230547, 0.0315997456119679, 0.0458007770648803, 0.117653336456023, 0.054887381413689, 7.28527615277263e-09, 6.97304266584497e-07,                        0, ... 
-max values  : 2022-12,      1370000,            120,           17,                 1148, 19.4237844042343,      3.2823136575237,   2.80237498784495,   2.05868021203424,   2.64393394793345,   8.6550509283742,  2.24733612097267,    0.869920099464176,     1.36375821567757,                       20, ... </code></pre>
+names       :   month, resale_price, floor_area_sqm, storey_order, remaining_lease_mths,          PROX_CBD,     PROX_ELDERLYCARE,        PROX_HAWKER,           PROX_MRT,          PROX_PARK,  PROX_GOOD_PRISCH,            PROX_MALL,         PROX_CLINIC,     PROX_SUPERMARKET, WITHIN_350M_KINDERGARTEN, ... 
+min values  : 2022-08,       325000,             74,            1,                  542, 0.999393538715878, 1.98943787433087e-08, 0.0395321340230547, 0.0217933772276802, 0.0442179536967566, 0.117653336456023, 2.21189111471176e-12, 5.7601157446257e-09, 1.21715176356525e-07,                        0, ... 
+max values  : 2022-12,      1370000,            126,           17,                 1148,  19.4237844042343,      3.2823136575237,   2.80237498784495,   2.12908590009577,   2.66145274727399,   8.6550509283742,     2.28266595414586,   0.869920099464176,     1.36375821567757,                       23, ... </code></pre>
 </div>
 </div>
 </section>
@@ -1492,23 +1545,23 @@ max values  : 2022-12,      1370000,            120,           17,              
 <h2 data-number="12.4" class="anchored" data-anchor-id="computing-adaptive-bandwidth"><span class="header-section-number">12.4</span> Computing Adaptive Bandwidth</h2>
 <p>Next, we will use bw.gwr() package from GWmodel to determine the optimal bandwidth to be used.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>bw_adaptive <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(resale_price <span class="sc">~</span> floor_area_sqm <span class="sc">+</span></span>
-<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>                  storey_order <span class="sc">+</span> remaining_lease_mths <span class="sc">+</span></span>
-<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>                  PROX_CBD <span class="sc">+</span> PROX_ELDERLYCARE <span class="sc">+</span> PROX_HAWKER <span class="sc">+</span></span>
-<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>                  PROX_MRT <span class="sc">+</span> PROX_PARK <span class="sc">+</span> PROX_MALL <span class="sc">+</span> </span>
-<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a>                  PROX_SUPERMARKET <span class="sc">+</span> WITHIN_350M_KINDERGARTEN<span class="sc">+</span> </span>
-<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a>                  WITHIN_350M_BUS <span class="sc">+</span> WITHIN_1KM_PRISCH,</span>
-<span id="cb113-7"><a href="#cb113-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data=</span>train_data_sp,</span>
-<span id="cb113-8"><a href="#cb113-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">approach=</span><span class="st">"CV"</span>,</span>
-<span id="cb113-9"><a href="#cb113-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">kernel=</span><span class="st">"gaussian"</span>,</span>
-<span id="cb113-10"><a href="#cb113-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">adaptive=</span><span class="cn">TRUE</span>,</span>
-<span id="cb113-11"><a href="#cb113-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">longlat=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>bw_adaptive <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(resale_price <span class="sc">~</span> floor_area_sqm <span class="sc">+</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>                  storey_order <span class="sc">+</span> remaining_lease_mths <span class="sc">+</span></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>                  PROX_CBD <span class="sc">+</span> PROX_ELDERLYCARE <span class="sc">+</span> PROX_HAWKER <span class="sc">+</span></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>                  PROX_MRT <span class="sc">+</span> PROX_PARK <span class="sc">+</span> PROX_MALL <span class="sc">+</span> </span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a>                  PROX_SUPERMARKET <span class="sc">+</span> WITHIN_350M_KINDERGARTEN<span class="sc">+</span> </span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>                  WITHIN_350M_BUS <span class="sc">+</span> WITHIN_1KM_PRISCH,</span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data=</span>train_data_sp,</span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">approach=</span><span class="st">"CV"</span>,</span>
+<span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">kernel=</span><span class="st">"gaussian"</span>,</span>
+<span id="cb117-10"><a href="#cb117-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">adaptive=</span><span class="cn">TRUE</span>,</span>
+<span id="cb117-11"><a href="#cb117-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">longlat=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Screenshot of the output:</p>
-<p><img src="images/image-836409430.png" class="img-fluid"></p>
-<p>The results show that 24 neighbour points will be the optimal bandwidth to be used for the adaptive bandwidth.</p>
+<p><img src="images/image-1811017489.png" class="img-fluid"></p>
+<p>The results show that 34 neighbour points will be the optimal bandwidth to be used for the adaptive bandwidth.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(bw_adaptive, <span class="st">"data/rds/bw_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(bw_adaptive, <span class="st">"data/rds/bw_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="preparing-coordinates-data" class="level2" data-number="12.5">
@@ -1517,20 +1570,25 @@ max values  : 2022-12,      1370000,            120,           17,              
 <h3 data-number="12.5.1" class="anchored" data-anchor-id="extracting-coordinates-data"><span class="header-section-number">12.5.1</span> Extracting Coordinates Data</h3>
 <p>We will extract the x and y coordinates of the full, training and test data sets.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(resale_final)</span>
-<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>coords_train <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(train_data_scaled)</span>
-<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(resale_final)</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>coords_train <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(train_data_scaled)</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>coords_train <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(coords_train, <span class="st">"data/rds/coords_train.rds"</span> )</span>
-<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(coords_test, <span class="st">"data/rds/coords_test.rds"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>coords_train <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(coords_train, <span class="st">"data/rds/coords_train.rds"</span> )</span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(coords_test, <span class="st">"data/rds/coords_test.rds"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Retrieving Coords Data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>coords_train <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/coords_train.rds"</span>)</span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>coords_test <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/coords_test.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="dropping-geometry-field" class="level3" data-number="12.5.2">
 <h3 data-number="12.5.2" class="anchored" data-anchor-id="dropping-geometry-field"><span class="header-section-number">12.5.2</span> Dropping Geometry field</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>train_data_scaled <span class="ot">&lt;-</span> train_data_scaled <span class="sc">%&gt;%</span> </span>
-<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>train_data_scaled <span class="ot">&lt;-</span> train_data_scaled <span class="sc">%&gt;%</span> </span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -1538,91 +1596,95 @@ max values  : 2022-12,      1370000,            120,           17,              
 <h2 data-number="12.6" class="anchored" data-anchor-id="calibrating-geographical-random-forest-model"><span class="header-section-number">12.6</span> Calibrating Geographical Random Forest Model</h2>
 <p>We will now use grf() of SpatialML package to calibrate a Geographically Weighted Random Forest model to predict HDB resale pricing.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>gwRF_adaptive <span class="ot">&lt;-</span> <span class="fu">grf</span>(<span class="at">formula =</span> resale_price <span class="sc">~</span> floor_area_sqm <span class="sc">+</span> storey_order <span class="sc">+</span></span>
-<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>                       remaining_lease_mths <span class="sc">+</span> PROX_CBD <span class="sc">+</span> PROX_ELDERLYCARE <span class="sc">+</span></span>
-<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>                       PROX_HAWKER <span class="sc">+</span> PROX_MRT <span class="sc">+</span> PROX_PARK <span class="sc">+</span> PROX_MALL <span class="sc">+</span></span>
-<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>                       PROX_SUPERMARKET <span class="sc">+</span> WITHIN_350M_KINDERGARTEN <span class="sc">+</span></span>
-<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>                       WITHIN_350M_CHILDCARE <span class="sc">+</span> WITHIN_350M_BUS <span class="sc">+</span></span>
-<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a>                       WITHIN_1KM_PRISCH,</span>
-<span id="cb118-8"><a href="#cb118-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">dframe=</span>train_data_scaled, </span>
-<span id="cb118-9"><a href="#cb118-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">bw=</span>bw_adaptive,</span>
-<span id="cb118-10"><a href="#cb118-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">kernel=</span><span class="st">"adaptive"</span>,</span>
-<span id="cb118-11"><a href="#cb118-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">coords=</span>coords_train,</span>
-<span id="cb118-12"><a href="#cb118-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ntree =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>gwRF_adaptive <span class="ot">&lt;-</span> <span class="fu">grf</span>(<span class="at">formula =</span> resale_price <span class="sc">~</span> floor_area_sqm <span class="sc">+</span> storey_order <span class="sc">+</span></span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>                       remaining_lease_mths <span class="sc">+</span> PROX_CBD <span class="sc">+</span> PROX_ELDERLYCARE <span class="sc">+</span></span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>                       PROX_HAWKER <span class="sc">+</span> PROX_MRT <span class="sc">+</span> PROX_PARK <span class="sc">+</span> PROX_MALL <span class="sc">+</span></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>                       PROX_SUPERMARKET <span class="sc">+</span> WITHIN_350M_KINDERGARTEN <span class="sc">+</span></span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a>                       WITHIN_350M_BUS <span class="sc">+</span> WITHIN_1KM_PRISCH,</span>
+<span id="cb123-7"><a href="#cb123-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">dframe=</span>train_data_scaled, </span>
+<span id="cb123-8"><a href="#cb123-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">bw=</span>bw_adaptive,</span>
+<span id="cb123-9"><a href="#cb123-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">kernel=</span><span class="st">"adaptive"</span>,</span>
+<span id="cb123-10"><a href="#cb123-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">coords=</span>coords_train,</span>
+<span id="cb123-11"><a href="#cb123-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ntree =</span> <span class="dv">30</span>,</span>
+<span id="cb123-12"><a href="#cb123-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">min.node.size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Screenshots of the output:</p>
-<p><img src="images/image-1589230712.png" class="img-fluid"></p>
-<p><img src="images/image-920137067.png" class="img-fluid"></p>
-<p><img src="images/image-748787081.png" class="img-fluid"></p>
 <p>Saving the model output into rds format:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(gwRF_adaptive, <span class="st">"data/rds/gwRF_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(gwRF_adaptive, <span class="st">"data/rds/gwRF_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Retrieving the saved model for future use:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>gwRF_adaptive <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/model/gwRF_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>gwRF_adaptive <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/gwRF_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="predicting-by-using-test-data" class="level2" data-number="12.7">
 <h2 data-number="12.7" class="anchored" data-anchor-id="predicting-by-using-test-data"><span class="header-section-number">12.7</span> Predicting by using test data</h2>
-<section id="preparing-test-data-1" class="level3" data-number="12.7.1">
-<h3 data-number="12.7.1" class="anchored" data-anchor-id="preparing-test-data-1"><span class="header-section-number">12.7.1</span> Preparing Test Data</h3>
+<section id="preparing-test-data" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="preparing-test-data"><span class="header-section-number">12.7.1</span> Preparing Test Data</h3>
 <p>We will combine the test data with its corresponding coordinates data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test_data &lt;- cbind(test_data, coords_test) %&gt;%</span></span>
-<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   st_drop_geometry()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(test_data, coords_test) <span class="sc">%&gt;%</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="predicting-with-test-data-1" class="level3" data-number="12.7.2">
-<h3 data-number="12.7.2" class="anchored" data-anchor-id="predicting-with-test-data-1"><span class="header-section-number">12.7.2</span> Predicting with test data</h3>
+<section id="predicting-with-test-data" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="predicting-with-test-data"><span class="header-section-number">12.7.2</span> Predicting with test data</h3>
 <p>Next, predict.grf() of spatialML package will be used to predict the resale value by using the test data and gwRF_adaptive model calibrated earlier.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gwRF_pred &lt;- predict.grf(gwRF_adaptive, </span></span>
-<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                            test_data, </span></span>
-<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                            x.var.name="X",</span></span>
-<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                            y.var.name="Y", </span></span>
-<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                            local.w=1,</span></span>
-<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                            global.w=0)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>gwRF_pred <span class="ot">&lt;-</span> <span class="fu">predict.grf</span>(gwRF_adaptive,</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>                           test_data,</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">x.var.name=</span><span class="st">"X"</span>,</span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">y.var.name=</span><span class="st">"Y"</span>,</span>
+<span id="cb127-5"><a href="#cb127-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">local.w=</span><span class="dv">1</span>,</span>
+<span id="cb127-6"><a href="#cb127-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">global.w=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Saving the output into rds file for future use.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GRF_pred &lt;- write_rds(gwRF_pred, "data/rds/GRF_pred.rds")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>GRF_pred <span class="ot">&lt;-</span> <span class="fu">write_rds</span>(gwRF_pred, <span class="st">"data/rds/GRF_pred.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="converting-predicted-output-into-a-dataframe" class="level3" data-number="12.7.3">
 <h3 data-number="12.7.3" class="anchored" data-anchor-id="converting-predicted-output-into-a-dataframe"><span class="header-section-number">12.7.3</span> Converting Predicted Output into a dataframe</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GRF_pred &lt;- read_rds("data/rds/GRF_pred.rds")</span></span>
-<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="co"># GRF_pred_df &lt;- as.data.frame(GRF_pred)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>GRF_pred <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/GRF_pred.rds"</span>)</span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>GRF_pred_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(GRF_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>cbind() is used to append the predicted values onto test_data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>test_data_p <span class="ot">&lt;-</span> <span class="fu">cbind</span>(test_data, GRF_pred_df) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test_data_p &lt;- cbind(test_data, GRF_pred_df)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(test_data_p, "data/model/test_data_p.rds")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(test_data_p, <span class="st">"data/rds/test_data_p.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="calculating-root-mean-squared-error" class="level2" data-number="12.8">
-<h2 data-number="12.8" class="anchored" data-anchor-id="calculating-root-mean-squared-error"><span class="header-section-number">12.8</span> Calculating Root Mean Squared Error</h2>
+<section id="calculating-root-mean-squared-error" class="level3" data-number="12.7.4">
+<h3 data-number="12.7.4" class="anchored" data-anchor-id="calculating-root-mean-squared-error"><span class="header-section-number">12.7.4</span> Calculating Root Mean Squared Error</h3>
 <p>Root mean square error (RMSE) allows us to measure how far predicted values are from observed values in a regression analysis. rmse() of Metrics package is used to compute the RMSE.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rmse(test_data_p$resale_price, </span></span>
-<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="co">#      test_data_p$GRF_pred)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>Metrics<span class="sc">::</span><span class="fu">rmse</span>(test_data_p<span class="sc">$</span>resale_price,</span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>     test_data_p<span class="sc">$</span>GRF_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 43687.93</code></pre>
+</div>
 </div>
 </section>
-<section id="visualising-predicted-values" class="level2" data-number="12.9">
-<h2 data-number="12.9" class="anchored" data-anchor-id="visualising-predicted-values"><span class="header-section-number">12.9</span> Visualising Predicted Values</h2>
-<p>We can also use a scatterpolot to visualise the actual resale price and predicted resale price.</p>
+<section id="visualising-predicted-values-1" class="level3" data-number="12.7.5">
+<h3 data-number="12.7.5" class="anchored" data-anchor-id="visualising-predicted-values-1"><span class="header-section-number">12.7.5</span> Visualising Predicted Values</h3>
+<p>We can also use a scatterplot to visualise the actual resale price and predicted resale price.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(data = test_data_p,</span></span>
-<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a><span class="co">#        aes(x = GRF_pred,</span></span>
-<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a><span class="co">#            y = resale_price)) +</span></span>
-<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> test_data_p,</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> GRF_pred,</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-123-1.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 
 
+</section>
 </section>
 </section>
 
