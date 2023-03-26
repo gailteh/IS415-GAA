@@ -73,11 +73,13 @@ The packages we will be using in this analysis are:
 
 -   tidyverse: attribute data handing
 
--   httr
+-   httr: httr: Useful tools for working with HTTP organised by HTTP verbs (GET(), POST(), etc). Configuration functions make it easy to control additional request components (authenticate(), add_headers() and so on).
 
--   jsonlite
+    -   In this analysis, it will be used to send GET requests to OneMapAPI SG to retrieve the coordinates of addresses.
 
--   SpatialML
+-   jsonlite: A simple and robust JSON parser and generator for R. It offers simple, flexible tools for working with JSON in R, and is particularly powerful for building pipelines and interacting with a web API.
+
+-   SpatialML: To calibrate our geographical weighted random forest algorithm
 
 ```{r}
 pacman::p_load(olsrr, corrplot, ggpubr, sf, spdep, tmap, tidyverse, httr, jsonlite, GWmodel, SpatialML)
@@ -1074,13 +1076,16 @@ Root mean square error (RMSE) allows us to measure how far predicted values are 
 Metrics::rmse(test_data_p_mlr$resale_price, 
      test_data_p_mlr$mlr_pred)
 ```
+
 ## Visualising Predicted Values
 
 ```{r}
-ggplot(data = test_data_p_mlr,
+OLS_scatterplot <- ggplot(data = test_data_p_mlr,
        aes(x = mlr_pred,
            y = resale_price)) +
   geom_point()
+
+OLS_scatterplot
 ```
 
 # Building Geographical Weighted Random Forest Predictive Model
@@ -1201,8 +1206,6 @@ gwRF_adaptive <- grf(formula = resale_price ~ floor_area_sqm + storey_order +
                      min.node.size = 20)
 ```
 
-Screenshots of the output:
-
 Saving the model output into rds format:
 
 ```{r}
@@ -1281,8 +1284,38 @@ Metrics::rmse(test_data_p$resale_price,
 We can also use a scatterplot to visualise the actual resale price and predicted resale price.
 
 ```{r}
-ggplot(data = test_data_p,
+GWRF_scatterplot <- ggplot(data = test_data_p,
        aes(x = GRF_pred,
            y = resale_price)) +
   geom_point()
+
+GWRF_scatterplot
 ```
+
+# Conclusion
+
+For the OLS method, the RMSE value is 82423.4 while for the GWRF method, the RMSE value is 43687.93. The lower the RMSE value, the better fit the model is. Since the GWRF method has a lower RMSE, it has a better performance than the OLS method.
+
+Comparing both scatterplots for both models:
+
+::: panel-tabset
+## OLS
+
+```{r}
+OLS_scatterplot
+```
+
+## GWRF
+
+```{r}
+GWRF_scatterplot
+```
+:::
+
+# References
+
+-   [Take-home Exercise 3](https://aisyahajit2018-is415.netlify.app/posts/2021-11-07-take-home-exercise-3/) by NOR AISYAH BINTE AJIT.
+
+-   [Take-Home Exercise 3: Hedonic Pricing Models for Resale Prices of Public Housing in Singapore](https://is415-msty.netlify.app/posts/2021-10-25-take-home-exercise-3/) by MEGAN SIM TZE YEN.
+
+-   [Prof. Kam In-Class Exercise 9](https://is415-gaa-tskam.netlify.app/in-class_ex/in-class_ex09/in-class_ex09_gwml)

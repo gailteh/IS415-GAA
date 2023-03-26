@@ -386,6 +386,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#visualising-predicted-values-1" id="toc-visualising-predicted-values-1" class="nav-link" data-scroll-target="#visualising-predicted-values-1"><span class="toc-section-number">12.7.5</span>  Visualising Predicted Values</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="toc-section-number">13</span>  Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">14</span>  References</a></li>
   </ul>
 </nav>
     </div>
@@ -412,7 +414,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 25, 2023</p>
+      <p class="date-modified">March 26, 2023</p>
     </div>
   </div>
     
@@ -538,9 +540,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>spdep: creating spatial weight matrix objects, global and spatial autocorrelation statistics and related calculations</p></li>
 <li><p>tmap: choropleth mapping</p></li>
 <li><p>tidyverse: attribute data handing</p></li>
-<li><p>httr</p></li>
-<li><p>jsonlite</p></li>
-<li><p>SpatialML</p></li>
+<li><p>httr: httr: Useful tools for working with HTTP organised by HTTP verbs (GET(), POST(), etc). Configuration functions make it easy to control additional request components (authenticate(), add_headers() and so on).</p>
+<ul>
+<li>In this analysis, it will be used to send GET requests to OneMapAPI SG to retrieve the coordinates of addresses.</li>
+</ul></li>
+<li><p>jsonlite: A simple and robust JSON parser and generator for R. It offers simple, flexible tools for working with JSON in R, and is particularly powerful for building pipelines and interacting with a web API.</p></li>
+<li><p>SpatialML: To calibrate our geographical weighted random forest algorithm</p></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(olsrr, corrplot, ggpubr, sf, spdep, tmap, tidyverse, httr, jsonlite, GWmodel, SpatialML)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1491,10 +1496,12 @@ F-statistic:  4314 on 14 and 23641 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="visualising-predicted-values" class="level2" data-number="11.2">
 <h2 data-number="11.2" class="anchored" data-anchor-id="visualising-predicted-values"><span class="header-section-number">11.2</span> Visualising Predicted Values</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> test_data_p_mlr,</span>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>OLS_scatterplot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> test_data_p_mlr,</span>
 <span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> mlr_pred,</span>
 <span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
-<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>OLS_scatterplot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-101-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1609,7 +1616,6 @@ max values  : 2022-12,      1370000,            126,           17,              
 <span id="cb123-11"><a href="#cb123-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ntree =</span> <span class="dv">30</span>,</span>
 <span id="cb123-12"><a href="#cb123-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">min.node.size =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Screenshots of the output:</p>
 <p>Saving the model output into rds format:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(gwRF_adaptive, <span class="st">"data/rds/gwRF_adaptive.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1674,18 +1680,54 @@ max values  : 2022-12,      1370000,            126,           17,              
 <h3 data-number="12.7.5" class="anchored" data-anchor-id="visualising-predicted-values-1"><span class="header-section-number">12.7.5</span> Visualising Predicted Values</h3>
 <p>We can also use a scatterplot to visualise the actual resale price and predicted resale price.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> test_data_p,</span>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>GWRF_scatterplot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> test_data_p,</span>
 <span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> GRF_pred,</span>
 <span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> resale_price)) <span class="sc">+</span></span>
-<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span>
+<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a>GWRF_scatterplot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-123-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-
-
 </section>
 </section>
+</section>
+<section id="conclusion" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Conclusion</h1>
+<p>For the OLS method, the RMSE value is 82423.4 while for the GWRF method, the RMSE value is 43687.93. The lower the RMSE value, the better fit the model is. Since the GWRF method has a lower RMSE, it has a better performance than the OLS method.</p>
+<p>Comparing both scatterplots for both models:</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">OLS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">GWRF</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>OLS_scatterplot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-124-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>GWRF_scatterplot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-125-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="references" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> References</h1>
+<ul>
+<li><p><a href="https://aisyahajit2018-is415.netlify.app/posts/2021-11-07-take-home-exercise-3/">Take-home Exercise 3</a> by NOR AISYAH BINTE AJIT.</p></li>
+<li><p><a href="https://is415-msty.netlify.app/posts/2021-10-25-take-home-exercise-3/">Take-Home Exercise 3: Hedonic Pricing Models for Resale Prices of Public Housing in Singapore</a> by MEGAN SIM TZE YEN.</p></li>
+<li><p><a href="https://is415-gaa-tskam.netlify.app/in-class_ex/in-class_ex09/in-class_ex09_gwml">Prof.&nbsp;Kam In-Class Exercise 9</a></p></li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->
