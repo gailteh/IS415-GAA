@@ -79,3 +79,15 @@ LCLQ <- local_colocation(A, B, nb, wt, 49)
 ```{r}
 LCLQ_Stores <- cbind(stores, LCLQ)
 ```
+
+```{r}
+tmap_mode("view")
+tm_shape(studyArea) +
+  tm_polygons() +
+tm_shape(LCLQ_Stores)+ 
+  tm_dots(col = "X7.Eleven",
+             size = 0.01,
+             border.col = "black",
+             border.lwd = 0.5) +
+  tm_view(set.zoom.limits = c(12, 16))
+```

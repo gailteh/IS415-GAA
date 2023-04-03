@@ -84,6 +84,7 @@ busstop_mpsz <- st_intersection(busstop, mpsz) %>%
   select(BUS_STOP_N, SUBZONE_C) %>%
   st_drop_geometry()
 ```
+
 Note: busstop_mpsz has 5 lesser records than busstop because those busstops are in JB out of Singapore.
 
 Next we will append origin bustop's planning subzone code from buststop_mpsz into odbus7_9.
@@ -139,6 +140,7 @@ od_data <- od_data %>%
 ```
 
 Saving output into rds:
+
 ```{r}
 write_rds(od_data, "data/rds/od_data.rds")
 ```
@@ -157,10 +159,12 @@ qtm(mpsz)
 # Isolating SUBZONE_C into a new dataframe
 
 Sorting subzone code in alphabetical order:
+
 ```{r}
 mpsz <- mpsz[order(mpsz$SUBZONE_C),]
 head(mpsz,10)
 ```
+
 # Computing Distance Matrix
 
 ## Converting from sf to sp
@@ -196,7 +200,6 @@ head(distPair, 10)
 ```
 
 ## Update intra-zonal distances
-
 
 ```{r}
 distPair %>%
@@ -270,4 +273,3 @@ flow_data1 <- flow_data1 %>%
          DESTIN_AGE25_64 = AGE25_64) %>%
   select(-c(PA, SZ_NAME))
 ```
-
